@@ -26,9 +26,12 @@
 
 <div>
 <h3>Further Description of this Repository</h3>
-
-<p>[Any narrative content may be provided here by the TC, for example, if the Members wish to provide an extended statement of purpose.]</p>
+<p>This repository contains ABNF-based grammars for OData Uniform Resource Identifiers, request and response headers, and literal data values in request and response bodies. Each grammar is accompanied by a set of positive and negative test cases that serve as examples for what is intended and not intended, and that can also be used to automatically test the grammars.</p>
 </div>
+
+* Core [grammar](abnf/odata-abnf-construction-rules.txt) and [test cases](abnf/odata-abnf-testcases.xml)
+* Data Aggregation Extension [grammar](abnf/odata-aggregation-abnf.txt) and [test cases](abnf/odata-aggregation-testcases.xml)
+* Temporal Data Extension [grammar](abnf/odata-temporal-abnf.txt) and [test cases](abnf/odata-temporal-testcases.xml)
 
 <div>
 
