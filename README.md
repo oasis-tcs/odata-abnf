@@ -26,15 +26,18 @@
 
 <div>
 <h3>Further Description of this Repository</h3>
-<p>This repository contains ABNF-based grammars for OData Uniform Resource Identifiers, request and response headers, and literal data values in request and response bodies. Each grammar is accompanied by a set of positive and negative test cases that serve as examples for what is intended and not intended, and that can also be used to automatically test the grammars.</p>
-</div>
+There are currently three pairs of grammars and test cases:
 
 * Core [grammar](abnf/odata-abnf-construction-rules.txt) and [test cases](abnf/odata-abnf-testcases.xml)
 * Data Aggregation Extension [grammar](abnf/odata-aggregation-abnf.txt) and [test cases](abnf/odata-aggregation-testcases.xml)
 * Temporal Data Extension [grammar](abnf/odata-temporal-abnf.txt) and [test cases](abnf/odata-temporal-testcases.xml)
 
-<div>
+The grammars of the two extensions are incremental and add new alternatives to "Core" rules as well as new rules used in the new alternatives.
 
+</div>
+
+
+<div>
 <h3>Contact</h3>
 <p>Please send questions or comments about <a href="https://www.oasis-open.org/resources/tcadmin/github-repositories-for-oasis-tc-members-chartered-work">OASIS TC GitHub repositories</a> to <a href="mailto:robin@oasis-open.org">Robin Cover</a> and <a href="mailto:chet.ensign@oasis-open.org">Chet Ensign</a>.  For questions about content in this repository, please contact the TC Chair or Co-Chairs as listed on the the OData TC's <a href="https://www.oasis-open.org/committees/odata/">home page</a>.</p>
 </div>
