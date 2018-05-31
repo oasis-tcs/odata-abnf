@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# This script compiles the three OData ABNF files into a parser using the Java APG fork from https://github.com/ralfhandl/apg-java
+# It then executes all tests in the three testcase files using the parser and the ABNF test tools from https://github.com/SAP/abnf-test-tool
+#
+# Prerequisites
+# - Java SDK        sudo apt-get install default-jdk
+# - Java APG        clone https://github.com/ralfhandl/apg-java, go to 'build' subdirectory, there run './make-jars'
+# - ABNF test tool  clone https://github.com/SAP/abnf-test-tool, go to 'build' subdirectory, there run './make-jar' (singular :-)
+
+[ -d grammar ] || mkdir grammar
+
+if [ grammar/GrammarUnderTest.java -ot ../../abnf/odata-abnf-construction-rules.txt ] \
+|| [ grammar/GrammarUnderTest.java -ot ../../abnf/odata-aggregation-abnf.txt ] \
+|| [ grammar/GrammarUnderTest.java -ot ../../abnf/odata-temporal-abnf.txt ]; then
+	echo "Compiling ABNF..."
+	rm grammar/GrammarUnderTest* 2> /dev/null
+
+	java.exe -cp ../../../apg-java/build/apg.jar apg/Generator /in=../../../abnf/odata-abnf-construction-rules.txt /in=../../../abnf/odata-aggregation-abnf.txt /in=../../../abnf/odata-temporal-abnf.txt /package=grammar /java=GrammarUnderTest /dir=grammar/ /dv &>grammar/apg.log
+
+	grep '^\*\*\* java.lang.Error\|^line' grammar/apg.log
+	echo ""
+	[ -f grammar/GrammarUnderTest.java ] || exit 1
+fi
+
+if [ grammar/GrammarUnderTest.java -nt grammar/GrammarUnderTest.class ]; then
+	javac -cp ../../../apg-java/build/apg.jar grammar/GrammarUnderTest.java
+	[ $? -eq 0 ] || exit 1	
+fi
+	
+java -cp ../../../apg-java/build/apg.jar:../../../abnf-test-tool/abnf-test-tool.jar:. checker.Check ../../abnf/odata-abnf-testcases.xml ../../abnf/odata-aggregation-testcases.xml ../../abnf/odata-temporal-testcases.xml
