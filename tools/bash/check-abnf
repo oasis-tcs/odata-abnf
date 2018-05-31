@@ -4,9 +4,9 @@
 # It then executes all tests in the three testcase files using the parser and the ABNF test tools from https://github.com/SAP/abnf-test-tool
 #
 # Prerequisites
-# - Java SDK        sudo apt-get install default-jdk
-# - Java APG        clone https://github.com/ralfhandl/apg-java, go to 'build' subdirectory, there run './make-jars'
-# - ABNF test tool  clone https://github.com/SAP/abnf-test-tool, go to 'build' subdirectory, there run './make-jar' (singular :-)
+# - Java SDK         sudo apt-get install default-jdk
+# - Java APG         clone https://github.com/ralfhandl/apg-java, go to 'build' subdirectory, there run './make-jars'
+# - ABNF test tool   clone https://github.com/SAP/abnf-test-tool, go to 'build' subdirectory, there run './make-jar' (singular :-)
 
 [ -d grammar ] || mkdir grammar
 
@@ -28,4 +28,4 @@ if [ grammar/GrammarUnderTest.java -nt grammar/GrammarUnderTest.class ]; then
 	[ $? -eq 0 ] || exit 1	
 fi
 	
-java -cp ../../../apg-java/build/apg.jar:../../../abnf-test-tool/abnf-test-tool.jar:. checker.Check ../../abnf/odata-abnf-testcases.xml ../../abnf/odata-aggregation-testcases.xml ../../abnf/odata-temporal-testcases.xml
+java -cp ../../../apg-java/build/apg.jar:../../../abnf-test-tool/build/abnf-test-tool.jar:. checker.Check ../../abnf/odata-abnf-testcases.xml ../../abnf/odata-aggregation-testcases.xml ../../abnf/odata-temporal-testcases.xml
