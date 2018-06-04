@@ -5,12 +5,6 @@ This script compiles the three [OData ABNF files](../../abnf) into a parser usin
 It then executes all tests in the three testcase XML files using the generated parser and the ABNF test tools from https://github.com/SAP/abnf-test-tool.
 
 
- Prerequisites
- - Java SDK         sudo apt-get install default-jdk
- - Java APG         clone https://github.com/ralfhandl/apg-java, go to 'build' subdirectory, there run './make-jars'
- - ABNF test tool   clone https://github.com/SAP/abnf-test-tool, go to 'build' subdirectory, there run './make-jar' (singular :-)
-
-
 ## Installation
 
 First you need a Java SDK:
