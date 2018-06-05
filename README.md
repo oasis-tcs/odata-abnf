@@ -26,13 +26,16 @@
 
 <div>
 <h3>Further Description of this Repository</h3>
-There are currently three pairs of grammars and test cases:
 
-* Core [grammar](abnf/odata-abnf-construction-rules.txt) and [test cases](abnf/odata-abnf-testcases.xml)
-* Data Aggregation Extension [grammar](abnf/odata-aggregation-abnf.txt) and [test cases](abnf/odata-aggregation-testcases.xml)
-* Temporal Data Extension [grammar](abnf/odata-temporal-abnf.txt) and [test cases](abnf/odata-temporal-testcases.xml)
+The [`abnf` folder](abnf) contains three pairs of grammars and test cases:
+
+- Core [grammar](abnf/odata-abnf-construction-rules.txt) and [test cases](abnf/odata-abnf-testcases.xml)
+- Data Aggregation Extension [grammar](abnf/odata-aggregation-abnf.txt) and [test cases](abnf/odata-aggregation-testcases.xml)
+- Temporal Data Extension [grammar](abnf/odata-temporal-abnf.txt) and [test cases](abnf/odata-temporal-testcases.xml)
 
 The grammars of the two extensions are incremental and add new alternatives to "Core" rules as well as new rules used in the new alternatives.
+
+The [`tools` folder](tools/README.md) contains tools for automatically testing the grammars.
 
 </div>
 
