@@ -1,40 +1,27 @@
-# `check-abnf.ps1` for Windows PowerShell
+# Eclipse project `odata-abnf`
 
-This script compiles the three [OData ABNF files](../../abnf) into a parser using the Java APG fork from https://github.com/ralfhandl/apg-java.
+This Eclipse project allows editing the three [OData ABNF files](../../abnf) and their testcase files. 
 
-It then executes all tests in the three testcase XML files using the generated parser and the ABNF test tools from https://github.com/SAP/abnf-test-tool.
+
+... Each time changes to  into a parser using the Java APG fork from https://github.com/ralfhandl/apg-java.
+
+... It then executes all tests in the three testcase XML files using the generated parser and the ABNF test tools from https://github.com/SAP/abnf-test-tool.
 
 
  ## Installation
  
- You need a [Java SE JDK](http://jdk.java.net) and [Git](https://git-scm.com/download/win) installed and in the PATH. 
- 
- Start PowerShell, clone this repository and run the `check-abnf.ps1` script:
+Depending on your machine either follow the installation steps for [Linux bash](../bash/README.md) or [Windows PowerShell](../PowerShell/README.md).
 
-```posh
-git clone https://github.com/oasis-tcs/odata-abnf.git
-cd odata-abnf/tools/PowerShell
-./check-abnf.ps1
-```
- 
-The script checks if the required `apg.jar` and `abnf-test-tool.jar` files exist. If not, it will clone the repositories
-- https://github.com/ralfhandl/apg-java and
-- https://github.com/SAP/abnf-test-tool
-
-next to this project and build the jar files.
+In Eclipse, ... import ...
 
 
 ## Usage
 
-In the `PowerShell` folder execute
+... copy from abnf-test-tool description
 
-```posh
-./check-abnf.ps1
+Launch run configuration `Check OData ABNF`. The console is should show something like
+
 ```
-
-This should result in something like
-
-```posh
 Running test cases from ../../abnf/odata-abnf-testcases.xml
 All 732 test cases passed
 
