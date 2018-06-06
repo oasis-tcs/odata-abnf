@@ -40,7 +40,7 @@ In the `bash` folder execute
 
 This should result in something like
 
-```bash
+```
 Running test cases from ../../abnf/odata-abnf-testcases.xml
 All 732 test cases passed
 

@@ -34,7 +34,7 @@ In the `PowerShell` folder execute
 
 This should result in something like
 
-```posh
+```
 Running test cases from ../../abnf/odata-abnf-testcases.xml
 All 732 test cases passed
 
