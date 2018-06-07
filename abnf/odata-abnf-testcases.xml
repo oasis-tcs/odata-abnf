@@ -94,6 +94,7 @@
   </Constraint>
   <Constraint Rule="complexColProperty">
     <Match>Addresses</Match>
+    <Match>_at_Core_dot_Messages</Match>
   </Constraint>
   <Constraint Rule="complexColFunction">
     <Match>MostPopularAddresses</Match>
@@ -1666,6 +1667,12 @@
   </TestCase>
   <TestCase Name="5.1.1.15 Annotation Values" Rule="filter">
     <Input>$filter=@Core.Messages/any(m:m/severity eq 'error')</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.15 Annotation Values" Rule="compute">
+    <Input>$compute=@Core.Messages as CoreMessages</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.15 Annotation Values" Rule="queryOptions">
+    <Input>$compute=@Core.Messages as _at_Core_dot_Messages&amp;$select=_at_Core_dot_Messages($top=5)</Input>
   </TestCase>
   <TestCase Name="5.1.1.15 Annotation Values" Rule="filter">
     <Input>$filter=@Messages/any(m:m/severity eq 'error')</Input>
