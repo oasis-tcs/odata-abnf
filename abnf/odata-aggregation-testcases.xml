@@ -350,6 +350,9 @@
   <TestCase Name="aggregate - isdefined" Rule="queryOptions">
     <Input>$filter=isdefined(Product) and isdefined(Customer/Name) and isdefined(Forecast)</Input>
   </TestCase>
+  <TestCase Name="aggregate - isdefined: get totals last" Rule="queryOptions">
+    <Input>$orderby=isdefined(Product) desc,Product asc</Input>
+  </TestCase>
   <TestCase Name="aggregate - crossjoin" Rule="odataRelativeUri">
     <!-- entity set names suffixed with _cj to distinguish from identically named collection-valued navigation properties -->
     <Input>$crossjoin(Products_cj,Sales_cj)?$apply=filter(Products_cj/ID eq Sales_cj/ProductID)/groupby((Products_cj/Name),aggregate(Sales_cj/Amount with sum as Total))</Input>
