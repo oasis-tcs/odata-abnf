@@ -2387,6 +2387,9 @@
   <TestCase Name="Batch Request - request identifier" Rule="request-id">
     <Input>First-Insert~Customer_1.1</Input>
   </TestCase>
+  <TestCase Name="Batch Request - request identifier" Rule="request-id">
+    <Input>group1</Input>
+  </TestCase>
   <TestCase Name="Header - odata-entitid" Rule="header">
     <Input>odata-entityid: ralf:handl</Input>
   </TestCase>
