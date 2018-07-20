@@ -918,6 +918,12 @@
   <TestCase Name="4.4 Addressing Links between Entities" Rule="odataRelativeUri" FailAt="30">
     <Input>Categories(1)/Products(2)/$ref/$count</Input>
   </TestCase>
+  <TestCase Name="4.4 edge case: entity set as references" Rule="odataRelativeUri">
+    <Input>Categories/$ref</Input>
+  </TestCase>
+  <TestCase Name="4.4 edge case: top-level entity as reference" Rule="odataRelativeUri">
+    <Input>Categories(1)/$ref</Input>
+  </TestCase>
   <TestCase Name="4.5.1 Call unbound action via action import" Rule="odataRelativeUri">
     <Input>Activation</Input>
   </TestCase>
