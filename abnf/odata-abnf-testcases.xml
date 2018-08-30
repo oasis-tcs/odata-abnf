@@ -321,6 +321,7 @@
     <Match>SumAmount</Match>
     <Match>TaxRate</Match>
     <Match>Title</Match>
+    <Match>X</Match>
     <Match>ZipCode</Match>
   </Constraint>
   <Constraint Rule="singletonEntity">
@@ -1566,121 +1567,127 @@
   <TestCase Name="5.1.1.11.3 geo.length" Rule="commonExpr">
     <Input>geo.length(geography'SRID=0;LineString(142.1 64.1,3.14 2.78)')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12 Lambda Operators" Rule="firstMemberExpr">
+  <TestCase Name="5.1.1.12 case" Rule="compute">
+  <Input>$compute=case(X gt 0:1,X lt 0:-1,true:0) as SignumX</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.12 case - lots of unnecessary whitespace" Rule="compute">
+  <Input>$compute=case( X gt 0 : 1 , X lt 0 : -1 , true : 0) as SignumX</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.13 Lambda Operators" Rule="firstMemberExpr">
     <Input>lambda/Completed</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12 Lambda Operators" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.13 Lambda Operators" Rule="boolCommonExpr">
     <Input>lambda/Name eq $it/Name</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="anyExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="anyExpr">
     <Input>any()</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="anyExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="anyExpr">
     <Input>any( )</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="anyExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="anyExpr">
     <Input>any(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="anyExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="anyExpr">
     <Input>any( lambda : true )</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="commonExpr">
     <Input>Products/any(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any() - requires a path prefix" Rule="boolCommonExpr" FailAt="3">
+  <TestCase Name="5.1.1.13.1 any() - requires a path prefix" Rule="boolCommonExpr" FailAt="3">
     <Input>any()</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="commonExpr">
     <Input>Supplier/Products/any(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="commonExpr">
     <Input>Products/any(lambda:lambda/Completed)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.1 any()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.1 any()" Rule="commonExpr">
     <Input>Products/any(lambda:$it/Completed)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.2 all()" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.13.2 all()" Rule="boolCommonExpr">
     <Input>Products/all(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.2 all() - requires path prefix" Rule="boolCommonExpr" FailAt="3">
+  <TestCase Name="5.1.1.13.2 all() - requires path prefix" Rule="boolCommonExpr" FailAt="3">
     <Input>all(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.2 all() - must contain a lambda expression" Rule="boolCommonExpr" FailAt="14">
+  <TestCase Name="5.1.1.13.2 all() - must contain a lambda expression" Rule="boolCommonExpr" FailAt="14">
     <Input>Products/all()</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.2 all()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.2 all()" Rule="commonExpr">
     <Input>Products/all(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.12.2 all()" Rule="commonExpr">
+  <TestCase Name="5.1.1.13.2 all()" Rule="commonExpr">
     <Input>EmailAddresses/all(lambda:true)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.1 primitive literal" Rule="filter">
+  <TestCase Name="5.1.1.14.1 primitive literal" Rule="filter">
     <Input>$filter=ReleaseDate gt 2013-05-24</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.4 $it" Rule="firstMemberExpr">
+  <TestCase Name="5.1.1.14.4 $it" Rule="firstMemberExpr">
     <Input>$it/Completed</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.4 $it" Rule="filter">
+  <TestCase Name="5.1.1.14.4 $it" Rule="filter">
     <Input>$filter=endswith($it,'.com')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.4 $it with alias for entity reference" Rule="queryOptions">
+  <TestCase Name="5.1.1.14.4 $it with alias for entity reference" Rule="queryOptions">
     <Input>$filter=$it eq @ref&amp;@ref={"@odata.id":"http://host/service/ZqV5t"}</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.4 $it with entity reference" Rule="queryOptions">
+  <TestCase Name="5.1.1.14.4 $it with entity reference" Rule="queryOptions">
     <Input>$filter=$it eq {"@odata.id":"http://host/service/ZqV5t"}</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.5 $root" Rule="odataRelativeUri">
+  <TestCase Name="5.1.1.14.5 $root" Rule="odataRelativeUri">
     <Input>Employees?$filter=LastName eq $root/Employees('A1245')/LastName</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.5 $root" Rule="odataRelativeUri">
+  <TestCase Name="5.1.1.14.5 $root" Rule="odataRelativeUri">
     <Input>ProductsOrderedBy(Customers=@c)?@c=[$root/Customers('ALFKI'),$root/Customers('BLAUS')]</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.6 $this" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.14.6 $this" Rule="boolCommonExpr">
     <Input>$this eq 'Hugo'</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.6 $this" Rule="filter">
+  <TestCase Name="5.1.1.14.6 $this" Rule="filter">
     <Input>$filter=endswith($this,'.com')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.6 $this" Rule="odataRelativeUri">
+  <TestCase Name="5.1.1.14.6 $this" Rule="odataRelativeUri">
     <Input>Customers?$select=EmailAddresses($filter=endswith($this,'.com'))</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.6 $this" Rule="odataRelativeUri">
+  <TestCase Name="5.1.1.14.6 $this" Rule="odataRelativeUri">
     <Input>Customers?$select=Addresses($filter=endswith($this/Street,'gasse'))</Input>
   </TestCase>
-  <TestCase Name="5.1.1.13.6 $this" Rule="odataRelativeUri">
+  <TestCase Name="5.1.1.14.6 $this" Rule="odataRelativeUri">
     <Input>Customers?$select=Addresses(@a=$this;$filter=endswith(@a/Street,'gasse'))</Input>
   </TestCase>
-  <TestCase Name="5.1.1.14 Path expressions" Rule="commonExpr">
+  <TestCase Name="5.1.1.15 Path expressions" Rule="commonExpr">
     <Input>Items</Input>
   </TestCase>
-  <TestCase Name="5.1.1.14 Path expressions - key access after set navigation" Rule="commonExpr">
+  <TestCase Name="5.1.1.15 Path expressions - key access after set navigation" Rule="commonExpr">
     <Input>Items(1)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="filter">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="filter">
     <Input>$filter=Price/@Measures.Currency eq 'EUR'</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values, no namespace" Rule="filter">
+  <TestCase Name="5.1.1.16 Annotation Values, no namespace" Rule="filter">
     <Input>$filter=Price/@Currency eq 'EUR'</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="orderBy">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="orderBy">
     <Input>$orderby=Price/@Measures.Currency</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="orderBy">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="orderBy">
     <Input>$orderby=Price/@Measures.Currency#Reporting</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values, no namespace" Rule="filter">
+  <TestCase Name="5.1.1.16 Annotation Values, no namespace" Rule="filter">
     <Input>$filter=Price/@Currency#Reporting eq 'EUR'</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="filter">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="filter">
     <Input>$filter=@Core.Messages/any(m:m/severity eq 'error')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="compute">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="compute">
     <Input>$compute=@Core.Messages as CoreMessages</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="queryOptions">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="queryOptions">
     <Input>$compute=@Core.Messages as _at_Core_dot_Messages&amp;$select=_at_Core_dot_Messages($top=5)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.15 Annotation Values" Rule="filter">
+  <TestCase Name="5.1.1.16 Annotation Values" Rule="filter">
     <Input>$filter=@Messages/any(m:m/severity eq 'error')</Input>
   </TestCase>
   <TestCase Name="5.1.2 Expand - single navigation property" Rule="expand">
