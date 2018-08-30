@@ -96,21 +96,19 @@ applyTrafo = aggregateTrafo
            / customFunction
            
 aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
-aggregateExpr   = customAggregate [ customFrom asAlias ]
-                / commonExpr aggregateWith [ aggregateFrom ] asAlias
-                / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
+aggregateExpr   = customAggregate [ asAlias aggregateFrom ]
+                / commonExpr aggregateWith asAlias [ aggregateFrom ]
                 / pathPrefix '$count' asAlias 
                 / pathPrefix customAggregate
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
 aggregateWith   = RWS 'with' RWS aggregateMethod        
-aggregateFrom   = RWS 'from' RWS groupingProperty aggregateWith [ aggregateFrom ]
-customFrom      = RWS 'from' RWS groupingProperty [ aggregateWith ] [ customFrom ]
+aggregateFrom   = RWS 'from' RWS groupingProperty [ aggregateWith ] [ aggregateFrom ]
 aggregateMethod = 'sum' 
                 / 'min' 
                 / 'max' 
                 / 'average' 
                 / 'countdistinct' 
-                / namespace "." odataIdentifier           
+                / namespace "." odataIdentifier
 
 asAlias         = RWS 'as' RWS expressionAlias
 expressionAlias = odataIdentifier
@@ -136,8 +134,8 @@ bottomsumTrafo     = 'bottomsum'     OPEN BWS commonExpr BWS COMMA BWS commonExp
 concatTrafo = 'concat' OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
 expandTrafo = 'expand' OPEN BWS expandNavPath BWS COMMA BWS 
-              ( filterTrafo *( BWS COMMA BWS expandTrafo ) 
-              / expandTrafo *( BWS COMMA BWS expandTrafo )
+              ( expandTrafo *( BWS COMMA BWS expandTrafo )
+              / filterTrafo *( BWS COMMA BWS expandTrafo ) 
               ) BWS CLOSE
 expandNavPath = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] 
                 *( ( complexProperty / complexColProperty ) "/" [ qualifiedComplexTypeName "/" ] )
