@@ -156,9 +156,8 @@
   <Constraint Rule="entitySetName">
     <Match>Categories</Match>
     <Match>Customers</Match>
-    <Match>Products</Match>
+    <!-- Note: suffixes used here to disambiguate from navigation property -->
     <Match>Products_cj</Match>
-    <Match>Sales</Match>
     <Match>Sales_cj</Match>
     <Match>SalesOrganizations</Match>
     <Match>Time</Match>
@@ -168,6 +167,8 @@
   <Constraint Rule="enumerationMember">
   </Constraint>
   <Constraint Rule="enumerationTypeName">
+  </Constraint>
+  <Constraint Rule="keyPathLiteral">
   </Constraint>
   <Constraint Rule="keyPropertyAlias">
   </Constraint>
@@ -406,8 +407,14 @@
   <TestCase Name="aggregation methods" Rule="queryOptions">
     <Input>$apply=groupby((Name),aggregate(Sales(Amount with sum as Total)))</Input>
   </TestCase>
+  <TestCase Name="aggregation methods" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales/Amount with sum as Total))</Input>
+  </TestCase>
   <TestCase Name="aggregation methods - multiple grouping" Rule="queryOptions">
     <Input>$apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - multiple grouping" Rule="queryOptions">
+    <Input>$apply=groupby((Name,Sales/Currency/Code),aggregate(Sales/Amount with sum as Total))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - multiple grouping - distinct" Rule="queryOptions">
     <Input>$apply=groupby((Country,Sales/Product/Name))</Input>
@@ -419,7 +426,7 @@
     <Input>$apply=groupby((Name),aggregate(Sales/$count as SalesCount))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - $count segment and sum" Rule="queryOptions">
-    <Input>$apply=groupby((Name),aggregate(Sales/$count as SalesCount,Sales(Amount with sum as Total)))</Input>
+    <Input>$apply=groupby((Name),aggregate(Sales/$count as SalesCount,Sales/Amount with sum as Total))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - $count virtual property and sum" Rule="queryOptions">
     <Input>$apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount with sum as Total)))</Input>
