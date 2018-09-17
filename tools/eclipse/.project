@@ -67,12 +67,12 @@
 		<link>
 			<name>lib/abnf-test-tool.jar</name>
 			<type>1</type>
-			<location>C:/git/abnf-test-tool/build/abnf-test-tool.jar</location>
+			<location>PARENT-3-PROJECT_LOC/abnf-test-tool/build/abnf-test-tool.jar</location>
 		</link>
 		<link>
 			<name>lib/apg.jar</name>
 			<type>1</type>
-			<location>C:/git/apg-java/build/apg.jar</location>
+			<location>PARENT-3-PROJECT_LOC/apg-java/build/apg.jar</location>
 		</link>
 	</linkedResources>
 </projectDescription>
