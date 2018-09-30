@@ -2406,9 +2406,6 @@
   <TestCase Name="Header - odata-entitid" Rule="header">
     <Input>odata-entityid: ralf:handl</Input>
   </TestCase>
-  <TestCase Name="Header - entitid" Rule="header">
-    <Input>entityid: ralf:handl</Input>
-  </TestCase>
   <TestCase Name="Header - odata-entitid" Rule="header">
     <Input>odata-entityID: empty-path:/</Input>
   </TestCase>

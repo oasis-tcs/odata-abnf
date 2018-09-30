@@ -1073,17 +1073,17 @@ geometryPrefix  = "geometry"
 ;------------------------------------------------------------------------------
 
 header = content-id
-       / entityid 
        / isolation
+       / odata-entityid 
        / odata-maxversion
        / odata-version
        / prefer
 
 content-id = "Content-ID" ":" OWS request-id
+isolation  = [ "OData-" ] "Isolation" ":" OWS "snapshot"
 request-id = 1*unreserved
        
-entityid   = [ "OData-" ] "EntityID" ":" OWS IRI-in-header
-isolation  = [ "OData-" ] "Isolation" ":" OWS "snapshot"
+odata-entityid   = "OData-EntityID"   ":" OWS IRI-in-header
 odata-maxversion = "OData-MaxVersion" ":" OWS 1*DIGIT "." 1*DIGIT     
 odata-version    = "OData-Version"    ":" OWS "4.0" [ oneToNine ]
       
