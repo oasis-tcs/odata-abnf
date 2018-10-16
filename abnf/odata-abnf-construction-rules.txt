@@ -660,77 +660,28 @@ castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeN
 
 
 ;------------------------------------------------------------------------------
-; 5. JSON format for function parameters
+; 5. JSON format for queries
 ;------------------------------------------------------------------------------
 ; Note: the query part of a URI needs to be partially percent-decoded before
 ; applying these rules, see comment at the top of this file
 ;------------------------------------------------------------------------------
 
-arrayOrObject = complexColInUri  
-              / complexInUri
-              / rootExprCol
-              / primitiveColInUri
+arrayOrObject = array
+              / object
+              
+array = begin-array 
+        [ valueinJSON *( value-separator valueinJSON ) ] 
+        end-array
+                 
+object = begin-object
+         [ member *( value-separator member ) ]
+         end-object
+
+member = stringInJSON name-separator valueinJSON
+
+valueInJSON = stringInJSON
+            / commonExpr            
                
-complexColInUri = begin-array 
-                  [ complexInUri *( value-separator complexInUri ) ] 
-                  end-array
-                  
-complexInUri = begin-object
-               [ ( annotationInUri 
-                 / primitivePropertyInUri 
-                 / complexPropertyInUri 
-                 / collectionPropertyInUri  
-                 / navigationPropertyInUri
-                 )
-                 *( value-separator 
-                    ( annotationInUri 
-                    / primitivePropertyInUri 
-                    / complexPropertyInUri 
-                    / collectionPropertyInUri  
-                    / navigationPropertyInUri
-                    ) 
-                  )
-               ]  
-               end-object
-
-collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark 
-                            name-separator 
-                            primitiveColInUri 
-                          ) 
-                        / ( quotation-mark complexColProperty quotation-mark 
-                            name-separator 
-                            complexColInUri
-                          )
-
-primitiveColInUri = begin-array 
-                    [ primitiveLiteralInJSON *( value-separator primitiveLiteralInJSON ) ] 
-                    end-array
-                    
-complexPropertyInUri = quotation-mark complexProperty quotation-mark 
-                       name-separator 
-                       complexInUri
-                            
-annotationInUri = quotation-mark AT [ namespace "." ] termName quotation-mark
-                  name-separator
-                  ( complexInUri / complexColInUri / primitiveLiteralInJSON / primitiveColInUri )
-
-primitivePropertyInUri = quotation-mark primitiveProperty quotation-mark 
-                         name-separator 
-                         primitiveLiteralInJSON
-
-navigationPropertyInUri = singleNavPropInJSON
-                        / collectionNavPropInJSON
-singleNavPropInJSON     = quotation-mark entityNavigationProperty quotation-mark
-													name-separator
-													rootExpr
-collectionNavPropInJSON = quotation-mark entityColNavigationProperty quotation-mark
-													name-separator
-													rootExprCol
-
-rootExprCol = begin-array 
-              [ rootExpr *( value-separator rootExpr ) ]
-              end-array
-                                        
 ; JSON syntax: adapted to URI restrictions from [RFC4627]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )
@@ -742,13 +693,8 @@ quotation-mark  = DQUOTE / "%22"
 name-separator  = BWS COLON BWS
 value-separator = BWS COMMA BWS
 
-primitiveLiteralInJSON = stringInJSON
-                       / numberInJSON
-                       / 'true' 
-                       / 'false'
-                       / 'null'
-
 stringInJSON = quotation-mark *charInJSON quotation-mark
+
 charInJSON   = qchar-unescaped  
              / qchar-JSON-special    
              / escape ( quotation-mark 
@@ -765,11 +711,6 @@ charInJSON   = qchar-unescaped
 qchar-JSON-special = SP / ":" / "{" / "}" / "[" / "]" ; some agents put these unencoded into the query part of a URL
 
 escape = "\" / "%5C"     ; reverse solidus U+005C
-
-numberInJSON = [ "-" ] int [ frac ] [ exp ]
-int          = "0" / ( oneToNine *DIGIT )
-frac         = "." 1*DIGIT
-exp          = "e" [ "-" / "+" ] 1*DIGIT
 
 
 ;------------------------------------------------------------------------------

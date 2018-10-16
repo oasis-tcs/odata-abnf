@@ -1334,6 +1334,12 @@
     <Input>Name in ["Milk", "Cheese"]</Input>
   </TestCase>
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>["Joe","Smith"] in (["John","Doe"],["Jane","Smith"])</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>[FirstName,LastName] in (["John","Doe"],["Jane","Smith"])</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
     <Input>('Milk','Cheese') eq ('Oranges' , 'Carrots' ,'Ginger')</Input>
   </TestCase>
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
@@ -1626,6 +1632,15 @@
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="firstMemberExpr">
     <Input>$it/Completed</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 mixed array" Rule="arrayOrObject">
+    <Input>["Hello",42,true,false,null,'World']</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 complex type instance" Rule="arrayOrObject">
+    <Input>{"FirstName":"John","LastName":"Doe","Sizes":["Large","Small"]}</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array of property names" Rule="arrayOrObject">
+    <Input>[FirstName,LastName]</Input>
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="filter">
     <Input>$filter=endswith($it,'.com')</Input>
@@ -2020,7 +2035,7 @@
   <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
     <Input>Products/Model.WithIngredients(Ingredients=@i)?@i=["Carrots","Ginger","Oranges"]</Input>
   </TestCase>
-  <TestCase Name="complex parameter value - no properties" Rule="complexInUri">
+  <TestCase Name="complex parameter value - no properties" Rule="object">
     <Input>{}</Input>
   </TestCase>
   <TestCase Name="function with complex parameter - no properties" Rule="odataRelativeUri">
