@@ -835,7 +835,9 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri">
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
+    Rule="odataRelativeUri"
+  >
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function - no parens" Rule="odataRelativeUri">
@@ -1574,10 +1576,10 @@
     <Input>geo.length(geography'SRID=0;LineString(142.1 64.1,3.14 2.78)')</Input>
   </TestCase>
   <TestCase Name="5.1.1.12 case" Rule="compute">
-  <Input>$compute=case(X gt 0:1,X lt 0:-1,true:0) as SignumX</Input>
+    <Input>$compute=case(X gt 0:1,X lt 0:-1,true:0) as SignumX</Input>
   </TestCase>
   <TestCase Name="5.1.1.12 case - lots of unnecessary whitespace" Rule="compute">
-  <Input>$compute=case( X gt 0 : 1 , X lt 0 : -1 , true : 0) as SignumX</Input>
+    <Input>$compute=case( X gt 0 : 1 , X lt 0 : -1 , true : 0) as SignumX</Input>
   </TestCase>
   <TestCase Name="5.1.1.13 Lambda Operators" Rule="firstMemberExpr">
     <Input>lambda/Completed</Input>
@@ -1656,6 +1658,9 @@
   </TestCase>
   <TestCase Name="5.1.1.14.2 object with expression values" Rule="commonExpr">
     <Input>{"FirstName":Customer/FirstName,"LastName":Manager/LastName,"Sizes":[1, 2 add 3]}</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array with 'untyped' values" Rule="commonExpr">
+    <Input>[[],{},true,false,null,42,{"no property name":"value","@something":true}]</Input>
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="filter">
     <Input>$filter=endswith($it,'.com')</Input>
