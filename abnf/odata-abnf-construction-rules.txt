@@ -155,7 +155,7 @@ complexPath    = [ "/" optionallyQualifiedComplexTypeName ]
                  / boundOperation
                  ]
                  
-filterInPath = '/$filter' OPEN parameterAlias CLOSE
+filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
 
 each  = '/$each'
 count = '/$count'
@@ -519,7 +519,7 @@ collectionNavigationExpr = [ "/" optionallyQualifiedEntityTypeName ]
 
 singleNavigationExpr = "/" memberExpr
 
-filterExpr = '/$filter' OPEN commonExpr CLOSE
+filterExpr = '/$filter' OPEN boolCommonExpr CLOSE
 
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]

@@ -1144,8 +1144,14 @@
   <TestCase Name="4.12 Filter Path Segment" Rule="odataRelativeUri">
     <Input>Products/$filter(@foo)?@foo=Age gt 3</Input>
   </TestCase>
+  <TestCase Name="4.12 Filter Path Segment - expression" Rule="odataRelativeUri">
+    <Input>Products/$filter(Age gt 3)</Input>
+  </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
     <Input>Products/$filter(@foo)/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
+    <Input>Products/$filter(Age gt 3)/$filter(Price lt 5)</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$ref" Rule="odataRelativeUri">
     <Input>Products/$filter(@foo)/$filter(@bar)/$ref?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
