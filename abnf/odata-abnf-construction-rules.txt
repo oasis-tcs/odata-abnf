@@ -277,10 +277,10 @@ expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
-expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName ) "/" )
+expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / annotation ) "/" )
                     ( STAR [ ref / OPEN levels CLOSE ]
                     / streamProperty 
-                    / navigationProperty [ "/" optionallyQualifiedEntityTypeName ] 
+                    / ( navigationProperty / annotation ) [ "/" optionallyQualifiedEntityTypeName ] 
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
@@ -360,7 +360,7 @@ selectProperty = primitiveProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
                             / "/" selectProperty 
                             ]
-selectPath     = ( complexProperty / complexColProperty ) [ "/" optionallyQualifiedComplexTypeName ] 
+selectPath     = ( complexProperty / complexColProperty / annotation ) [ "/" optionallyQualifiedComplexTypeName ] 
 selectOptionPC = filter / search / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
                / compute / select / expand / aliasAndValue
@@ -501,7 +501,7 @@ annotationExpr = annotation
                  / primitivePathExpr
                  ]
                  
-annotation          = AT [ namespace "." ] termName [ '#' annotationQualifier ]
+annotation          = AT [ namespace "." ] termName [ HASH annotationQualifier ]
 annotationQualifier = odataIdentifier                
                    
 inscopeVariableExpr  = implicitVariableExpr 
@@ -1151,6 +1151,7 @@ AT     = "@" / "%40"
 COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
+HASH   = "%23" ; the # character is not allowed in the query part
 SIGN   = "+" / "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
