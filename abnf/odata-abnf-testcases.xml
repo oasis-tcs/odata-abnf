@@ -1142,34 +1142,40 @@
     <Input>TheMostPopularAddresses()?$expand=Model.AddressWithLocation/Country</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)?@foo=Age gt 3</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$ref" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$ref?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$ref?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$count" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$count?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$count?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$count and $filter query option" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$count?@foo=Age gt 3&amp;@bar=Price lt 5&amp;$filter=Price lt 6</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$count?@foo=Age gt 3&amp;@bar=Price lt 5&amp;$filter=Price lt 6</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/Special.ProductsByColor(color='red')/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/Special.ProductsByColor(color='red')/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple, no namespace" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/ProductsByColor(color='red')/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/ProductsByColor(color='red')/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with action" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/Special.Cluster?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)/Special.Cluster?@foo=Age gt 3</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter expression in query" Rule="odataRelativeUri">
+    <Input>Categories?$filter=Products/$filter(Age gt 3)/$count lt 10</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter expression in query" Rule="filter">
+    <Input>$filter=Addresses/$filter(endswith(Street,'St'))/$count lt 10</Input>
   </TestCase>
   <TestCase Name="4.12 $each Path Segment" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$each</Input>
+    <Input>Products/$filter(@foo)/$each</Input>
   </TestCase>
   <TestCase Name="4.12 $each Path Segment - with action" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$each/Special.Discount?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)/$each/Special.Discount?@foo=Age gt 3</Input>
   </TestCase>
   <TestCase Name="4.14 Addressing a Media Resource" Rule="odataRelativeUri">
     <Input>Categories(1)/$value</Input>
@@ -1332,6 +1338,12 @@
   </TestCase>
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
     <Input>Name in ["Milk", "Cheese"]</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>["Joe","Smith"] in (["John","Doe"],["Jane","Smith"])</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>[FirstName,LastName] in (["John","Doe"],["Jane","Smith"])</Input>
   </TestCase>
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
     <Input>('Milk','Cheese') eq ('Oranges' , 'Carrots' ,'Ginger')</Input>
@@ -1626,6 +1638,30 @@
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="firstMemberExpr">
     <Input>$it/Completed</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 simple array" Rule="commonExpr">
+    <Input>FirstName in ["Miller","Smith"]</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array with single-quoted OData strings" Rule="commonExpr">
+    <Input>FirstName in ["Miller",'Smith']</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 empty array" Rule="commonExpr">
+    <Input>FirstName in []</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 mixed array" Rule="commonExpr">
+    <Input>["Hello",42,true,false,null,'World']</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array of property names" Rule="commonExpr">
+    <Input>[FirstName,LastName]</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 empty object" Rule="commonExpr">
+    <Input>{}</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 object with concrete values" Rule="commonExpr">
+    <Input>{"FirstName":"John","LastName":"Doe","Sizes":["Large","Small"]}</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 object with expression values" Rule="commonExpr">
+    <Input>{"FirstName":Customer/FirstName,"LastName":Manager/LastName,"Sizes":[1, 2 add 3]}</Input>
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="filter">
     <Input>$filter=endswith($it,'.com')</Input>
@@ -2020,7 +2056,7 @@
   <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
     <Input>Products/Model.WithIngredients(Ingredients=@i)?@i=["Carrots","Ginger","Oranges"]</Input>
   </TestCase>
-  <TestCase Name="complex parameter value - no properties" Rule="complexInUri">
+  <TestCase Name="complex parameter value - no properties" Rule="object">
     <Input>{}</Input>
   </TestCase>
   <TestCase Name="function with complex parameter - no properties" Rule="odataRelativeUri">
@@ -2261,6 +2297,18 @@
   </TestCase>
   <TestCase Name="Functions in commonExpr - property as parameter" Rule="commonExpr">
     <Input>Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)</Input>
+  </TestCase>
+  <TestCase Name="lists in commonExpr - simple" Rule="commonExpr">
+    <Input>FirstName in ('Miller','Smith')</Input>
+  </TestCase>
+  <TestCase Name="lists in commonExpr - nested" Rule="commonExpr">
+    <Input>EmailAddresses in (('Miller','Smith'),('',''),())</Input>
+  </TestCase>
+  <TestCase Name="lists in commonExpr - empty" Rule="commonExpr">
+    <Input>EmailAddresses eq ()</Input>
+  </TestCase>
+  <TestCase Name="objects in commonExpr - with simple value" Rule="commonExpr">
+    <Input>{}</Input>
   </TestCase>
   <TestCase Name="Functions in filter - alias as parameter" Rule="queryOptions">
     <Input>$filter=Model.PhoneticallySimilar(Word=@expression)&amp;@expression=5 add 3</Input>
