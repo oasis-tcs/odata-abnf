@@ -421,8 +421,8 @@ selectListItem     = STAR ; all structural properties
                      )
 selectListProperty = primitiveProperty  
                    / primitiveColProperty 
-                   / navigationProperty [ "+" ] [ selectList ]
-                   / ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
+                   / ( navigationProperty / entityAnnotation ) [ "+" ] [ selectList ]
+                   / ( complexProperty / complexColProperty / complexAnnotation ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
 
 contextPropertyPath = primitiveProperty
                     / primitiveColProperty
@@ -431,7 +431,9 @@ contextPropertyPath = primitiveProperty
 
 qualifiedActionName   = namespace "." action
 qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
-                 
+                
+complexAnnotation = annotation
+entityAnnotation  = annotation
 
 ;------------------------------------------------------------------------------
 ; 4. Expressions

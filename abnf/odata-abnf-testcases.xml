@@ -120,6 +120,9 @@
     <Match>!special</Match>
     <Match>find</Match>
   </Constraint>
+  <Constraint Rule="entityAnnotation">
+    <Match>@Namespace.EntityTerm</Match>
+  </Constraint>
   <Constraint Rule="entityColFunction">
     <Match>AllOrders</Match>
     <Match>ProductsByColor</Match>
@@ -291,6 +294,7 @@
     <Match>Amount</Match>
     <Match>BirthDate</Match>
     <Match>City</Match>
+    <Match>code</Match>
     <Match>CompanyName</Match>
     <Match>ContactName</Match>
     <Match>Completed</Match>
@@ -302,6 +306,7 @@
     <Match>LifeTime</Match>
     <Match>Line</Match>
     <Match>Location</Match>
+    <Match>message</Match>
     <Match>Month</Match>
     <Match>Name</Match>
     <Match>Population</Match>
@@ -335,6 +340,7 @@
   <Constraint Rule="termName">
     <Match>AnotherTerm</Match>
     <Match>Currency</Match>
+    <Match>EntityTerm</Match>
     <Match>id</Match>
     <Match>Messages</Match>
     <Match>id</Match>
@@ -835,7 +841,9 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri">
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
+    Rule="odataRelativeUri"
+  >
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function - no parens" Rule="odataRelativeUri">
@@ -1568,10 +1576,10 @@
     <Input>geo.length(geography'SRID=0;LineString(142.1 64.1,3.14 2.78)')</Input>
   </TestCase>
   <TestCase Name="5.1.1.12 case" Rule="compute">
-  <Input>$compute=case(X gt 0:1,X lt 0:-1,true:0) as SignumX</Input>
+    <Input>$compute=case(X gt 0:1,X lt 0:-1,true:0) as SignumX</Input>
   </TestCase>
   <TestCase Name="5.1.1.12 case - lots of unnecessary whitespace" Rule="compute">
-  <Input>$compute=case( X gt 0 : 1 , X lt 0 : -1 , true : 0) as SignumX</Input>
+    <Input>$compute=case( X gt 0 : 1 , X lt 0 : -1 , true : 0) as SignumX</Input>
   </TestCase>
   <TestCase Name="5.1.1.13 Lambda Operators" Rule="firstMemberExpr">
     <Input>lambda/Completed</Input>
@@ -2333,6 +2341,15 @@
   </TestCase>
   <TestCase Name="Context URL - Collection of structured type with $select and recursive $expand" Rule="context">
     <Input>#Collection(Model.Employee)(Title,DirectReports+(FirstName,LastName))</Input>
+  </TestCase>
+  <TestCase Name="Context URL - annotations in select" Rule="context">
+    <Input>#Employees(@Core.Messages,Title,DirectReports+(@Core.Messages,FirstName,LastName))</Input>
+  </TestCase>
+  <TestCase Name="Context URL - annotations in select" Rule="context">
+    <Input>#Employees(@Core.Messages/code,@Core.Messages/message,Title,DirectReports+(@Core.Messages,FirstName,LastName))</Input>
+  </TestCase>
+  <TestCase Name="Context URL - annotations in expand" Rule="context">
+    <Input>#Employees(@Namespace.EntityTerm(FirstName,LastName))</Input>
   </TestCase>
   <TestCase Name="Context URL - Entity set with type cast" Rule="context">
     <Input>#Customers/Model.VipCustomer</Input>
