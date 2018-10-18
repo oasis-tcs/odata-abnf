@@ -2046,9 +2046,6 @@
   <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
     <Input>Products/Model.WithIngredients(Ingredients=@i)?@i=["Carrots","Ginger","Oranges"]</Input>
   </TestCase>
-  <TestCase Name="complex parameter value - no properties" Rule="object">
-    <Input>{}</Input>
-  </TestCase>
   <TestCase Name="function with complex parameter - no properties" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)?@c={}</Input>
   </TestCase>
@@ -2291,17 +2288,14 @@
   <TestCase Name="in operator with list of primitives" Rule="commonExpr">
     <Input>FirstName in ('Miller','Smith')</Input>
   </TestCase>
-  <TestCase Name="lists can only contain primitive literals" Rule="commonExpr" FailAt="28">
-    <Input>EmailAddresses in (FirstName,LastName)</Input>
+  <TestCase Name="lists can only contain primitive literals" Rule="commonExpr" FailAt="23">
+    <Input>FirstName in (FirstName,LastName)</Input>
   </TestCase>
-  <TestCase Name="this is not a list, it's a complicated way of writing FirstName" Rule="commonExpr">
-    <Input>EmailAddresses in (FirstName)</Input>
+  <TestCase Name="right operand is not a list, it's a complicated way of writing FirstName" Rule="commonExpr">
+    <Input>FirstName in (FirstName)</Input>
   </TestCase>
   <TestCase Name="lists only allowed right of in operator" Rule="commonExpr" FailAt="27">
     <Input>EmailAddresses eq ('Miller','Smith')</Input>
-  </TestCase>
-  <TestCase Name="objects in commonExpr - with simple value" Rule="commonExpr">
-    <Input>{}</Input>
   </TestCase>
   <TestCase Name="Functions in filter - alias as parameter" Rule="queryOptions">
     <Input>$filter=Model.PhoneticallySimilar(Word=@expression)&amp;@expression=5 add 3</Input>
