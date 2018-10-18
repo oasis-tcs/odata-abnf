@@ -1335,18 +1335,6 @@
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
     <Input>Name in ["Milk", "Cheese"]</Input>
   </TestCase>
-  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
-    <Input>["Joe","Smith"] in (["John","Doe"],["Jane","Smith"])</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
-    <Input>[FirstName,LastName] in (["John","Doe"],["Jane","Smith"])</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
-    <Input>('Milk','Cheese') eq ('Oranges' , 'Carrots' ,'Ginger')</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
-    <Input>["Milk", "Cheese"] eq ["Oranges", "Carrots", "Ginger"]</Input>
-  </TestCase>
   <TestCase Name="5.1.1.2.1 Addition" Rule="commonExpr">
     <Input>Price add 2.45</Input>
   </TestCase>
@@ -1438,13 +1426,7 @@
     <Input>startswith(["Fred","George","Ron"],["Fred","George"])</Input>
   </TestCase>
   <TestCase Name="5.1.1.6.1 hassubset" Rule="boolCommonExpr">
-    <Input>hassubset(Names,('Milk', 'Cheese'))</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.6.1 hassubset" Rule="boolCommonExpr">
     <Input>hassubset(Names,["Milk", "Cheese"])</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.6.1 hassubset" Rule="boolCommonExpr">
-    <Input>hassubset(('Milk','Cheese'),Names)</Input>
   </TestCase>
   <TestCase Name="5.1.1.6.1 hassubset" Rule="boolCommonExpr">
     <Input>hassubset(["Milk", "Cheese"],Names)</Input>
@@ -1643,6 +1625,15 @@
   </TestCase>
   <TestCase Name="5.1.1.14.2 empty array" Rule="commonExpr">
     <Input>FirstName in []</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array in array of arrays" Rule="boolCommonExpr">
+    <Input>["Joe","Smith"] in [["John","Doe"],["Jane","Smith"]]</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 array of properties in array of arrays" Rule="boolCommonExpr">
+    <Input>[FirstName,LastName] in [["John","Doe"],["Jane","Smith"]]</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.14.2 comparing arrays" Rule="boolCommonExpr">
+    <Input>["Milk", "Cheese"] eq ["Oranges", "Carrots", "Ginger"]</Input>
   </TestCase>
   <TestCase Name="5.1.1.14.2 mixed array" Rule="commonExpr">
     <Input>["Hello",42,true,false,null,'World']</Input>
@@ -2297,14 +2288,17 @@
   <TestCase Name="Functions in commonExpr - property as parameter" Rule="commonExpr">
     <Input>Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)</Input>
   </TestCase>
-  <TestCase Name="lists in commonExpr - simple" Rule="commonExpr">
+  <TestCase Name="in operator with list of primitives" Rule="commonExpr">
     <Input>FirstName in ('Miller','Smith')</Input>
   </TestCase>
-  <TestCase Name="lists in commonExpr - nested" Rule="commonExpr">
-    <Input>EmailAddresses in (('Miller','Smith'),('',''),())</Input>
+  <TestCase Name="lists can only contain primitive literals" Rule="commonExpr" FailAt="28">
+    <Input>EmailAddresses in (FirstName,LastName)</Input>
   </TestCase>
-  <TestCase Name="lists in commonExpr - empty" Rule="commonExpr">
-    <Input>EmailAddresses eq ()</Input>
+  <TestCase Name="this is not a list, it's a complicated way of writing FirstName" Rule="commonExpr">
+    <Input>EmailAddresses in (FirstName)</Input>
+  </TestCase>
+  <TestCase Name="lists only allowed right of in operator" Rule="commonExpr" FailAt="27">
+    <Input>EmailAddresses eq ('Miller','Smith')</Input>
   </TestCase>
   <TestCase Name="objects in commonExpr - with simple value" Rule="commonExpr">
     <Input>{}</Input>

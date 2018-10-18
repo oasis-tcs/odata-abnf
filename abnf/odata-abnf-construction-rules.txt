@@ -446,7 +446,6 @@ commonExpr = ( primitiveLiteral
              / negateExpr 
              / methodCallExpr 
              / parenExpr 
-             / listExpr
              / castExpr 
              / isofExpr
              / notExpr
@@ -629,7 +628,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS [ commonExpr BWS *( COMMA BWS commonExpr BWS ) ] CLOSE
+listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
@@ -640,7 +639,7 @@ ltExpr = RWS "lt" RWS commonExpr
 leExpr = RWS "le" RWS commonExpr
 gtExpr = RWS "gt" RWS commonExpr
 geExpr = RWS "ge" RWS commonExpr
-inExpr = RWS "in" RWS commonExpr
+inExpr = RWS "in" RWS ( listExpr / commonExpr )
 
 hasExpr = RWS "has" RWS enum
 
