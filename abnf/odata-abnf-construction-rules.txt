@@ -672,11 +672,11 @@ arrayOrObject = complexColInUri
               / complexInUri
               / rootExprCol
               / primitiveColInUri
-              
+
 complexColInUri = begin-array 
                   [ complexInUri *( value-separator complexInUri ) ] 
-        end-array
-                 
+                  end-array
+
 complexInUri = begin-object
                [ ( annotationInUri 
                  / primitivePropertyInUri 
@@ -693,7 +693,7 @@ complexInUri = begin-object
                     ) 
                   )
                ]  
-         end-object
+               end-object
 
 collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark 
                             name-separator 
@@ -707,7 +707,7 @@ collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark
 primitiveColInUri = begin-array 
                     [ primitiveLiteralInJSON *( value-separator primitiveLiteralInJSON ) ] 
                     end-array
-                    
+
 complexPropertyInUri = quotation-mark complexProperty quotation-mark 
                        name-separator 
                        complexInUri
@@ -732,7 +732,7 @@ collectionNavPropInJSON = quotation-mark entityColNavigationProperty quotation-m
 rootExprCol = begin-array 
               [ rootExpr *( value-separator rootExpr ) ]
               end-array
-               
+
 ; JSON syntax: adapted to URI restrictions from [RFC4627]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )

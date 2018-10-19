@@ -835,7 +835,8 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri"
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
+    Rule="odataRelativeUri"
   >
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
@@ -2017,6 +2018,9 @@
   </TestCase>
   <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
     <Input>Products/Model.WithIngredients(Ingredients=@i)?@i=["Carrots","Ginger","Oranges"]</Input>
+  </TestCase>
+  <TestCase Name="complex parameter value - no properties" Rule="complexInUri">
+    <Input>{}</Input>
   </TestCase>
   <TestCase Name="function with complex parameter - no properties" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)?@c={}</Input>
