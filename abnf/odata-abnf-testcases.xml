@@ -1395,35 +1395,47 @@
   <TestCase Name="5.1.1.3 Parenthesis" Rule="boolcommonExpr">
     <Input>(4 add 5) mod (4 sub 1) eq 0</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.1 contains" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.1 concat" Rule="commonExpr">
+    <Input>concat(CompanyName, Name)</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.5.1 concat" Rule="commonExpr">
+    <Input>concat(concat(Street,'-'),City)</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.5.2 contains" Rule="boolCommonExpr">
     <Input>contains(CompanyName,'lfreds')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.1 contains" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.2 contains" Rule="boolCommonExpr">
     <Input>contains(Names,["Fred","George"])</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.2 endswith" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.3 endswith" Rule="boolCommonExpr">
     <Input>endswith(CompanyName,'Futterkiste')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.2 endswith" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.3 endswith" Rule="boolCommonExpr">
     <Input>endswith(["Fred","George","Ron"],["George","Ron"])</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.3 indexof" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.4 indexof" Rule="boolCommonExpr">
     <Input>indexof(["Fred","George","Ron"],["George","Ron"]) eq 1</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.4 length" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.5 length" Rule="boolCommonExpr">
     <Input>length(CompanyName) eq 19</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.4 length" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.5 length" Rule="boolCommonExpr">
     <Input>length(["Fred","George","Ron"]) eq 3</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.5 startswith" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.6 startswith" Rule="boolCommonExpr">
     <Input>startswith(CompanyName,'Futterkiste')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.5 startswith" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.6 startswith" Rule="boolCommonExpr">
     <Input>startswith(Supplier/Name,'Futterkiste')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.5.5 startswith" Rule="boolCommonExpr">
+  <TestCase Name="5.1.1.5.6 startswith" Rule="boolCommonExpr">
     <Input>startswith(["Fred","George","Ron"],["Fred","George"])</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.5.7 substring" Rule="commonExpr">
+    <Input>substring(CompanyName, 5)</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.5.7 substring with length" Rule="commonExpr">
+    <Input>substring(CompanyName,5,2)</Input>
   </TestCase>
   <TestCase Name="5.1.1.6.1 hassubset" Rule="boolCommonExpr">
     <Input>hassubset(Names,["Milk", "Cheese"])</Input>
@@ -1434,25 +1446,16 @@
   <TestCase Name="5.1.1.6.2 hassubsequence" Rule="boolCommonExpr">
     <Input>hassubsequence([4,1,3],[4,3])</Input>
   </TestCase>
-  <TestCase Name="5.1.1.7.1 concat" Rule="commonExpr">
-    <Input>concat(CompanyName, Name)</Input>
+  <TestCase Name="5.1.1.7.1 matchesPattern ^A.*e$" Rule="commonExpr">
+    <Input>matchesPattern(CompanyName,'%5EA.*e$')</Input>
   </TestCase>
-  <TestCase Name="5.1.1.7.1 concat" Rule="commonExpr">
-    <Input>concat(concat(Street,'-'),City)</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.7.7 substring" Rule="commonExpr">
-    <Input>substring(CompanyName, 5)</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.7.7 substring with length" Rule="commonExpr">
-    <Input>substring(CompanyName,5,2)</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.7.8 tolower" Rule="commonExpr">
+  <TestCase Name="5.1.1.7.2 tolower" Rule="commonExpr">
     <Input>tolower(CompanyName)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.7.9 toupper" Rule="commonExpr">
+  <TestCase Name="5.1.1.7.3 toupper" Rule="commonExpr">
     <Input>toupper(CompanyName)</Input>
   </TestCase>
-  <TestCase Name="5.1.1.7.10 trim" Rule="commonExpr">
+  <TestCase Name="5.1.1.7.4 trim" Rule="commonExpr">
     <Input>trim(CompanyName)</Input>
   </TestCase>
   <TestCase Name="5.1.1.8.1" Rule="commonExpr">
