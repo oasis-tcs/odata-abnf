@@ -1183,6 +1183,39 @@
   <TestCase Name="4.16 Addressing All Entities in a Service - with type cast" Rule="odataRelativeUri">
     <Input>$all/Model.Customer?$filter=contains(Name,'red')</Input>
   </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - entity set" Rule="odataRelativeUri">
+    <Input>People/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - entity" Rule="odataRelativeUri">
+    <Input>People(42)/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - collection of complex" Rule="odataRelativeUri">
+    <Input>People(42)/Addresses/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - complex" Rule="odataRelativeUri">
+    <Input>People(42)/Address/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - collection of primitive" Rule="odataRelativeUri">
+    <Input>People(42)/EmailAddresses/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - primitive" Rule="odataRelativeUri">
+    <Input>People(42)/FirstName/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call" Rule="odataRelativeUri">
+    <Input>Categories(1)/Model.ProductsByColor(color=@c)/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases" Rule="odataRelativeUri">
+    <Input>Categories(1)/Model.ProductsByColor/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - function import with parameter" Rule="odataRelativeUri">
+    <Input>ProductsByComplex(complex=@c)/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases" Rule="odataRelativeUri">
+    <Input>TheBestProduct/$query</Input>
+  </TestCase>
+  <TestCase Name="4.17 Passing Query Options in the Request Body - Cross Join" Rule="odataRelativeUri">
+    <Input>$crossjoin(Customers,Countries)/$query</Input>
+  </TestCase>
   <TestCase Name="5.1.1 Filter" Rule="filter">
     <Input>$filter=true</Input>
   </TestCase>
