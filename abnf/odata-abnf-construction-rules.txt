@@ -446,6 +446,7 @@ commonExpr = ( primitiveLiteral
              / negateExpr 
              / methodCallExpr 
              / parenExpr 
+             / listExpr
              / castExpr 
              / isofExpr
              / notExpr
@@ -630,7 +631,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
+listExpr  = OPEN BWS commonExpr BWS *( COMMA BWS commonExpr BWS ) CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
@@ -641,7 +642,7 @@ ltExpr = RWS "lt" RWS commonExpr
 leExpr = RWS "le" RWS commonExpr
 gtExpr = RWS "gt" RWS commonExpr
 geExpr = RWS "ge" RWS commonExpr
-inExpr = RWS "in" RWS ( listExpr / commonExpr )
+inExpr = RWS "in" RWS commonExpr
 
 hasExpr = RWS "has" RWS enum
 
@@ -661,27 +662,76 @@ castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeN
 
 
 ;------------------------------------------------------------------------------
-; 5. JSON format for queries
+; 5. JSON format for function parameters
 ;------------------------------------------------------------------------------
-; Note: the query part of a URI needs to be percent-encoding normalized before
+; Note: the query part of a URI needs to be partially percent-decoded before
 ; applying these rules, see comment at the top of this file
 ;------------------------------------------------------------------------------
 
-arrayOrObject = array
-              / object
+arrayOrObject = complexColInUri  
+              / complexInUri
+              / rootExprCol
+              / primitiveColInUri
               
-array = begin-array 
-        [ valueInUrl *( value-separator valueInUrl ) ] 
+complexColInUri = begin-array 
+                  [ complexInUri *( value-separator complexInUri ) ] 
         end-array
                  
-object = begin-object
-         [ member *( value-separator member ) ]
+complexInUri = begin-object
+               [ ( annotationInUri 
+                 / primitivePropertyInUri 
+                 / complexPropertyInUri 
+                 / collectionPropertyInUri  
+                 / navigationPropertyInUri
+                 )
+                 *( value-separator 
+                    ( annotationInUri 
+                    / primitivePropertyInUri 
+                    / complexPropertyInUri 
+                    / collectionPropertyInUri  
+                    / navigationPropertyInUri
+                    ) 
+                  )
+               ]  
          end-object
 
-member = stringInUrl name-separator valueInUrl
+collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark 
+                            name-separator 
+                            primitiveColInUri 
+                          ) 
+                        / ( quotation-mark complexColProperty quotation-mark 
+                            name-separator 
+                            complexColInUri
+                          )
 
-valueInUrl = stringInUrl
-           / commonExpr            
+primitiveColInUri = begin-array 
+                    [ primitiveLiteralInJSON *( value-separator primitiveLiteralInJSON ) ] 
+                    end-array
+                    
+complexPropertyInUri = quotation-mark complexProperty quotation-mark 
+                       name-separator 
+                       complexInUri
+
+annotationInUri = quotation-mark AT [ namespace "." ] termName quotation-mark
+                  name-separator
+                  ( complexInUri / complexColInUri / primitiveLiteralInJSON / primitiveColInUri )
+
+primitivePropertyInUri = quotation-mark primitiveProperty quotation-mark 
+                         name-separator 
+                         primitiveLiteralInJSON
+
+navigationPropertyInUri = singleNavPropInJSON
+                        / collectionNavPropInJSON
+singleNavPropInJSON     = quotation-mark entityNavigationProperty quotation-mark
+													name-separator
+													rootExpr
+collectionNavPropInJSON = quotation-mark entityColNavigationProperty quotation-mark
+													name-separator
+													rootExprCol
+
+rootExprCol = begin-array 
+              [ rootExpr *( value-separator rootExpr ) ]
+              end-array
                
 ; JSON syntax: adapted to URI restrictions from [RFC4627]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
@@ -694,8 +744,13 @@ quotation-mark  = DQUOTE / "%22"
 name-separator  = BWS COLON BWS
 value-separator = BWS COMMA BWS
 
-stringInUrl = quotation-mark *charInJSON quotation-mark
+primitiveLiteralInJSON = stringInJSON
+                       / numberInJSON
+                       / 'true' 
+                       / 'false'
+                       / 'null'
 
+stringInJSON = quotation-mark *charInJSON quotation-mark
 charInJSON   = qchar-unescaped  
              / qchar-JSON-special    
              / escape ( quotation-mark 
@@ -712,6 +767,11 @@ charInJSON   = qchar-unescaped
 qchar-JSON-special = SP / ":" / "{" / "}" / "[" / "]" ; some agents put these unencoded into the query part of a URL
 
 escape = "\" / "%5C"     ; reverse solidus U+005C
+
+numberInJSON = [ "-" ] int [ frac ] [ exp ]
+int          = "0" / ( oneToNine *DIGIT )
+frac         = "." 1*DIGIT
+exp          = "e" [ "-" / "+" ] 1*DIGIT
 
 
 ;------------------------------------------------------------------------------

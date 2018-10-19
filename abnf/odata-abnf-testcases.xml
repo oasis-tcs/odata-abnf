@@ -835,8 +835,7 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
-    Rule="odataRelativeUri"
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri"
   >
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
@@ -1335,6 +1334,12 @@
   <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
     <Input>Name in ["Milk", "Cheese"]</Input>
   </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>('Milk','Cheese') eq ('Oranges' , 'Carrots' ,'Ginger')</Input>
+  </TestCase>
+  <TestCase Name="5.1.1.1.12 Logical Operator Examples" Rule="boolCommonExpr">
+    <Input>["Milk", "Cheese"] eq ["Oranges", "Carrots", "Ginger"]</Input>
+  </TestCase>
   <TestCase Name="5.1.1.2.1 Addition" Rule="commonExpr">
     <Input>Price add 2.45</Input>
   </TestCase>
@@ -1619,42 +1624,6 @@
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="firstMemberExpr">
     <Input>$it/Completed</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 simple array" Rule="commonExpr">
-    <Input>FirstName in ["Miller","Smith"]</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 array with single-quoted OData strings" Rule="commonExpr">
-    <Input>FirstName in ["Miller",'Smith']</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 empty array" Rule="commonExpr">
-    <Input>FirstName in []</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 array in array of arrays" Rule="boolCommonExpr">
-    <Input>["Joe","Smith"] in [["John","Doe"],["Jane","Smith"]]</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 array of properties in array of arrays" Rule="boolCommonExpr">
-    <Input>[FirstName,LastName] in [["John","Doe"],["Jane","Smith"]]</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 comparing arrays" Rule="boolCommonExpr">
-    <Input>["Milk", "Cheese"] eq ["Oranges", "Carrots", "Ginger"]</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 mixed array" Rule="commonExpr">
-    <Input>["Hello",42,true,false,null,'World']</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 array of property names" Rule="commonExpr">
-    <Input>[FirstName,LastName]</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 empty object" Rule="commonExpr">
-    <Input>{}</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 object with concrete values" Rule="commonExpr">
-    <Input>{"FirstName":"John","LastName":"Doe","Sizes":["Large","Small"]}</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 object with expression values" Rule="commonExpr">
-    <Input>{"FirstName":Customer/FirstName,"LastName":Manager/LastName,"Sizes":[1, 2 add 3]}</Input>
-  </TestCase>
-  <TestCase Name="5.1.1.14.2 array with 'untyped' values" Rule="commonExpr">
-    <Input>[[],{},true,false,null,42,{"no property name":"value","@something":true}]</Input>
   </TestCase>
   <TestCase Name="5.1.1.14.4 $it" Rule="filter">
     <Input>$filter=endswith($it,'.com')</Input>
@@ -2288,18 +2257,6 @@
   <TestCase Name="Functions in commonExpr - property as parameter" Rule="commonExpr">
     <Input>Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)</Input>
   </TestCase>
-  <TestCase Name="in operator with list of primitives" Rule="commonExpr">
-    <Input>FirstName in ('Miller','Smith')</Input>
-  </TestCase>
-  <TestCase Name="lists can only contain primitive literals" Rule="commonExpr" FailAt="23">
-    <Input>FirstName in (FirstName,LastName)</Input>
-  </TestCase>
-  <TestCase Name="right operand is not a list, it's a complicated way of writing FirstName" Rule="commonExpr">
-    <Input>FirstName in (FirstName)</Input>
-  </TestCase>
-  <TestCase Name="lists only allowed right of in operator" Rule="commonExpr" FailAt="27">
-    <Input>EmailAddresses eq ('Miller','Smith')</Input>
-  </TestCase>
   <TestCase Name="Functions in filter - alias as parameter" Rule="queryOptions">
     <Input>$filter=Model.PhoneticallySimilar(Word=@expression)&amp;@expression=5 add 3</Input>
   </TestCase>
@@ -2610,7 +2567,7 @@
   <TestCase Name="Schema Version - latest" Rule="systemQueryOption">
     <Input>$schemaversion=*</Input>
   </TestCase>
-  <TestCase Name="ODATA-633 hex pair bug" Rule="stringInUrl">
+  <TestCase Name="ODATA-633 hex pair bug" Rule="stringInJSON">
     <Input>"b%75g"</Input>
   </TestCase>
 </TestSuite>
