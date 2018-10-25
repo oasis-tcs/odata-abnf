@@ -1858,10 +1858,10 @@
     <Input>$expand=$value,Thumbnail</Input>
   </TestCase>
   <TestCase Name="5.1.2 Expand - annotation" Rule="expand">
-    <Input>$expand=@Namespace.SomeTerm</Input>
+    <Input>$expand=@Namespace.EntityTerm</Input>
   </TestCase>
   <TestCase Name="5.1.2 Expand - annotation with nested query options" Rule="expand">
-    <Input>$expand=@Namespace.SomeTerm($top=2)</Input>
+    <Input>$expand=@Namespace.EntityTerm($top=2)</Input>
   </TestCase>
   <TestCase Name="5.1.2 Expand - annotation with navigation property" Rule="expand">
     <Input>$expand=@Namespace.SomeTerm/Products($top=2)</Input>

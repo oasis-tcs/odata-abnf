@@ -282,10 +282,10 @@ expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
-expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / annotation ) "/" )
+expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotation ) "/" )
                     ( STAR [ ref / OPEN levels CLOSE ]
                     / streamProperty 
-                    / ( navigationProperty / annotation ) [ "/" optionallyQualifiedEntityTypeName ] 
+                    / ( navigationProperty / entityAnnotation ) [ "/" optionallyQualifiedEntityTypeName ] 
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
@@ -365,7 +365,7 @@ selectProperty = primitiveProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
                             / "/" selectProperty 
                             ]
-selectPath     = ( complexProperty / complexColProperty / annotation ) [ "/" optionallyQualifiedComplexTypeName ] 
+selectPath     = ( complexProperty / complexColProperty / complexAnnotation ) [ "/" optionallyQualifiedComplexTypeName ] 
 selectOptionPC = filter / search / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
                / compute / select / expand / aliasAndValue
