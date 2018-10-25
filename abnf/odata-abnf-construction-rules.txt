@@ -446,7 +446,6 @@ commonExpr = ( primitiveLiteral
              / negateExpr 
              / methodCallExpr 
              / parenExpr 
-             / listExpr
              / castExpr 
              / isofExpr
              / notExpr
@@ -633,7 +632,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS [ commonExpr BWS *( COMMA BWS commonExpr BWS ) ] CLOSE
+listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
@@ -644,7 +643,7 @@ ltExpr = RWS "lt" RWS commonExpr
 leExpr = RWS "le" RWS commonExpr
 gtExpr = RWS "gt" RWS commonExpr
 geExpr = RWS "ge" RWS commonExpr
-inExpr = RWS "in" RWS commonExpr
+inExpr = RWS "in" RWS ( listExpr / commonExpr )
 
 hasExpr = RWS "has" RWS enum
 
@@ -666,7 +665,7 @@ castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeN
 ;------------------------------------------------------------------------------
 ; 5. JSON format for queries
 ;------------------------------------------------------------------------------
-; Note: the query part of a URI needs to be partially percent-decoded before
+; Note: the query part of a URI needs to be percent-encoding normalized before
 ; applying these rules, see comment at the top of this file
 ;------------------------------------------------------------------------------
 
@@ -674,17 +673,17 @@ arrayOrObject = array
               / object
               
 array = begin-array 
-        [ valueinJSON *( value-separator valueinJSON ) ] 
+        [ valueInUrl *( value-separator valueInUrl ) ] 
         end-array
                  
 object = begin-object
          [ member *( value-separator member ) ]
          end-object
 
-member = stringInJSON name-separator valueinJSON
+member = stringInUrl name-separator valueInUrl
 
-valueInJSON = stringInJSON
-            / commonExpr            
+valueInUrl = stringInUrl
+           / commonExpr            
                
 ; JSON syntax: adapted to URI restrictions from [RFC4627]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
@@ -697,7 +696,7 @@ quotation-mark  = DQUOTE / "%22"
 name-separator  = BWS COLON BWS
 value-separator = BWS COMMA BWS
 
-stringInJSON = quotation-mark *charInJSON quotation-mark
+stringInUrl = quotation-mark *charInJSON quotation-mark
 
 charInJSON   = qchar-unescaped  
              / qchar-JSON-special    
