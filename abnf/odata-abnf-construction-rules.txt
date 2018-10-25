@@ -1026,6 +1026,7 @@ geometryPrefix  = "geometry"
 header = content-id
        / isolation
        / odata-entityid 
+       / odata-error
        / odata-maxversion
        / odata-version
        / prefer
@@ -1035,6 +1036,10 @@ isolation  = [ "OData-" ] "Isolation" ":" OWS "snapshot"
 request-id = 1*unreserved
        
 odata-entityid   = "OData-EntityID"   ":" OWS IRI-in-header
+
+; Note: the header value is a JSON object restricted to characters allowed in a header
+odata-error      = "OData-Error"      ":" OWS '{"code":' *( VCHAR / SP )
+
 odata-maxversion = "OData-MaxVersion" ":" OWS 1*DIGIT "." 1*DIGIT     
 odata-version    = "OData-Version"    ":" OWS "4.0" [ oneToNine ]
       

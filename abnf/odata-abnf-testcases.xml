@@ -2495,6 +2495,9 @@
   <TestCase Name="Header - odata-entityid" Rule="header">
     <Input>odata-entityId:strange:&#x00FF;/</Input>
   </TestCase>
+  <TestCase Name="Header - odata-error" Rule="header">
+    <Input>OData-error: {"code":"err123","message":"Unsupported functionality","target":"query","details":[{"code":"fourtytwo","target":"$search","message":"$search query option not supported"}]}</Input>
+  </TestCase>
   <TestCase Name="Header - odata-isolation" Rule="header">
     <Input>odata-isolation:sNapShoT</Input>
   </TestCase>
