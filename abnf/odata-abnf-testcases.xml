@@ -1144,34 +1144,46 @@
     <Input>TheMostPopularAddresses()?$expand=Model.AddressWithLocation/Country</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)?@foo=Age gt 3</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter Path Segment - expression" Rule="odataRelativeUri">
+    <Input>Products/$filter(Age gt 3)</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
+    <Input>Products/$filter(Age gt 3)/$filter(Price lt 5)</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$ref" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$ref?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$ref?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$count" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$count?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$count?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with /$count and $filter query option" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$filter=@bar/$count?@foo=Age gt 3&amp;@bar=Price lt 5&amp;$filter=Price lt 6</Input>
+    <Input>Products/$filter(@foo)/$filter(@bar)/$count?@foo=Age gt 3&amp;@bar=Price lt 5&amp;$filter=Price lt 6</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/Special.ProductsByColor(color='red')/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/Special.ProductsByColor(color='red')/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - multiple, no namespace" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/ProductsByColor(color='red')/$filter=@bar?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
+    <Input>Products/$filter(@foo)/ProductsByColor(color='red')/$filter(@bar)?@foo=Age gt 3&amp;@bar=Price lt 5</Input>
   </TestCase>
   <TestCase Name="4.12 Filter Path Segment - with action" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/Special.Cluster?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)/Special.Cluster?@foo=Age gt 3</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter expression in query" Rule="odataRelativeUri">
+    <Input>Categories?$filter=Products/$filter(Age gt 3)/$count lt 10</Input>
+  </TestCase>
+  <TestCase Name="4.12 Filter expression in query" Rule="filter">
+    <Input>$filter=Addresses/$filter(endswith(Street,'St'))/$count lt 10</Input>
   </TestCase>
   <TestCase Name="4.12 $each Path Segment" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$each</Input>
+    <Input>Products/$filter(@foo)/$each</Input>
   </TestCase>
   <TestCase Name="4.12 $each Path Segment - with action" Rule="odataRelativeUri">
-    <Input>Products/$filter=@foo/$each/Special.Discount?@foo=Age gt 3</Input>
+    <Input>Products/$filter(@foo)/$each/Special.Discount?@foo=Age gt 3</Input>
   </TestCase>
   <TestCase Name="4.14 Addressing a Media Resource" Rule="odataRelativeUri">
     <Input>Categories(1)/$value</Input>

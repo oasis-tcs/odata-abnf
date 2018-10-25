@@ -155,7 +155,7 @@ complexPath    = [ "/" optionallyQualifiedComplexTypeName ]
                  / boundOperation
                  ]
                  
-filterInPath = '/$filter' EQ parameterAlias
+filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
 
 each  = '/$each'
 count = '/$count'
@@ -513,14 +513,18 @@ lambdaVariableExpr   = odataIdentifier
 collectionNavigationExpr = [ "/" optionallyQualifiedEntityTypeName ]
                            ( collectionPathExpr
                            / keyPredicate [ singleNavigationExpr ] 
+                           / filterExpr [ collectionNavigationExpr ]
                            )
 
 singleNavigationExpr = "/" memberExpr
+
+filterExpr = '/$filter' OPEN boolCommonExpr CLOSE
 
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]
  
 collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
+                   / filterExpr [ collectionPathExpr ]
                    / "/" anyExpr
                    / "/" allExpr
                    / "/" boundFunctionExpr
