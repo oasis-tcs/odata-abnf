@@ -2486,13 +2486,13 @@
   <TestCase Name="Batch Request - request identifier" Rule="request-id">
     <Input>group1</Input>
   </TestCase>
-  <TestCase Name="Header - odata-entitid" Rule="header">
+  <TestCase Name="Header - odata-entityid" Rule="header">
     <Input>odata-entityid: ralf:handl</Input>
   </TestCase>
-  <TestCase Name="Header - odata-entitid" Rule="header">
+  <TestCase Name="Header - odata-entityid" Rule="header">
     <Input>odata-entityID: empty-path:/</Input>
   </TestCase>
-  <TestCase Name="Header - odata-entitid" Rule="header">
+  <TestCase Name="Header - odata-entityid" Rule="header">
     <Input>odata-entityId:strange:&#x00FF;/</Input>
   </TestCase>
   <TestCase Name="Header - odata-isolation" Rule="header">
