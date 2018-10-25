@@ -107,8 +107,8 @@ resourcePath = entitySetName                  [ collectionNavigation ]
              / complexFunctionImportCall      [ complexPath ] 
              / primitiveColFunctionImportCall [ primitiveColPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
-             / functionImportCallNoParens
-             / crossjoin
+             / functionImportCallNoParens     [ querySegment ]
+             / crossjoin                      [ querySegment ]
              / '$all'                         [ "/" optionallyQualifiedEntityTypeName ]
 
 collectionNavigation = [ "/" optionallyQualifiedEntityTypeName ] [ collectionNavPath ]
@@ -118,6 +118,7 @@ collectionNavPath    = keyPredicate [ singleNavigation ]
                      / boundOperation
                      / count
                      / ref
+                     / querySegment
 
 keyPredicate     = simpleKey / compoundKey / keyPathSegments
 simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE
@@ -133,6 +134,7 @@ singleNavigation = [ "/" optionallyQualifiedEntityTypeName ]
                    / boundOperation
                    / ref 
                    / value  ; request the media resource of a media entity 
+                   / querySegment
                    ]
 
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
@@ -143,24 +145,27 @@ propertyPath = entityColNavigationProperty [ collectionNavigation ]
              / primitiveProperty           [ primitivePath ]
              / streamProperty              [ boundOperation ]
 
-primitiveColPath = count / boundOperation / ordinalIndex
+primitiveColPath = count / boundOperation / ordinalIndex / querySegment
 
-primitivePath  = value / boundOperation
+primitivePath  = value / boundOperation / querySegment
 
 complexColPath = ordinalIndex
-               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation ]
+               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation / querySegment ]
 
 complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
                  [ "/" propertyPath 
                  / boundOperation
+                 / querySegment
                  ]
                  
-filterInPath = '/$filter' EQ parameterAlias
+filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
 
 each  = '/$each'
 count = '/$count'
 ref   = '/$ref'
 value = '/$value'
+
+querySegment = '/$query'
 
 ordinalIndex = "/" 1*DIGIT
 
@@ -174,7 +179,7 @@ boundOperation = "/" ( boundActionCall
                      / boundComplexFunctionCall      [ complexPath ]
                      / boundPrimitiveColFunctionCall [ primitiveColPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
-                     / boundFunctionCallNoParens
+                     / boundFunctionCallNoParens     [ querySegment ]
                      )
 
 actionImportCall = actionImport
@@ -446,7 +451,6 @@ commonExpr = ( primitiveLiteral
              / negateExpr 
              / methodCallExpr 
              / parenExpr 
-             / listExpr
              / castExpr 
              / isofExpr
              / notExpr
@@ -514,14 +518,18 @@ lambdaVariableExpr   = odataIdentifier
 collectionNavigationExpr = [ "/" optionallyQualifiedEntityTypeName ]
                            ( collectionPathExpr
                            / keyPredicate [ singleNavigationExpr ] 
+                           / filterExpr [ collectionNavigationExpr ]
                            )
 
 singleNavigationExpr = "/" memberExpr
+
+filterExpr = '/$filter' OPEN boolCommonExpr CLOSE
 
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]
  
 collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
+                   / filterExpr [ collectionPathExpr ]
                    / "/" anyExpr
                    / "/" allExpr
                    / "/" boundFunctionExpr
@@ -558,6 +566,7 @@ methodCallExpr = indexOfMethodCallExpr
                / substringMethodCallExpr 
                / concatMethodCallExpr 
                / lengthMethodCallExpr 
+               / matchesPatternMethodCallExpr
                / yearMethodCallExpr 
                / monthMethodCallExpr 
                / dayMethodCallExpr 
@@ -587,16 +596,17 @@ boolMethodCallExpr = endsWithMethodCallExpr
                    / hasSubsetMethodCallExpr
                    / hasSubsequenceMethodCallExpr
 
-concatMethodCallExpr     = "concat"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-containsMethodCallExpr   = "contains"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-endsWithMethodCallExpr   = "endswith"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-indexOfMethodCallExpr    = "indexof"    OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-lengthMethodCallExpr     = "length"     OPEN BWS commonExpr BWS CLOSE
-startsWithMethodCallExpr = "startswith" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-substringMethodCallExpr  = "substring"  OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
-toLowerMethodCallExpr    = "tolower"    OPEN BWS commonExpr BWS CLOSE
-toUpperMethodCallExpr    = "toupper"    OPEN BWS commonExpr BWS CLOSE
-trimMethodCallExpr       = "trim"       OPEN BWS commonExpr BWS CLOSE
+concatMethodCallExpr         = "concat"         OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+containsMethodCallExpr       = "contains"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+endsWithMethodCallExpr       = "endswith"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+indexOfMethodCallExpr        = "indexof"        OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+lengthMethodCallExpr         = "length"         OPEN BWS commonExpr BWS CLOSE
+matchesPatternMethodCallExpr = "matchesPattern" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+startsWithMethodCallExpr     = "startswith"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+substringMethodCallExpr      = "substring"      OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
+toLowerMethodCallExpr        = "tolower"        OPEN BWS commonExpr BWS CLOSE
+toUpperMethodCallExpr        = "toupper"        OPEN BWS commonExpr BWS CLOSE
+trimMethodCallExpr           = "trim"           OPEN BWS commonExpr BWS CLOSE
 
 yearMethodCallExpr               = "year"               OPEN BWS commonExpr BWS CLOSE
 monthMethodCallExpr              = "month"              OPEN BWS commonExpr BWS CLOSE
@@ -629,7 +639,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS commonExpr BWS *( COMMA BWS commonExpr BWS ) CLOSE
+listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
@@ -640,7 +650,7 @@ ltExpr = RWS "lt" RWS commonExpr
 leExpr = RWS "le" RWS commonExpr
 gtExpr = RWS "gt" RWS commonExpr
 geExpr = RWS "ge" RWS commonExpr
-inExpr = RWS "in" RWS commonExpr
+inExpr = RWS "in" RWS ( listExpr / commonExpr )
 
 hasExpr = RWS "has" RWS enum
 
@@ -660,77 +670,28 @@ castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeN
 
 
 ;------------------------------------------------------------------------------
-; 5. JSON format for function parameters
+; 5. JSON format for queries
 ;------------------------------------------------------------------------------
-; Note: the query part of a URI needs to be partially percent-decoded before
+; Note: the query part of a URI needs to be percent-encoding normalized before
 ; applying these rules, see comment at the top of this file
 ;------------------------------------------------------------------------------
 
-arrayOrObject = complexColInUri  
-              / complexInUri
-              / rootExprCol
-              / primitiveColInUri
-               
-complexColInUri = begin-array 
-                  [ complexInUri *( value-separator complexInUri ) ] 
+arrayOrObject = array
+              / object
+
+array = begin-array 
+        [ valueInUrl *( value-separator valueInUrl ) ] 
                   end-array
-                  
-complexInUri = begin-object
-               [ ( annotationInUri 
-                 / primitivePropertyInUri 
-                 / complexPropertyInUri 
-                 / collectionPropertyInUri  
-                 / navigationPropertyInUri
-                 )
-                 *( value-separator 
-                    ( annotationInUri 
-                    / primitivePropertyInUri 
-                    / complexPropertyInUri 
-                    / collectionPropertyInUri  
-                    / navigationPropertyInUri
-                    ) 
-                  )
-               ]  
+
+object = begin-object
+         [ member *( value-separator member ) ]
                end-object
 
-collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark 
-                            name-separator 
-                            primitiveColInUri 
-                          ) 
-                        / ( quotation-mark complexColProperty quotation-mark 
-                            name-separator 
-                            complexColInUri
-                          )
+member = stringInUrl name-separator valueInUrl
 
-primitiveColInUri = begin-array 
-                    [ primitiveLiteralInJSON *( value-separator primitiveLiteralInJSON ) ] 
-                    end-array
-                    
-complexPropertyInUri = quotation-mark complexProperty quotation-mark 
-                       name-separator 
-                       complexInUri
-                            
-annotationInUri = quotation-mark AT [ namespace "." ] termName quotation-mark
-                  name-separator
-                  ( complexInUri / complexColInUri / primitiveLiteralInJSON / primitiveColInUri )
+valueInUrl = stringInUrl
+           / commonExpr            
 
-primitivePropertyInUri = quotation-mark primitiveProperty quotation-mark 
-                         name-separator 
-                         primitiveLiteralInJSON
-
-navigationPropertyInUri = singleNavPropInJSON
-                        / collectionNavPropInJSON
-singleNavPropInJSON     = quotation-mark entityNavigationProperty quotation-mark
-													name-separator
-													rootExpr
-collectionNavPropInJSON = quotation-mark entityColNavigationProperty quotation-mark
-													name-separator
-													rootExprCol
-
-rootExprCol = begin-array 
-              [ rootExpr *( value-separator rootExpr ) ]
-              end-array
-                                        
 ; JSON syntax: adapted to URI restrictions from [RFC4627]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )
@@ -742,13 +703,8 @@ quotation-mark  = DQUOTE / "%22"
 name-separator  = BWS COLON BWS
 value-separator = BWS COMMA BWS
 
-primitiveLiteralInJSON = stringInJSON
-                       / numberInJSON
-                       / 'true' 
-                       / 'false'
-                       / 'null'
+stringInUrl = quotation-mark *charInJSON quotation-mark
 
-stringInJSON = quotation-mark *charInJSON quotation-mark
 charInJSON   = qchar-unescaped  
              / qchar-JSON-special    
              / escape ( quotation-mark 
@@ -765,11 +721,6 @@ charInJSON   = qchar-unescaped
 qchar-JSON-special = SP / ":" / "{" / "}" / "[" / "]" ; some agents put these unencoded into the query part of a URL
 
 escape = "\" / "%5C"     ; reverse solidus U+005C
-
-numberInJSON = [ "-" ] int [ frac ] [ exp ]
-int          = "0" / ( oneToNine *DIGIT )
-frac         = "." 1*DIGIT
-exp          = "e" [ "-" / "+" ] 1*DIGIT
 
 
 ;------------------------------------------------------------------------------
