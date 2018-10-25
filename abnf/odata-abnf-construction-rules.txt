@@ -107,8 +107,8 @@ resourcePath = entitySetName                  [ collectionNavigation ]
              / complexFunctionImportCall      [ complexPath ] 
              / primitiveColFunctionImportCall [ primitiveColPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
-             / functionImportCallNoParens
-             / crossjoin
+             / functionImportCallNoParens     [ querySegment ]
+             / crossjoin                      [ querySegment ]
              / '$all'                         [ "/" optionallyQualifiedEntityTypeName ]
 
 collectionNavigation = [ "/" optionallyQualifiedEntityTypeName ] [ collectionNavPath ]
@@ -118,6 +118,7 @@ collectionNavPath    = keyPredicate [ singleNavigation ]
                      / boundOperation
                      / count
                      / ref
+                     / querySegment
 
 keyPredicate     = simpleKey / compoundKey / keyPathSegments
 simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE
@@ -133,6 +134,7 @@ singleNavigation = [ "/" optionallyQualifiedEntityTypeName ]
                    / boundOperation
                    / ref 
                    / value  ; request the media resource of a media entity 
+                   / querySegment
                    ]
 
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
@@ -143,16 +145,17 @@ propertyPath = entityColNavigationProperty [ collectionNavigation ]
              / primitiveProperty           [ primitivePath ]
              / streamProperty              [ boundOperation ]
 
-primitiveColPath = count / boundOperation / ordinalIndex
+primitiveColPath = count / boundOperation / ordinalIndex / querySegment
 
-primitivePath  = value / boundOperation
+primitivePath  = value / boundOperation / querySegment
 
 complexColPath = ordinalIndex
-               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation ]
+               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation / querySegment ]
 
 complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
                  [ "/" propertyPath 
                  / boundOperation
+                 / querySegment
                  ]
                  
 filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
@@ -161,6 +164,8 @@ each  = '/$each'
 count = '/$count'
 ref   = '/$ref'
 value = '/$value'
+
+querySegment = '/$query'
 
 ordinalIndex = "/" 1*DIGIT
 
@@ -174,7 +179,7 @@ boundOperation = "/" ( boundActionCall
                      / boundComplexFunctionCall      [ complexPath ]
                      / boundPrimitiveColFunctionCall [ primitiveColPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
-                     / boundFunctionCallNoParens
+                     / boundFunctionCallNoParens     [ querySegment ]
                      )
 
 actionImportCall = actionImport
