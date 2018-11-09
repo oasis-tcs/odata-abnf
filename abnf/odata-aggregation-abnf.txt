@@ -72,6 +72,8 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ expressionAlias / customAggregate
 
+methodCallExpr =/ computeAggregateMethodCallExpr ; only allowed within compute transformation
+
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
@@ -125,7 +127,10 @@ pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedCompl
                  / navigationProperty [ "/" qualifiedEntityTypeName  ] 
                    
 computeTrafo = 'compute' OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE     
-computeExpr  = commonExpr asAlias             
+computeExpr  = commonExpr asAlias   
+
+computeAggregateMethodCallExpr = 'aggregate' OPEN BWS computeAggregateExpr BWS CLOSE
+computeAggregateExpr = commonExpr aggregateWith   
                            
 bottomcountTrafo   = 'bottomcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottompercentTrafo = 'bottompercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE

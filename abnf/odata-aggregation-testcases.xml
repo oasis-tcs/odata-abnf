@@ -2,7 +2,7 @@
 <!--
 
   OData Aggregation ABNF Test Cases Version 4.0
-  
+
   Working Draft 04
   04 November 2015
 
@@ -85,7 +85,9 @@
     <Match>AveragePrice</Match>
     <Match>AvgAmt</Match>
     <Match>CountryPopulation</Match>
+    <Match>CustomerAmount</Match>
     <Match>CustomerCountryAverage</Match>
+    <Match>CustomerYearAmount</Match>
     <Match>DailyAverage</Match>
     <Match>DistinctProducts</Match>
     <Match>ItemAmount</Match>
@@ -94,9 +96,14 @@
     <Match>MonthlyAverage</Match>
     <Match>ProductNames</Match>
     <Match>Profit</Match>
+    <Match>RelativeOrderSize</Match>
+    <Match>RegionAmount</Match>
+    <Match>RevenueContribution</Match>
+    <Match>RevenueTrend</Match>
     <Match>SalesCount</Match>
     <Match>Tax</Match>
     <Match>Total</Match>
+    <Match>TotalAmount</Match>
     <Match>TotalPlannedRevenue</Match>
     <Match>TotalPopulation</Match>
     <Match>WeekDay</Match>
@@ -210,8 +217,10 @@
     <Match>Price</Match>
     <Match>ProductID</Match>
     <Match>Quantity</Match>
+    <Match>Region</Match>
     <Match>Revenue</Match>
     <Match>SalesArea</Match>
+    <Match>SalesNumber</Match>
     <Match>Shipped</Match>
     <Match>Status</Match>
     <Match>Street</Match>
@@ -492,5 +501,17 @@
   </TestCase>
   <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
     <Input>Categories?$expand=Products($apply=aggregate(Price with average as AveragePrice))</Input>
+  </TestCase>
+  <TestCase Name="ratio after grouping - https://issues.oasis-open.org/browse/ODATA-1244" Rule="queryOptions">
+    <Input>$apply=groupby((Customer),aggregate(Amount with sum as CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with sum) as RevenueContribution)</Input>
+  </TestCase>
+  <TestCase Name="ratio within a group" Rule="queryOptions">
+    <Input>$apply=groupby((Customer,Year),aggregate(Amount with sum as CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div aggregate(CustomerYearAmount with sum) as RevenueTrend))</Input>
+  </TestCase>
+  <TestCase Name="ratio across input set" Rule="queryOptions">
+    <Input>$apply=compute(Amount div aggregate(Amount with average) as RelativeOrderSize)</Input>
+  </TestCase>
+  <TestCase Name="ratios within a group - ..." Rule="queryOptions">
+    <Input>$apply=groupby((Region),compute(aggregate(SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
   </TestCase>
 </TestSuite>
