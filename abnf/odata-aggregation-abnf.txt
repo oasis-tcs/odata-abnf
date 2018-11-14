@@ -126,7 +126,7 @@ pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedCompl
                  / navigationProperty [ "/" qualifiedEntityTypeName  ] 
                    
 computeTrafo = 'compute' OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE     
-computeExpr  = commonExpr asAlias   
+computeExpr  = commonExpr asAlias
 
 computeAggregateMethodCallExpr = 'aggregate' OPEN BWS computeAggregateExpr BWS CLOSE
 computeAggregateExpr = commonExpr aggregateWith [ aggregateFrom ]
