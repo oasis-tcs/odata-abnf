@@ -98,10 +98,9 @@ applyTrafo = aggregateTrafo
            / customFunction
            
 aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
-aggregateExpr   = customAggregate [ asAlias aggregateFrom ]
-                / commonExpr aggregateWith asAlias [ aggregateFrom ]
+aggregateExpr   = commonExpr aggregateWith asAlias [ aggregateFrom ]
                 / pathPrefix '$count' asAlias 
-                / pathPrefix customAggregate
+                / pathPrefix customAggregate [ asAlias aggregateFrom ]
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
 aggregateWith   = RWS 'with' RWS aggregateMethod        
 aggregateFrom   = RWS 'from' RWS groupingProperty [ aggregateWith ] [ aggregateFrom ]
@@ -131,8 +130,9 @@ computeExpr  = commonExpr asAlias
 
 computeAggregateMethodCallExpr = 'aggregate' OPEN BWS computeAggregateExpr BWS CLOSE
 computeAggregateExpr = commonExpr aggregateWith [ aggregateFrom ]
-                     / pathPrefix customAggregate
+                     / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
                      / '$count'
+                     / pathPrefix customAggregate [ aggregateFrom ]
                            
 bottomcountTrafo   = 'bottomcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottompercentTrafo = 'bottompercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
