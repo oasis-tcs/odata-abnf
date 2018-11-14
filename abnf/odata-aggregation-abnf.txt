@@ -98,6 +98,7 @@ applyTrafo = aggregateTrafo
 aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = customAggregate [ asAlias aggregateFrom ]
                 / commonExpr aggregateWith asAlias [ aggregateFrom ]
+                / pathPrefix primitiveProperty aggregateWith asAlias [ aggregateFrom ]
                 / pathPrefix '$count' asAlias 
                 / pathPrefix customAggregate
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
