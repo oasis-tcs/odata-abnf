@@ -134,7 +134,7 @@ computeAggregateMethodCallExpr = 'aggregate' OPEN BWS computeAggregateExpr BWS C
 computeAggregateExpr = commonExpr aggregateWith [ aggregateFrom ]
                      / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
                      / '$count'
-                     / pathPrefix customAggregate [ aggregateFrom ]
+                     / pathPrefix customAggregate [ customFrom ]
                            
 bottomcountTrafo   = 'bottomcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottompercentTrafo = 'bottompercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
