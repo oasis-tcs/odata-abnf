@@ -278,19 +278,19 @@
     <Input>$apply=aggregate(Product with countdistinct as DistinctProducts)</Input>
   </TestCase>
   <TestCase Name="aggregate - from" Rule="queryOptions">
-    <Input>$apply=aggregate(Amount with sum as DailyAverage from Time with average)</Input>
+    <Input>$apply=aggregate(Amount with sum from Time with average as DailyAverage)</Input>
   </TestCase>
   <TestCase Name="aggregate - from twice" Rule="queryOptions">
-    <Input>$apply=aggregate(Amount with sum as DailyAverage from Time with average from Product/Name with max)</Input>
+    <Input>$apply=aggregate(Amount with sum from Time with average from Product/Name with max as DailyAverage)</Input>
   </TestCase>
-  <TestCase Name="aggregate - from requires as" Rule="queryOptions" FailAt="33">
+  <TestCase Name="aggregate - from requires as" Rule="queryOptions" FailAt="55">
     <Input>$apply=aggregate(Amount with sum from Time with average)</Input>
   </TestCase>
   <TestCase Name="aggregate - property from requires with" Rule="queryOptions" FailAt="24">
-    <Input>$apply=aggregate(Amount as DailyAverage from Time with average)</Input>
+    <Input>$apply=aggregate(Amount from Time with average as DailyAverage)</Input>
   </TestCase>
   <TestCase Name="aggregate - custom aggregate and from" Rule="queryOptions">
-    <Input>$apply=aggregate(Forecast as DailyAverage from Time with average)</Input>
+    <Input>$apply=aggregate(Forecast from Time with average as DailyAverage)</Input>
   </TestCase>
   <TestCase Name="aggregate - path with key segment" Rule="queryOptions">
     <Input>$apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as TotalPlannedRevenue)</Input>
@@ -469,10 +469,10 @@
     <Input>$apply=groupby((Product/ID,Product/Name,Time/Month),aggregate(Amount with sum as Total))/groupby((Product/ID,Product/Name),aggregate(Total with average as AverageAmount))</Input>
   </TestCase>
   <TestCase Name="controlling aggregation - from" Rule="queryOptions">
-    <Input>$apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum as MonthlyAverage from Time/Month with average))</Input>
+    <Input>$apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum from Time/Month with average as MonthlyAverage))</Input>
   </TestCase>
   <TestCase Name="controlling aggregation - rollup and from" Rule="queryOptions">
-    <Input>$apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount with sum as CustomerCountryAverage from Customer/ID with average from Customer/Country with average))</Input>
+    <Input>$apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount with sum from Customer/ID with average from Customer/Country with average as CustomerCountryAverage))</Input>
   </TestCase>
   <TestCase Name="transformation sequences - filter and aggregate" Rule="queryOptions">
     <Input>$apply=filter(Amount le 1)/aggregate(Amount with sum as Total)</Input>
