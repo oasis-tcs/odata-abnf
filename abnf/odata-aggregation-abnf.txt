@@ -96,13 +96,14 @@ applyTrafo = aggregateTrafo
            / customFunction
            
 aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
-aggregateExpr   = customAggregate [ asAlias aggregateFrom ]
-                / commonExpr aggregateWith asAlias [ aggregateFrom ]
+aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
+                / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
                 / '$count' asAlias 
-                / pathPrefix customAggregate
+                / pathPrefix customAggregate [ customFrom asAlias ]
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
 aggregateWith   = RWS 'with' RWS aggregateMethod        
-aggregateFrom   = RWS 'from' RWS groupingProperty [ aggregateWith ] [ aggregateFrom ]
+aggregateFrom   = RWS 'from' RWS groupingProperty aggregateWith [ aggregateFrom ]
+customFrom      = RWS 'from' RWS groupingProperty [ aggregateWith ] [ customFrom ]
 aggregateMethod = 'sum' 
                 / 'min' 
                 / 'max' 
