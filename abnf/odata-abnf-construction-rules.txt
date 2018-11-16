@@ -395,6 +395,8 @@ customQueryOption = customName [ EQ customValue ]
 customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ ) 
 customValue       = *( qchar-no-AMP )
 
+complexAnnotation = annotation ; complex-valued annotation
+entityAnnotation  = annotation ; entity-valued annotation
      
 ;------------------------------------------------------------------------------
 ; 3. Context URL Fragments
@@ -426,8 +428,8 @@ selectListItem     = STAR ; all structural properties
                      )
 selectListProperty = primitiveProperty  
                    / primitiveColProperty 
-                   / ( navigationProperty / entityAnnotation ) [ "+" ] [ selectList ]
-                   / ( complexProperty / complexColProperty / complexAnnotation ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
+                   / ( navigationProperty / entityAnnotationInFragment ) [ "+" ] [ selectList ]
+                   / ( complexProperty / complexColProperty / complexAnnotationInFragment ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
 
 contextPropertyPath = primitiveProperty
                     / primitiveColProperty
@@ -437,8 +439,8 @@ contextPropertyPath = primitiveProperty
 qualifiedActionName   = namespace "." action
 qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
                 
-complexAnnotation = annotation
-entityAnnotation  = annotation
+complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
+entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
 
 ;------------------------------------------------------------------------------
 ; 4. Expressions
@@ -507,8 +509,9 @@ annotationExpr = annotation
                  / primitivePathExpr
                  ]
                  
-annotation          = AT [ namespace "." ] termName [ HASH annotationQualifier ]
-annotationQualifier = odataIdentifier                
+annotation           = AT [ namespace "." ] termName [ HASH annotationQualifier ]
+annotationInFragment = AT [ namespace "." ] termName [ "#"  annotationQualifier ]
+annotationQualifier  = odataIdentifier                
                    
 inscopeVariableExpr  = implicitVariableExpr 
                      / parameterAlias

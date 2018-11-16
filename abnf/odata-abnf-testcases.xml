@@ -123,6 +123,9 @@
   <Constraint Rule="entityAnnotation">
     <Match>@Namespace.EntityTerm</Match>
   </Constraint>
+  <Constraint Rule="entityAnnotationInFragment">
+    <Match>@Namespace.EntityTerm</Match>
+  </Constraint>
   <Constraint Rule="entityColFunction">
     <Match>AllOrders</Match>
     <Match>ProductsByColor</Match>
@@ -2426,8 +2429,11 @@
   <TestCase Name="Context URL - annotations in select" Rule="context">
     <Input>#Employees(@Core.Messages,Title,DirectReports+(@Core.Messages,FirstName,LastName))</Input>
   </TestCase>
-  <TestCase Name="Context URL - annotations in select" Rule="context">
-    <Input>#Employees(@Core.Messages/code,@Core.Messages/message,Title,DirectReports+(@Core.Messages,FirstName,LastName))</Input>
+  <TestCase Name="Context URL - annotations in select - cleartext #" Rule="context">
+    <Input>#Employees(@Core.Messages/code,@Core.Messages/message,Title,DirectReports+(@Core.Messages#second,FirstName,LastName))</Input>
+  </TestCase>
+  <TestCase Name="Context URL - annotations in select - # must be cleartext, not percent-encoded" Rule="context" FailAt="89">
+    <Input>#Employees(@Core.Messages/code,@Core.Messages/message,Title,DirectReports+(@Core.Messages%23second,FirstName,LastName))</Input>
   </TestCase>
   <TestCase Name="Context URL - annotations in expand" Rule="context">
     <Input>#Employees(@Namespace.EntityTerm(FirstName,LastName))</Input>
