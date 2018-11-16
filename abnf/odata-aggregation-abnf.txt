@@ -72,7 +72,7 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ expressionAlias / customAggregate
 
-methodCallExpr =/ computeAggregateMethodCallExpr ; only allowed within compute transformation
+methodCallExpr =/ computeAggregateMethodCallExpr
 
 
 ;------------------------------------------------------------------------------
