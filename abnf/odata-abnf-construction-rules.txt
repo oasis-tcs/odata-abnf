@@ -282,10 +282,10 @@ expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
-expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotation ) "/" )
+expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" )
                     ( STAR [ ref / OPEN levels CLOSE ]
                     / streamProperty 
-                    / ( navigationProperty / entityAnnotation ) [ "/" optionallyQualifiedEntityTypeName ] 
+                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ] 
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
@@ -365,7 +365,7 @@ selectProperty = primitiveProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
                             / "/" selectProperty 
                             ]
-selectPath     = ( complexProperty / complexColProperty / complexAnnotation ) [ "/" optionallyQualifiedComplexTypeName ] 
+selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ] 
 selectOptionPC = filter / search / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
                / compute / select / expand / aliasAndValue
@@ -395,8 +395,8 @@ customQueryOption = customName [ EQ customValue ]
 customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ ) 
 customValue       = *( qchar-no-AMP )
 
-complexAnnotation = annotation ; complex-valued annotation
-entityAnnotation  = annotation ; entity-valued annotation
+complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
+entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
      
 ;------------------------------------------------------------------------------
 ; 3. Context URL Fragments
@@ -502,14 +502,14 @@ propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ]
                    / streamProperty              [ primitivePathExpr ]
                    )
                    
-annotationExpr = annotation
+annotationExpr = annotationInQuery
                  [ collectionPathExpr
                  / singleNavigationExpr
                  / complexPathExpr
                  / primitivePathExpr
                  ]
                  
-annotation           = AT [ namespace "." ] termName [ HASH annotationQualifier ]
+annotationInQuery    = AT [ namespace "." ] termName [ HASH annotationQualifier ]
 annotationInFragment = AT [ namespace "." ] termName [ "#"  annotationQualifier ]
 annotationQualifier  = odataIdentifier                
                    
