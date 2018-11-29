@@ -282,10 +282,10 @@ expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
-expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName ) "/" )
+expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" )
                     ( STAR [ ref / OPEN levels CLOSE ]
                     / streamProperty 
-                    / navigationProperty [ "/" optionallyQualifiedEntityTypeName ] 
+                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ] 
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
@@ -365,7 +365,7 @@ selectProperty = primitiveProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
                             / "/" selectProperty 
                             ]
-selectPath     = ( complexProperty / complexColProperty ) [ "/" optionallyQualifiedComplexTypeName ] 
+selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ] 
 selectOptionPC = filter / search / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
                / compute / select / expand / aliasAndValue
@@ -395,6 +395,8 @@ customQueryOption = customName [ EQ customValue ]
 customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ ) 
 customValue       = *( qchar-no-AMP )
 
+complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
+entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
      
 ;------------------------------------------------------------------------------
 ; 3. Context URL Fragments
@@ -426,8 +428,8 @@ selectListItem     = STAR ; all structural properties
                      )
 selectListProperty = primitiveProperty  
                    / primitiveColProperty 
-                   / navigationProperty [ "+" ] [ selectList ]
-                   / ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
+                   / ( navigationProperty / entityAnnotationInFragment ) [ "+" ] [ selectList ]
+                   / ( complexProperty / complexColProperty / complexAnnotationInFragment ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
 
 contextPropertyPath = primitiveProperty
                     / primitiveColProperty
@@ -436,7 +438,9 @@ contextPropertyPath = primitiveProperty
 
 qualifiedActionName   = namespace "." action
 qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
-                 
+                
+complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
+entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
 
 ;------------------------------------------------------------------------------
 ; 4. Expressions
@@ -498,15 +502,16 @@ propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ]
                    / streamProperty              [ primitivePathExpr ]
                    )
                    
-annotationExpr = annotation
+annotationExpr = annotationInQuery
                  [ collectionPathExpr
                  / singleNavigationExpr
                  / complexPathExpr
                  / primitivePathExpr
                  ]
                  
-annotation          = AT [ namespace "." ] termName [ '#' annotationQualifier ]
-annotationQualifier = odataIdentifier                
+annotationInQuery    = AT [ namespace "." ] termName [ HASH annotationQualifier ]
+annotationInFragment = AT [ namespace "." ] termName [ "#"  annotationQualifier ]
+annotationQualifier  = odataIdentifier                
                    
 inscopeVariableExpr  = implicitVariableExpr 
                      / parameterAlias
@@ -1107,6 +1112,7 @@ AT     = "@" / "%40"
 COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
+HASH   = "%23" ; the # character is not allowed in the query part
 SIGN   = "+" / "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
