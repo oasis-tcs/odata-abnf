@@ -120,9 +120,6 @@
     <Match>!special</Match>
     <Match>find</Match>
   </Constraint>
-  <Constraint Rule="entityAnnotation">
-    <Match>@Namespace.EntityTerm</Match>
-  </Constraint>
   <Constraint Rule="entityAnnotationInFragment">
     <Match>@Namespace.EntityTerm</Match>
   </Constraint>
