@@ -178,6 +178,8 @@
   </Constraint>
   <Constraint Rule="enumerationTypeName">
   </Constraint>
+  <Constraint Rule="keyPathLiteral">
+  </Constraint>
   <Constraint Rule="keyPropertyAlias">
   </Constraint>
   <Constraint Rule="lambdaVariableExpr">
@@ -434,6 +436,9 @@
   </TestCase>
   <TestCase Name="aggregation methods - $count virtual property and sum" Rule="queryOptions">
     <Input>$apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="collection-valued path" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales/Amount with sum as Total))</Input>
   </TestCase>
   <TestCase Name="custom aggregate" Rule="queryOptions">
     <Input>$apply=groupby((Customer/Country),aggregate(Amount with sum as Actual,Forecast))</Input>
