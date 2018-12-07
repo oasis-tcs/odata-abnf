@@ -95,10 +95,11 @@ applyTrafo = aggregateTrafo
            / topsumTrafo
            / customFunction
            
-aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
+aggregateTrafo  = 'aggregate' OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
+aggregateItem   = '$count' asAlias 
+                / aggregateExpr
 aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
                 / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
-                / '$count' asAlias 
                 / pathPrefix customAggregate [ customFrom asAlias ]
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
 aggregateWith   = RWS 'with' RWS aggregateMethod        

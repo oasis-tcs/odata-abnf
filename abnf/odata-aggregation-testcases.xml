@@ -423,7 +423,7 @@
   <TestCase Name="aggregation methods - $count segment and sum" Rule="queryOptions">
     <Input>$apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount,Sales(Amount with sum as Total)))</Input>
   </TestCase>
-  <TestCase Name="aggregation methods - $count virtual property and sum" Rule="queryOptions">
+  <TestCase Name="aggregation methods - $count only allowed on top level, not nested within path" Rule="queryOptions" FailAt="38">
     <Input>$apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount with sum as Total)))</Input>
   </TestCase>
   <TestCase Name="collection-valued path" Rule="queryOptions">
