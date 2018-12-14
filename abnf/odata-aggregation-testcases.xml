@@ -2,7 +2,7 @@
 <!--
 
   OData Aggregation ABNF Test Cases Version 4.0
-  
+
   Working Draft 04
   04 November 2015
 
@@ -418,12 +418,12 @@
     <Input>$apply=groupby((Customer/Country),aggregate(Amount with average as AverageAmount))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - $count segment" Rule="queryOptions">
-    <Input>$apply=groupby((Name),aggregate(Sales/$count as SalesCount))</Input>
+    <Input>$apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - $count segment and sum" Rule="queryOptions">
-    <Input>$apply=groupby((Name),aggregate(Sales/$count as SalesCount,Sales(Amount with sum as Total)))</Input>
+    <Input>$apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount,Sales(Amount with sum as Total)))</Input>
   </TestCase>
-  <TestCase Name="aggregation methods - $count virtual property and sum" Rule="queryOptions">
+  <TestCase Name="aggregation methods - $count only allowed on top level, not nested within path" Rule="queryOptions" FailAt="38">
     <Input>$apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount with sum as Total)))</Input>
   </TestCase>
   <TestCase Name="collection-valued path" Rule="queryOptions">
