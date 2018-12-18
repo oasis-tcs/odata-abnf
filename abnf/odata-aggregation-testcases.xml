@@ -183,6 +183,7 @@
   <Constraint Rule="keyPropertyAlias">
   </Constraint>
   <Constraint Rule="lambdaVariableExpr">
+  <Match>p</Match>
   </Constraint>
   <Constraint Rule="namespacePart">
     <Match>Aggregation</Match>
@@ -535,5 +536,8 @@
   </TestCase>
   <TestCase Name="compute/aggregate within a group - ..." Rule="queryOptions">
     <Input>$apply=groupby((Region),compute(aggregate(SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
+  </TestCase>
+  <TestCase Name="aggregate within filter and lambda" Rule="queryOptions">
+    <Input>$filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)</Input>
   </TestCase>
 </TestSuite>
