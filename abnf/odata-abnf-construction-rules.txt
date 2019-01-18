@@ -686,18 +686,18 @@ arrayOrObject = array
 
 array = begin-array 
         [ valueInUrl *( value-separator valueInUrl ) ] 
-                  end-array
+        end-array
 
 object = begin-object
          [ member *( value-separator member ) ]
-               end-object
+         end-object
 
 member = stringInUrl name-separator valueInUrl
 
 valueInUrl = stringInUrl
            / commonExpr            
 
-; JSON syntax: adapted to URI restrictions from [RFC4627]                 
+; JSON syntax: adapted to URI restrictions from [RFC8259]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )
 
