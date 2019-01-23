@@ -85,9 +85,7 @@
     <Match>AveragePrice</Match>
     <Match>AvgAmt</Match>
     <Match>CountryPopulation</Match>
-    <Match>CustomerAmount</Match>
     <Match>CustomerCountryAverage</Match>
-    <Match>CustomerYearAmount</Match>
     <Match>DailyAverage</Match>
     <Match>DistinctProducts</Match>
     <Match>ItemAmount</Match>
@@ -96,16 +94,9 @@
     <Match>MonthlyAverage</Match>
     <Match>ProductNames</Match>
     <Match>Profit</Match>
-    <Match>RelativeAmount</Match>
-    <Match>RelativeOrderSize</Match>
-    <Match>RegionAmount</Match>
-    <Match>RevenueContribution</Match>
-    <Match>RevenueTrend</Match>
     <Match>SalesCount</Match>
-    <Match>Stuff</Match>
     <Match>Tax</Match>
     <Match>Total</Match>
-    <Match>TotalAmount</Match>
     <Match>TotalPlannedRevenue</Match>
     <Match>TotalPopulation</Match>
     <Match>WeekDay</Match>
@@ -183,7 +174,6 @@
   <Constraint Rule="keyPropertyAlias">
   </Constraint>
   <Constraint Rule="lambdaVariableExpr">
-  <Match>p</Match>
   </Constraint>
   <Constraint Rule="namespacePart">
     <Match>Aggregation</Match>
@@ -222,10 +212,8 @@
     <Match>Price</Match>
     <Match>ProductID</Match>
     <Match>Quantity</Match>
-    <Match>Region</Match>
     <Match>Revenue</Match>
     <Match>SalesArea</Match>
-    <Match>SalesNumber</Match>
     <Match>Shipped</Match>
     <Match>Status</Match>
     <Match>Street</Match>
@@ -509,35 +497,5 @@
   </TestCase>
   <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
     <Input>Categories?$expand=Products($apply=aggregate(Price with average as AveragePrice))</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate after grouping - https://issues.oasis-open.org/browse/ODATA-1244" Rule="queryOptions">
-    <Input>$apply=groupby((Customer),aggregate(Amount with sum as CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with sum) as RevenueContribution)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate within a group" Rule="queryOptions">
-    <Input>$apply=groupby((Customer,Year),aggregate(Amount with sum as CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div aggregate(CustomerYearAmount with sum) as RevenueTrend))</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Amount with average) as RelativeOrderSize)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set with custom aggregate" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Budget) as RelativeAmount)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set with related custom aggregate" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Product/Budget) as RelativeAmount)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set with from" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Amount with sum from Time with average) as RelativeAmount)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set with $count" Rule="queryOptions">
-    <Input>$apply=compute(aggregate($count) as SalesCount)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate across input set with $count" Rule="queryOptions">
-    <Input>$apply=groupby((Customer),compute(aggregate($count) as SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as TotalAmount)</Input>
-  </TestCase>
-  <TestCase Name="compute/aggregate within a group - ..." Rule="queryOptions">
-    <Input>$apply=groupby((Region),compute(aggregate(SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
-  </TestCase>
-  <TestCase Name="aggregate within filter and lambda" Rule="queryOptions">
-    <Input>$filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)</Input>
   </TestCase>
 </TestSuite>

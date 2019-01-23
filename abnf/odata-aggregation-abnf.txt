@@ -72,8 +72,6 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ expressionAlias / customAggregate
 
-methodCallExpr =/ computeAggregateMethodCallExpr
-
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
@@ -97,7 +95,6 @@ applyTrafo = aggregateTrafo
            / topsumTrafo
            / customFunction
            
-
 aggregateTrafo  = 'aggregate' OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = '$count' asAlias 
                 / aggregateExpr
@@ -130,13 +127,7 @@ pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedCompl
                  / navigationProperty [ "/" qualifiedEntityTypeName  ] 
                    
 computeTrafo = 'compute' OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE     
-computeExpr  = commonExpr asAlias
-
-computeAggregateMethodCallExpr = 'aggregate' OPEN BWS computeAggregateExpr BWS CLOSE
-computeAggregateExpr = '$count'
-                     / commonExpr aggregateWith [ aggregateFrom ]
-                     / [ inscopeVariableExpr "/" ] pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
-                     / [ inscopeVariableExpr "/" ] pathPrefix customAggregate [ customFrom ]
+computeExpr  = commonExpr asAlias             
                            
 bottomcountTrafo   = 'bottomcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottompercentTrafo = 'bottompercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
