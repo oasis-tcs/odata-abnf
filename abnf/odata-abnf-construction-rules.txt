@@ -359,8 +359,8 @@ selectItem     = STAR
                      / optionallyQualifiedActionName   
                      / optionallyQualifiedFunctionName  
                      )
-selectProperty = primitiveProperty  
-               / primitiveColProperty [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]
+selectProperty = primitiveProperty / primitiveAnnotationInQuery
+               / ( primitiveColProperty / primitiveColAnnotationInQuery ) [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]
                / navigationProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
                             / "/" selectProperty 
@@ -397,6 +397,9 @@ customValue       = *( qchar-no-AMP )
 
 complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
 entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
+
+primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
+primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
      
 ;------------------------------------------------------------------------------
 ; 3. Context URL Fragments
