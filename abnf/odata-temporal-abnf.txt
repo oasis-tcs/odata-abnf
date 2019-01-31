@@ -2,7 +2,7 @@
 ; OData Temporal ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
 ;  Working Draft 01
-;  29 April 2015
+;  31 January 2019
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -10,14 +10,14 @@
 ;   https://www.oasis-open.org/committees/odata
 ;
 ; Chairs:
-;   - Barbara Hartel (barbara.hartel@sap.com), SAP AG
-;   - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
+;   - Ralf Handl (ralf.handl@sap.com), SAP SE
+;   - Michael Pizzo (mikep@microsoft.com), Microsoft
 ;
 ; Editors:
-;   - Ralf Handl (ralf.handl@sap.com), SAP AG
+;   - Ralf Handl (ralf.handl@sap.com), SAP SE
 ;   - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
 ;   - Michael Pizzo (mikep@microsoft.com), Microsoft
-;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP AG
+;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
 ;
 ; Additional artifacts: 
 ;   This grammar is one component of a Work Product which consists of:
@@ -28,12 +28,12 @@
 ;
 ; Related work:
 ;   This specification is related to:
-;   - OData Version 4.0 Part 1: Protocol
-;   - OData Version 4.0 Part 2: URL Conventions
-;   - OData Version 4.0 Part 3: CSDL
-;   - OData ABNF Construction Rules Version 4.0
-;   - OData Core Vocabulary
-;   - OData JSON Format Version 4.0
+;   - OData Version 4.01 Part 1: Protocol
+;   - OData Version 4.01 Part 2: URL Conventions
+;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
+;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
+;   - OData JSON Format Version 4.01
+;   - OData ABNF Construction Rules Version 4.01
 ;   This specification replaces or supersedes:
 ;   - None
 ;
@@ -52,7 +52,7 @@
 ;
 ; Contents:
 ;   1. New alternatives for OData ABNF Construction Rules
-;   2. System Query Options
+;   2. Temporal System Query Options 
 ;
 ;------------------------------------------------------------------------------
 
@@ -60,35 +60,33 @@
 ; 1. New alternatives for OData ABNF Construction Rules
 ;------------------------------------------------------------------------------
 
-systemQueryOption =/ from 
-                   / to 
-                   / systemfrom 
-                   / systemto
+systemQueryOption =/ temporalOption
 
-contextFragment =/ timeseries
+expandOption =/ temporalOption
+
+temporalOption = at-option
+               / from 
+               / to 
+               / systemat
+               / systemfrom 
+               / systemto
 
 
 ;------------------------------------------------------------------------------
-; 2. System Query Options
+; 2. Temporal System Query Options
 ;------------------------------------------------------------------------------
 
+at-option  = '$at'         EQ temporalExpr
 from       = '$from'       EQ temporalExpr
 to         = '$to'         EQ temporalExpr
+systemat   = '$systemat'   EQ temporalExpr
 systemfrom = '$systemfrom' EQ temporalExpr
 systemto   = '$systemto'   EQ temporalExpr
 
 temporalExpr = 'min' 
              / 'max' 
-             / 'now' 
              / dateTimeOffsetValue 
              / dateValue
-
-
-;------------------------------------------------------------------------------
-; 3. Context URL Fragments
-;------------------------------------------------------------------------------
-
-timeseries = entitySet [ selectList ] [ '/$entity' ] '/$timeseries'
 
 
 ;------------------------------------------------------------------------------
