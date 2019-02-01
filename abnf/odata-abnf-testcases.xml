@@ -1993,6 +1993,9 @@
   <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
     <Input>$search=9,81</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
+    <Input>$search=brand-new</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - $ is optional" Rule="queryOptions">
     <Input>search=blue</Input>
   </TestCase>

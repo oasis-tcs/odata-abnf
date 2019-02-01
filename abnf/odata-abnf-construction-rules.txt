@@ -346,7 +346,7 @@ searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 ; This includes Unicode characters of categories L or N using UTF-8 and percent-encoding.
 ; The words AND, OR, and NOT are not a valid searchWord.
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
-searchWord   = 1*( ALPHA / DIGIT / COMMA / "." / pct-encoded )
+searchWord   = 1*( ALPHA / DIGIT / COMMA / "." / "-" / pct-encoded )
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
@@ -689,18 +689,18 @@ arrayOrObject = array
 
 array = begin-array 
         [ valueInUrl *( value-separator valueInUrl ) ] 
-                  end-array
+        end-array
 
 object = begin-object
          [ member *( value-separator member ) ]
-               end-object
+         end-object
 
 member = stringInUrl name-separator valueInUrl
 
 valueInUrl = stringInUrl
            / commonExpr            
 
-; JSON syntax: adapted to URI restrictions from [RFC4627]                 
+; JSON syntax: adapted to URI restrictions from [RFC8259]                 
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )
 
