@@ -146,28 +146,25 @@
   <Constraint Rule="streamProperty">
   </Constraint>
 
-  <TestCase Name="Temporal - from now" Rule="odataRelativeUri">
-    <Input>Employees?$from=now</Input>
+  <TestCase Name="Temporal - at" Rule="odataRelativeUri">
+    <Input>Employees?$at=2019-01-30</Input>
   </TestCase>
-  <TestCase Name="Temporal - from now to max" Rule="odataRelativeUri">
-    <Input>Employees?$from=now&amp;$to=max</Input>
+  <TestCase Name="Temporal - at with expand" Rule="odataRelativeUri">
+    <Input>Employees?$at=2019-01-30&amp;$expand=Department($at=2013-01-01)</Input>
+  </TestCase>
+  <TestCase Name="Temporal - from and to" Rule="odataRelativeUri">
+    <Input>Employees?$from=min&amp;$to=max</Input>
+  </TestCase>
+  <TestCase Name="Temporal - systemat" Rule="odataRelativeUri">
+    <Input>Employees?$systemat=2019-01-30T11:22Z</Input>
   </TestCase>
   <TestCase Name="Temporal - systemfrom and systemto" Rule="odataRelativeUri">
-    <Input>Employees?$systemfrom=min&amp;$systemto=now</Input>
+    <Input>Employees?$systemfrom=min&amp;$systemto=max</Input>
   </TestCase>
   <TestCase Name="Temporal - from with date" Rule="odataRelativeUri">
     <Input>Employees?$from=2012-07-26</Input>
   </TestCase>
   <TestCase Name="Temporal - from with datetimestamp" Rule="odataRelativeUri">
     <Input>Employees?$from=2012-07-26T09:00:00.00-08:00</Input>
-  </TestCase>
-  <TestCase Name="Context URL fragment - collection of time series" Rule="timeseries">
-    <Input>Employees/$timeseries</Input>
-  </TestCase>
-  <TestCase Name="Context URL fragment - collection of time series" Rule="timeseries">
-    <Input>Employees(Title,Department(Name))/$timeseries</Input>
-  </TestCase>
-  <TestCase Name="Context URL fragment - entity time series" Rule="timeseries">
-    <Input>Employees/$entity/$timeseries</Input>
   </TestCase>
 </TestSuite>
