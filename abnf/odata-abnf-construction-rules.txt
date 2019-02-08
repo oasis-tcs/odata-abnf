@@ -415,7 +415,7 @@ contextFragment = 'Collection($ref)'
                 / entitySet ( '/$deletedEntity' / '/$link' / '/$deletedLink' )
                 / entitySet keyPredicate "/" contextPropertyPath [ selectList ]
                 / entitySet [ selectList ] [ '/$entity' / '/$delta' ]
-                
+
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
             
 containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation
@@ -1004,7 +1004,7 @@ fullPointLiteral = sridLiteral pointLiteral
 sridLiteral      = "SRID" EQ 1*5DIGIT SEMI
 pointLiteral     ="Point" pointData
 pointData        = OPEN positionLiteral CLOSE
-positionLiteral  = doubleValue SP doubleValue  ; longitude, then latitude
+positionLiteral  = doubleValue SP doubleValue [ SP doubleValue ] [ SP doubleValue ] ; longitude, latitude, altitude/elevation (optional), linear referencing measure (optional)
 
 geographyPolygon   = geographyPrefix SQUOTE fullPolygonLiteral SQUOTE
 fullPolygonLiteral = sridLiteral polygonLiteral
