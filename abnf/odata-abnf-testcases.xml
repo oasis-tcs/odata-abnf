@@ -1996,6 +1996,33 @@
   <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
     <Input>$search=brand-new</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - AND is a word here, not an operator" Rule="queryOptions">
+    <Input>$search=AND</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - OR is a word here, not an operator" Rule="queryOptions">
+    <Input>$search=OR</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - NOT is a word here, not an operator" Rule="queryOptions">
+    <Input>$search=NOT</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - NOT is an operator here, search for items that do not match blue" Rule="queryOptions">
+    <Input>$search=NOT blue</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - NOT is an operator here, search for items that do not match blue" Rule="queryOptions">
+    <Input>$search=NOT (blue green)</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT" Rule="queryOptions">
+    <Input>$search=NOT NOT</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - AND and OR are words here, search for items that match both AND and OR" Rule="queryOptions">
+    <Input>$search=AND OR</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - AND and OR are words here, search for items that match both AND and OR" Rule="queryOptions">
+    <Input>$search=OR AND</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - AND and NOT are words here, search for items that match AND or NOT" Rule="queryOptions">
+    <Input>$search=AND OR NOT</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - $ is optional" Rule="queryOptions">
     <Input>search=blue</Input>
   </TestCase>
