@@ -330,22 +330,29 @@ inlinecount = ( "$count" / "count" ) EQ booleanValue
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
 search     = ( "$search" / "search" ) EQ BWS searchExpr
-searchExpr = ( OPEN BWS searchExpr BWS CLOSE
-             / searchTerm 
+searchExpr = ( searchParenExpr
+             / searchNegateExpr
+             / searchPhrase
+             / searchWord 
              ) [ searchOrExpr
                / searchAndExpr
                ]
 
+searchParenExpr = OPEN BWS searchExpr BWS CLOSE
+
+; NOT is a unary operator if followed by a search expression
+searchNegateExpr = 'NOT' RWS searchExpr
+
+; AND and OR are binary operators if they appear between search expressions
 searchOrExpr  = RWS 'OR'  RWS searchExpr
 searchAndExpr = RWS [ 'AND' RWS ] searchExpr
 
-searchTerm   = [ 'NOT' RWS ] ( searchPhrase / searchWord )
 searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 
 ; A searchWord is a sequence of one or more letters, digits, commas, or dots.
 ; This includes Unicode characters of categories L or N using UTF-8 and percent-encoding.
-; The words AND, OR, and NOT are not a valid searchWord.
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
+; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord   = 1*( ALPHA / DIGIT / COMMA / "." / "-" / pct-encoded )
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
