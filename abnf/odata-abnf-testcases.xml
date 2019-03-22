@@ -165,6 +165,7 @@
     <Match>Currency</Match>
     <Match>Customer</Match>
     <Match>Customers</Match>
+    <Match>Manager</Match>
     <Match>Product</Match>
     <Match>ProductGroup</Match>
     <Match>Supplier</Match>
@@ -240,6 +241,7 @@
     <Match>@i</Match>
     <Match>@key</Match>
     <Match>@ManagerID</Match>
+    <Match>@m</Match>
     <Match>@p1</Match>
     <Match>@ref</Match>
     <Match>@title</Match>
@@ -1152,9 +1154,6 @@
   </TestCase>
   <TestCase Name="4.11 Inheritance - $expand" Rule="odataRelativeUri">
     <Input>Categories?$expand=Products/Model.BestSellingProduct($select=Name)</Input>
-  </TestCase>
-  <TestCase Name="4.11 Inheritance - $expand" Rule="odataRelativeUri">
-    <Input>Categories?$expand=Products($filter=startswith(Name,'P'))</Input>
   </TestCase>
   <TestCase Name="4.11 Inheritance - $expand on complex resource" Rule="odataRelativeUri">
     <Input>TheMostPopularAddresses()?$expand=Model.AddressWithLocation/Country</Input>
@@ -2157,6 +2156,12 @@
   </TestCase>
   <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
     <Input>Products/Model.WithIngredients(Ingredients=@i)?@i=["Carrots","Ginger","Oranges"]</Input>
+  </TestCase>
+  <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
+    <Input>Categories?$expand=Products(@foo=$this;$filter=@foo/Price gt 3)</Input>
+  </TestCase>
+  <TestCase Name="5.3 Parameter Aliases" Rule="odataRelativeUri">
+    <Input>Employees?$expand=Manager(@m=$this;$expand=DirectReports($filter=@m/FirstName eq FirstName))</Input>
   </TestCase>
   <TestCase Name="function with complex parameter - no properties" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)?@c={}</Input>
