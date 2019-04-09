@@ -1995,6 +1995,18 @@
   <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
     <Input>$search=brand-new</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
+    <Input>$search=$search</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with $" Rule="queryOptions">
+    <Input>$search=brand-new</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with '" Rule="queryOptions">
+    <Input>$search=Daniel's</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with _" Rule="queryOptions">
+    <Input>$search=__FILE__</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - AND is a word here, not an operator" Rule="queryOptions">
     <Input>$search=AND</Input>
   </TestCase>
