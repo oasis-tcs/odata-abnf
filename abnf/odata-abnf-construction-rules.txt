@@ -353,7 +353,7 @@ searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 ; Percent-encoding is allowed, and required for characters with special meaning in the query part of a URL, especially the "&" and "#".
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
-searchWord   = [ "$" ] 1*( unreserved / pct-encoded / "!" / "$" / "'" / "*" / "+" / "," / ";" / "=" / ":" / "@" )
+searchWord   = 1*( unreserved / pct-encoded / "!" / "$" / "'" / "*" / "+" / "," / ";" / "=" / ":" / "@" )
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
