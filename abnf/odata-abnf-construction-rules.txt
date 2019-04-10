@@ -292,7 +292,7 @@ expandPath        = *( ( complexProperty / complexColProperty / optionallyQualif
                       ]                    
                     )
 expandCountOption = filter
-                  / search
+                  / search-nested
 expandRefOption   = expandCountOption
                   / orderby
                   / skip 
@@ -329,7 +329,9 @@ inlinecount = ( "$count" / "count" ) EQ booleanValue
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search     = ( "$search" / "search" ) EQ BWS searchExpr
+search        = ( "$search" / "search" ) EQ BWS ( searchExprIncomplete / searchExpr )
+search-nested = ( "$search" / "search" ) EQ BWS searchExpr
+
 searchExpr = ( searchParenExpr
              / searchNegateExpr
              / searchPhrase
@@ -337,7 +339,6 @@ searchExpr = ( searchParenExpr
              ) [ searchOrExpr
                / searchAndExpr
                ]
-
 searchParenExpr = OPEN BWS searchExpr BWS CLOSE
 
 ; NOT is a unary operator if followed by a search expression
@@ -349,11 +350,17 @@ searchAndExpr = RWS [ 'AND' RWS ] searchExpr
 
 searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 
-; A searchWord is a sequence of one or more non-whitespace characters, excluding the parentheses "(", ")", and double-quotes %x22.
-; Percent-encoding is allowed, and required for characters with special meaning in the query part of a URL, especially the "&" and "#".
+; A searchWord is a sequence of one or more non-whitespace characters, excluding 
+; - literal or percent-encoded parentheses "(", "%28", "%29", ")"
+; - literal or percent-encoded double-quotes '"' and "%22"
+; - the semicolon ";"
+; Percent-encoding is allowed, and required for characters with special meaning in the query part of a URL, especially "&" and "#".
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
-searchWord   = 1*( unreserved / pct-encoded / "!" / "$" / "'" / "*" / "+" / "," / ";" / "=" / ":" / "@" )
+searchWord   = 1*( unreserved / pct-encoded / "!" / "$" / "'" / "*" / "+" / "," / "=" / ":" / "@" )
+
+searchExprIncomplete = 1*( qchar-no-AMP-DQUOTE / '"' / "%22" / SP )
+
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
@@ -373,7 +380,7 @@ selectProperty = primitiveProperty / primitiveAnnotationInQuery
                             / "/" selectProperty 
                             ]
 selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ] 
-selectOptionPC = filter / search / inlinecount / orderby / skip / top 
+selectOptionPC = filter / search-nested / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
                / compute / select / expand / aliasAndValue
 
@@ -1124,7 +1131,7 @@ COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
 SIGN   = "+" / "%2B" / "-"
-SEMI   = ";" / "%3B"
+SEMI   = ";"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"
 

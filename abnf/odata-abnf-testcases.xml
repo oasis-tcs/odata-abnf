@@ -2049,10 +2049,13 @@
   <TestCase Name="5.1.7 Search - phrase with escaped backslash" Rule="queryOptions">
     <Input>$search="blue\\green"</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="queryOptions" FailAt="14">
+  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="search">
     <Input>$search="blue"green"</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="queryOptions" FailAt="16">
+  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="search-nested" FailAt="14">
+    <Input>$search="blue"green"</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="search-nested" FailAt="16">
     <Input>$search="blue%22green"</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - implicit AND" Rule="queryOptions">
@@ -2061,13 +2064,13 @@
   <TestCase Name="5.1.7 Search - implicit AND, encoced" Rule="queryOptions">
     <Input>$search=blue%20green</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - AND" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - AND" Rule="search-nested">
     <Input>$search=blue AND green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - OR" Rule="queryOptions">
     <Input>$search=blue OR green</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - NOT" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - NOT" Rule="search-nested">
     <Input>$search=blue NOT green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - only NOT" Rule="queryOptions">
@@ -2076,7 +2079,7 @@
   <TestCase Name="5.1.7 Search - multiple" Rule="queryOptions">
     <Input>$search=foo AND bar OR foo AND baz OR that AND bar OR that AND baz</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - multiple" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - multiple" Rule="search-nested">
     <Input>$search=(foo OR that) AND (bar OR baz)</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - grouping" Rule="queryOptions">
@@ -2093,6 +2096,18 @@
   </TestCase>
   <TestCase Name="5.1.7 Search - UTF-8 characters: Greek Capital Letter Delta (Δ)" Rule="queryOptions">
     <Input>$search=%CE%94</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search="</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search="bl</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search="blue%20p</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search=(</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - on entity set" Rule="odataUri">
     <Input>http://serviceRoot/Products?$search=blue</Input>
