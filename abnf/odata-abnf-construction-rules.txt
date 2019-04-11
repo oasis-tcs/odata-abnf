@@ -329,8 +329,8 @@ inlinecount = ( "$count" / "count" ) EQ booleanValue
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search        = ( "$search" / "search" ) EQ BWS ( searchExprIncomplete / searchExpr )
-search-nested = ( "$search" / "search" ) EQ BWS searchExpr
+search        = ( "$search" / "search" ) EQ BWS ( searchExpr-freestyle        / searchExpr )
+search-nested = ( "$search" / "search" ) EQ BWS ( searchExpr-freestyle-nested / searchExpr )
 
 searchExpr = ( searchParenExpr
              / searchNegateExpr
@@ -357,9 +357,10 @@ searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 ; Percent-encoding is allowed, and required for characters with special meaning in the query part of a URL, especially "&" and "#".
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
-searchWord   = 1*( unreserved / pct-encoded / "!" / "$" / "'" / "*" / "+" / "," / "=" / ":" / "@" )
+searchWord   = 1*( unreserved / pct-encoded / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "'" / "=" )
 
-searchExprIncomplete = 1*( qchar-no-AMP-DQUOTE / '"' / "%22" / SP )
+searchExpr-freestyle        = 1*( unreserved / pct-encoded / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "'" / "=" / '"' / SP / "(" / ")" )
+searchExpr-freestyle-nested = 1*( unreserved / pct-encoded / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "'" / "=" / '"' / SP )
 
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
