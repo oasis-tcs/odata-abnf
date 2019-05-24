@@ -2061,8 +2061,14 @@
   <TestCase Name="5.1.7 Search - simple phrase" Rule="queryOptions">
     <Input>$search="blue%20green%22</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" Rule="queryOptions">
+    <Input>$search="blue</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" Rule="queryOptions">
+    <Input>$search=%22blue</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes - still ok" Rule="queryOptions">
-    <Input>$search="blue"green"</Input>
+    <Input>$search="blue" "green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes - still ok" Rule="searchExpr" FailAt="8">
     <Input>"blue%22green"</Input>
@@ -2123,9 +2129,6 @@
   </TestCase>
   <TestCase Name="5.1.7 Search - nested $search must not contain unbalanced parentheses" Rule="queryOptions" FailAt="26">
     <Input>$expand=Manager($search=gr(een)</Input>
-  </TestCase>
-  <TestCase Name="5.1.7 Search - expression not conforming to recommended OData search syntax - still ok" Rule="search">
-    <Input>$search="blue"green"</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - on entity set" Rule="odataUri">
     <Input>http://serviceRoot/Products?$search=blue</Input>
