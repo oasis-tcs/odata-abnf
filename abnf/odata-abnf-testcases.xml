@@ -78,6 +78,7 @@
   <DisableTrace Rule="identifierCharacter" />
   <DisableTrace Rule="ALPHA" />
   <DisableTrace Rule="DIGIT" />
+  <DisableTrace Rule="unreserved" />
 
   <!-- constraints needed only for rule alternatives added by data aggregation -->
   <Constraint Rule="customAggregate" />
