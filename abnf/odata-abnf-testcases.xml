@@ -2059,20 +2059,23 @@
   <TestCase Name="5.1.7 Search - simple phrase" Rule="queryOptions">
     <Input>$search="blue%20green"</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - simple phrase" Rule="queryOptions">
-    <Input>$search="blue%20green%22</Input>
+  <TestCase Name="5.1.7 Search - simple phrase" Rule="search">
+    <Input>$search="blue green"</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" Rule="queryOptions">
+    <Input>$search='"blue'</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" FailAt="13" Rule="search">
     <Input>$search="blue</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" FailAt="15" Rule="search">
     <Input>$search=%22blue</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes - still ok" Rule="queryOptions">
-    <Input>$search="blue" "green</Input>
+    <Input>$search='"blue" "green'</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes - still ok" Rule="searchExpr" FailAt="8">
-    <Input>"blue%22green"</Input>
+  <TestCase Name="5.1.7 Search - phrase with double-quote without whitespace" Rule="searchExpr" FailAt="13">
+    <Input>"blue%22green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - implicit AND" Rule="queryOptions">
     <Input>$search=blue green</Input>
@@ -2114,16 +2117,16 @@
     <Input>$search=%CE%94</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
-    <Input>$search="</Input>
+    <Input>$search='"'</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
-    <Input>$search="bl</Input>
+    <Input>$search='"bl'</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
-    <Input>$search="blue%20p</Input>
+    <Input>$search='"blue%20p'</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
-    <Input>$search=(</Input>
+    <Input>$search='('</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - nested $search may contain balanced parentheses" Rule="queryOptions">
     <Input>$expand=Manager($search=(green))</Input>
