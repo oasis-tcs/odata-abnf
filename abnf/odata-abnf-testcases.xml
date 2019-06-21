@@ -2134,6 +2134,15 @@
   <TestCase Name="5.1.7 Search - nested $search must not contain unbalanced parentheses" Rule="queryOptions" FailAt="26">
     <Input>$expand=Manager($search=gr(een)</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search must not contain unbalanced parentheses unless single-quoted" Rule="queryOptions">
+    <Input>$expand=Manager($search='gr(een')</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search simple term with percent-encoded semicolon" Rule="queryOptions">
+    <Input>$expand=Manager($search=a%3Bb)</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search simple term with percent-encoded semicolon" Rule="queryOptions">
+    <Input>$expand=Manager($search='a%3Bb')</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - on entity set" Rule="odataUri">
     <Input>http://serviceRoot/Products?$search=blue</Input>
   </TestCase>
