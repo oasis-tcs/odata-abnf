@@ -329,7 +329,7 @@ inlinecount = ( "$count" / "count" ) EQ booleanValue
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search        = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete )
+search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete )
 
 searchExpr = ( searchParenExpr
              / searchNegateExpr
@@ -347,7 +347,7 @@ searchNegateExpr = 'NOT' RWS searchExpr
 searchOrExpr  = RWS 'OR'  RWS searchExpr
 searchAndExpr = RWS [ 'AND' RWS ] searchExpr
 
-searchPhrase = quotation-mark 1*( qchar-no-AMP / SP ) quotation-mark
+searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 
 ; A searchWord is a sequence of one or more non-whitespace characters, excluding 
 ; - literal or percent-encoded parentheses "(", "%28", "%29", ")"
@@ -356,7 +356,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP / SP ) quotation-mark
 ; Percent-encoding is allowed, and required for characters with special meaning in the query part of a URL, especially "&" and "#".
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
-searchWord = searchChar *( searchChar / "'" )
+searchWord = searchChar *( searchChar / SQUOTE )
 searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
@@ -1208,10 +1208,11 @@ pchar-no-SQUOTE       = unreserved / pct-encoded-no-SQUOTE / other-delims / "$" 
 pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG 
                       / "%" "2" ( "0" / "1" / "2" / "3" / "4" / "5" / "6" /   "8" / "9" / A-to-F )
 
-qchar-no-AMP              = unreserved / pct-encoded / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
-qchar-no-AMP-EQ           = unreserved / pct-encoded / other-delims / ":" / "@" / "/" / "?" / "$" / "'"
-qchar-no-AMP-EQ-AT-DOLLAR = unreserved / pct-encoded / other-delims / ":" /       "/" / "?" /       "'"
-qchar-no-AMP-SQUOTE       = unreserved / pct-encoded / other-delims / ":" / "@" / "/" / "?" / "$" /       "="
+qchar-no-AMP              = unreserved / pct-encoded           / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
+qchar-no-AMP-EQ           = unreserved / pct-encoded           / other-delims / ":" / "@" / "/" / "?" / "$" / "'"
+qchar-no-AMP-EQ-AT-DOLLAR = unreserved / pct-encoded           / other-delims / ":" /       "/" / "?" /       "'"
+qchar-no-AMP-SQUOTE       = unreserved / pct-encoded           / other-delims / ":" / "@" / "/" / "?" / "$" /       "="
+qchar-no-AMP-DQUOTE       = unreserved / pct-encoded-no-DQUOTE / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
 
 qchar-unescaped       = unreserved / pct-encoded-unescaped / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
 pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" / A-to-F ) HEXDIG 
