@@ -78,6 +78,7 @@
   <DisableTrace Rule="identifierCharacter" />
   <DisableTrace Rule="ALPHA" />
   <DisableTrace Rule="DIGIT" />
+  <DisableTrace Rule="unreserved" />
 
   <!-- constraints needed only for rule alternatives added by data aggregation -->
   <Constraint Rule="customAggregate" />
@@ -1236,13 +1237,17 @@
   <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call" Rule="odataRelativeUri">
     <Input>Categories(1)/Model.ProductsByColor(color=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases" Rule="odataRelativeUri">
+  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases"
+    Rule="odataRelativeUri"
+  >
     <Input>Categories(1)/Model.ProductsByColor/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - function import with parameter" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases" Rule="odataRelativeUri">
+  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases"
+    Rule="odataRelativeUri"
+  >
     <Input>TheBestProduct/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - Cross Join" Rule="odataRelativeUri">
@@ -1998,6 +2003,30 @@
   <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
     <Input>$search=brand-new</Input>
   </TestCase>
+  <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
+    <Input>$search=$search</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with $" Rule="queryOptions">
+    <Input>$search=brand-new</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with '" Rule="queryOptions">
+    <Input>$search=Daniel's</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with _" Rule="queryOptions">
+    <Input>$search=__FILE__</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with unencoded ampersand" Rule="queryOptions" FailAt="17">
+    <Input>$search=more&amp;more</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with percent-encoded ampersand" Rule="queryOptions">
+    <Input>$search=more%26more</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with unencoded semicolon" Rule="queryOptions" FailAt="9">
+    <Input>$search=a;b</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with percent-encoded semicolon" Rule="queryOptions">
+    <Input>$search=a%3Bb</Input>
+  </TestCase>
   <TestCase Name="5.1.7 Search - AND is a word here, not an operator" Rule="queryOptions">
     <Input>$search=AND</Input>
   </TestCase>
@@ -2013,7 +2042,9 @@
   <TestCase Name="5.1.7 Search - NOT is an operator here, search for items that do not match blue" Rule="queryOptions">
     <Input>$search=NOT (blue green)</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT"
+    Rule="queryOptions"
+  >
     <Input>$search=NOT NOT</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - AND and OR are words here, search for items that match both AND and OR" Rule="queryOptions">
@@ -2031,25 +2062,28 @@
   <TestCase Name="5.1.7 Search - simple phrase" Rule="queryOptions">
     <Input>$search="blue%20green"</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - simple phrase" Rule="queryOptions">
-    <Input>$search="blue%20green%22</Input>
+  <TestCase Name="5.1.7 Search - simple phrase" Rule="search">
+    <Input>$search="blue green"</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with escaped double-quote" Rule="queryOptions">
-    <Input>$search="blue\"green"</Input>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" Rule="queryOptions">
+    <Input>$search='"blue'</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with escaped backslash" Rule="queryOptions">
-    <Input>$search="blue\\green"</Input>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" FailAt="13" Rule="search">
+    <Input>$search="blue</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="queryOptions" FailAt="14">
-    <Input>$search="blue"green"</Input>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes" FailAt="15" Rule="search">
+    <Input>$search=%22blue</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - phrase with unescaped double-quote" Rule="queryOptions" FailAt="16">
-    <Input>$search="blue%22green"</Input>
+  <TestCase Name="5.1.7 Search - phrase with unbalanced double-quotes - still ok" Rule="queryOptions">
+    <Input>$search='"blue" "green'</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - phrase with double-quote without whitespace" Rule="searchExpr" FailAt="8">
+    <Input>"blue%22green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - implicit AND" Rule="queryOptions">
     <Input>$search=blue green</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - implicit AND, encoced" Rule="queryOptions">
+  <TestCase Name="5.1.7 Search - implicit AND, encoded" Rule="queryOptions">
     <Input>$search=blue%20green</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - AND" Rule="queryOptions">
@@ -2067,8 +2101,8 @@
   <TestCase Name="5.1.7 Search - multiple" Rule="queryOptions">
     <Input>$search=foo AND bar OR foo AND baz OR that AND bar OR that AND baz</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - multiple" Rule="queryOptions">
-    <Input>$search=(foo OR that) AND (bar OR baz)</Input>
+  <TestCase Name="5.1.7 Search - multiple" Rule="searchExpr">
+    <Input>(foo OR that) AND (bar OR baz) AND NOT quux</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - grouping" Rule="queryOptions">
     <Input>$search=foo AND (bar OR baz)</Input>
@@ -2084,6 +2118,33 @@
   </TestCase>
   <TestCase Name="5.1.7 Search - UTF-8 characters: Greek Capital Letter Delta (Δ)" Rule="queryOptions">
     <Input>$search=%CE%94</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search='"'</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search='"bl'</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search='"blue%20p'</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - incomplete expressions" Rule="queryOptions">
+    <Input>$search='('</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search may contain balanced parentheses" Rule="queryOptions">
+    <Input>$expand=Manager($search=(green))</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search must not contain unbalanced parentheses" Rule="queryOptions" FailAt="26">
+    <Input>$expand=Manager($search=gr(een)</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search must not contain unbalanced parentheses unless single-quoted" Rule="queryOptions">
+    <Input>$expand=Manager($search='gr(een')</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search simple term with percent-encoded semicolon" Rule="queryOptions">
+    <Input>$expand=Manager($search=a%3Bb)</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - nested $search simple term with percent-encoded semicolon" Rule="queryOptions">
+    <Input>$expand=Manager($search='a%3Bb')</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - on entity set" Rule="odataUri">
     <Input>http://serviceRoot/Products?$search=blue</Input>
