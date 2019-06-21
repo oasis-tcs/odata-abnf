@@ -977,7 +977,7 @@ day   = "0" oneToNine
 hour   = ( "0" / "1" ) DIGIT
        / "2" ( "0" / "1" / "2" / "3" ) 
 minute = zeroToFiftyNine
-second = zeroToFiftyNine       
+second = zeroToFiftyNine / "60" ; for leap seconds
 fractionalSeconds = 1*12DIGIT
 
 enum            = [ qualifiedEnumTypeName ] SQUOTE enumValue SQUOTE
