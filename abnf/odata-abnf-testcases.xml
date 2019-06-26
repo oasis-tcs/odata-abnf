@@ -409,6 +409,15 @@
   <TestCase Name="Binary - foobar" Rule="binary">
     <Input>binary'Zm9vYmFy'</Input>
   </TestCase>
+  <TestCase Name="Boolean - true" Rule="booleanValue">
+    <Input>true</Input>
+  </TestCase>
+  <TestCase Name="Boolean - false" Rule="booleanValue">
+    <Input>false</Input>
+  </TestCase>
+  <TestCase Name="Boolean - literals are case-insensitive" Rule="booleanValue">
+    <Input>tRUe</Input>
+  </TestCase>
   <TestCase Name="Date in URL or body" Rule="dateValue">
     <Input>2012-09-03</Input>
   </TestCase>
