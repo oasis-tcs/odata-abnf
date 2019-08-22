@@ -1947,7 +1947,7 @@
     <Input>$select=Address($select=Street,City,Namespace.AddressWithLocation/Location)</Input>
   </TestCase>
   <TestCase Name="5.1.3 Select - nested filter etc." Rule="select">
-    <Input>$select=Addresses($filter=startswith(City,'H');$top=5;$skip=0;$count=true;$orderby=$it;$search=blue;$expand=Country;@c=15)</Input>
+    <Input>$select=Addresses($filter=startswith(City,'H');$top=5;$skip=0;$count=true;$orderby=$it;$search=blue;@c=15)</Input>
   </TestCase>
   <TestCase Name="5.1.3 Select - annotations" Rule="select">
     <Input>$select=@Core.Messages($top=5)</Input>
