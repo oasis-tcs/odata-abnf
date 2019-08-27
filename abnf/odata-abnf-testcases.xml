@@ -2012,17 +2012,26 @@
   <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
     <Input>$search=brand-new</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - simple term" Rule="queryOptions">
-    <Input>$search=$search</Input>
-  </TestCase>
   <TestCase Name="5.1.7 Search - simple term with $" Rule="queryOptions">
-    <Input>$search=brand-new</Input>
+    <Input>$search=$search</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - simple term with '" Rule="queryOptions">
     <Input>$search=Daniel's</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - simple term with _" Rule="queryOptions">
     <Input>$search=__FILE__</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with $" Rule="queryOptions">
+    <Input>$search=$search</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with /" Rule="queryOptions">
+    <Input>$search=08/15</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with unencoded #" Rule="queryOptions" FailAt="8">
+    <Input>$search=#1</Input>
+  </TestCase>
+  <TestCase Name="5.1.7 Search - simple term with percent-encoded #" Rule="queryOptions">
+    <Input>$search=%231</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - simple term with unencoded ampersand" Rule="queryOptions" FailAt="17">
     <Input>$search=more&amp;more</Input>
