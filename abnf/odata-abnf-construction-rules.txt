@@ -382,7 +382,7 @@ selectProperty = primitiveProperty / primitiveAnnotationInQuery
 selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ] 
 selectOptionPC = filter / search / inlinecount / orderby / skip / top 
 selectOption   = selectOptionPC
-               / compute / select / expand / aliasAndValue
+               / compute / select / aliasAndValue
 
 allOperationsInSchema = namespace "." STAR                 
 
