@@ -578,7 +578,7 @@
     <Input>null</Input>
   </TestCase>
   <TestCase Name="String" Rule="string">
-    <Input>'ABCDEFGHIHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&amp;('')*+,;=@'</Input>
+    <Input>'ABCDEFGHIHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&amp;('')*+,;=:@'</Input>
   </TestCase>
   <TestCase Name="String" Rule="string">
     <Input>'O''Neil'</Input>
