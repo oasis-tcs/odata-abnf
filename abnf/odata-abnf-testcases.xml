@@ -3,7 +3,7 @@
 
   OData ABNF Test Cases Version 4.01 and 4.0
 
-  05 November 2019
+  07 April 2020
 
   Technical Committee:
   OASIS Open Data Protocol (OData) TC
@@ -2787,6 +2787,12 @@
   </TestCase>
   <TestCase Name="Preferences - maxpagesize - not negative" Rule="maxpagesizePreference" FailAt="18">
     <Input>odata.maxpagesize=-1</Input>
+  </TestCase>
+  <TestCase Name="Preferences - omit-values - defaults" Rule="preference">
+    <Input>omit-values=defaults</Input>
+  </TestCase>
+  <TestCase Name="Preferences - omit-values - nulls" Rule="preference">
+    <Input>omit-values=nulls</Input>
   </TestCase>
   <TestCase Name="Preferences - return minimal" Rule="preference">
     <Input>return=minimal</Input>

@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
 ; OData ABNF Construction Rules Version 4.01 and 4.0
 ;------------------------------------------------------------------------------
-; 05 November 2019
+; 07 April 2020
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -1071,6 +1071,7 @@ preference = allowEntityReferencesPreference
            / continueOnErrorPreference
            / includeAnnotationsPreference
            / maxpagesizePreference
+           / omitValuesPreference
            / respondAsyncPreference
            / returnPreference
            / trackChangesPreference
@@ -1093,7 +1094,9 @@ annotationIdentifier = [ excludeOperator ]
                        [ "#" odataIdentifier ]
 excludeOperator      = "-"
            
-maxpagesizePreference = [ "odata." ] "maxpagesize" EQ-h oneToNine *DIGIT         
+maxpagesizePreference = [ "odata." ] "maxpagesize" EQ-h oneToNine *DIGIT   
+
+omitValuesPreference = "omit-values" EQ-h ( "nulls" / "defaults" )      
 
 respondAsyncPreference = "respond-async"
 
