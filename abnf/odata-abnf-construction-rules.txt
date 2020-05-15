@@ -242,11 +242,11 @@ queryOption  = systemQueryOption
 
 batchOptions = batchOption *( "&" batchOption )   
 batchOption  = format
-             /customQueryOption   
+             / customQueryOption   
              
 metadataOptions = metadataOption *( "&" metadataOption )   
 metadataOption  = format
-                /customQueryOption   
+                / customQueryOption   
 
 entityOptions  = *( entityIdOption "&" ) id *( "&" entityIdOption )
 entityIdOption = format
