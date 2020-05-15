@@ -1,0 +1,2669 @@
+console: using console screen
+
+*** OPTIONS ***
+FLAGS
+ATTRIBUTES      /da        true
+ERRORS          /de        true
+GRAMMAR         /dg        true
+HELP            ?          false
+METRICS         /dm        true
+NO_ATTRIBUTES   /na        false
+OPCODES         /dopcodes  false
+STATE           /dstate    true
+STATISTICS      /dstats    true
+VALUES          /doptions  true
+VERBOSE         /dv        true
+VERSION         /version   false
+WARNINGS        /dw        true
+
+PARAMETERS
+C               /c=        <null>
+CPP             /cpp=      <null>
+JAVA            /java=     GrammarUnderTest
+JAVADOC         /javadoc=  <null>
+JAVASCRIPT      /js=       <null>
+INPUT           /in=       ../../../abnf/odata-temporal-abnf.txt
+LOGFILE         /log=      <null>
+PACKAGE         /package=  grammar
+WORKING_DIR     /dir=      grammar/
+
+[line no][offset, line len] :line
+[1][0, 80]         :;------------------------------------------------------------------------------<LF>
+[2][80, 53]        :; OData ABNF Construction Rules Version 4.01 and 4.0<LF>
+[3][133, 80]       :;------------------------------------------------------------------------------<LF>
+[4][213, 16]       :; 06 March 2018<LF>
+[5][229, 80]       :;------------------------------------------------------------------------------<LF>
+[6][309, 2]        :;<LF>
+[7][311, 23]       :; Technical Committee:<LF>
+[8][334, 40]       :;   OASIS Open Data Protocol (OData) TC<LF>
+[9][374, 48]       :;   https://www.oasis-open.org/committees/odata<LF>
+[10][422, 2]       :;<LF>
+[11][424, 10]      :; Chairs:<LF>
+[12][434, 46]      :;   - Ralf Handl (ralf.handl@sap.com), SAP SE<LF>
+[13][480, 53]      :;   - Michael Pizzo (mikep@microsoft.com), Microsoft<LF>
+[14][533, 2]       :;<LF>
+[15][535, 11]      :; Editors:<LF>
+[16][546, 46]      :;   - Ralf Handl (ralf.handl@sap.com), SAP SE<LF>
+[17][592, 53]      :;   - Michael Pizzo (mikep@microsoft.com), Microsoft<LF>
+[18][645, 56]      :;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE<LF>
+[19][701, 2]       :;<LF>
+[20][703, 25]      :; Additional artifacts: <LF>
+[21][728, 71]      :;   This grammar is one component of a Work Product which consists of:<LF>
+[22][799, 42]      :;   - OData Version 4.01 Part 1: Protocol<LF>
+[23][841, 49]      :;   - OData Version 4.01 Part 2: URL Conventions<LF>
+[24][890, 65]      :;   - OData ABNF Construction Rules Version 4.01 (this document)<LF>
+[25][955, 41]      :;   - OData ABNF Test Cases Version 4.01<LF>
+[26][996, 2]       :;<LF>
+[27][998, 16]      :; Related work:<LF>
+[28][1014, 47]     :;   This specification replaces or supersedes:<LF>
+[29][1061, 48]     :;   - OData ABNF Construction Rules Version 4.0<LF>
+[30][1109, 36]     :;   This work product is related to<LF>
+[31][1145, 86]     :;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01<LF>
+[32][1231, 85]     :;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01<LF>
+[33][1316, 37]     :;   - OData JSON Format Version 4.01<LF>
+[34][1353, 2]      :;<LF>
+[35][1355, 12]     :; Abstract:<LF>
+[36][1367, 75]     :;   The Open Data Protocol (OData) enables the creation of REST-based data<LF>
+[37][1442, 71]     :;   services, which allow resources, identified using Uniform Resource<LF>
+[38][1513, 73]     :;   Identifiers (URLs) and defined in a data model, to be published and <LF>
+[39][1586, 76]     :;   edited by Web clients using simple HTTP messages. This document defines<LF>
+[40][1662, 76]     :;   the URL syntax for requests and the serialization format for primitive <LF>
+[41][1738, 47]     :;   literals in request and response payloads.<LF>
+[42][1785, 2]      :;<LF>
+[43][1787, 12]     :; Overview:<LF>
+[44][1799, 80]     :;   This grammar uses the ABNF defined in RFC5234 with one extension: literals <LF>
+[45][1879, 78]     :;   enclosed in single quotes (e.g. '$metadata') are treated case-sensitive. <LF>
+[46][1957, 2]      :;<LF>
+[47][1959, 79]     :;   The following rules assume that URIs have been percent-encoding normalized<LF>
+[48][2038, 48]     :;   as described in section 6.2.2.2 of RFC3986 <LF>
+[49][2086, 57]     :;   (http://tools.ietf.org/html/rfc3986#section-6.2.2.2)<LF>
+[50][2143, 80]     :;   before applying the grammar to them, i.e. all characters in the unreserved <LF>
+[51][2223, 65]     :;   set (see rule "unreserved" below) are plain literals and NOT<LF>
+[52][2288, 22]     :;   percent-encoded. <LF>
+[53][2310, 2]      :;<LF>
+[54][2312, 74]     :;   For characters outside the unreserved set the rules explicitly state <LF>
+[55][2386, 75]     :;   whether the percent-encoded representation is treated identical to the<LF>
+[56][2461, 34]     :;   plain literal representation.<LF>
+[57][2495, 3]      :; <LF>
+[58][2498, 78]     :;   One prominent example is the single quote that delimits OData primitive  <LF>
+[59][2576, 80]     :;   type literals: %27 and ' are treated identically, so a single quote within <LF>
+[60][2656, 77]     :;   a string literal is "encoded" as two consecutive single quotes in either<LF>
+[61][2733, 47]     :;   literal or percent-encoded representation.<LF>
+[62][2780, 2]      :;<LF>
+[63][2782, 12]     :; Contents:<LF>
+[64][2794, 21]     :;   1. Resource Path<LF>
+[65][2815, 21]     :;   2. Query Options<LF>
+[66][2836, 29]     :;   3. Context URL Fragments<LF>
+[67][2865, 19]     :;   4. Expressions<LF>
+[68][2884, 43]     :;   5. JSON format for function parameters<LF>
+[69][2927, 29]     :;   6. Names and identifiers<LF>
+[70][2956, 27]     :;   7. Literal Data Values<LF>
+[71][2983, 21]     :;   8. Header values<LF>
+[72][3004, 19]     :;   9. Punctuation<LF>
+[73][3023, 2]      :;<LF>
+[74][3025, 28]     :;   A. URI syntax [RFC3986]<LF>
+[75][3053, 28]     :;   B. IRI syntax [RFC3986]<LF>
+[76][3081, 39]     :;   C. ABNF core definitions [RFC5234]<LF>
+[77][3120, 2]      :;<LF>
+[78][3122, 80]     :;------------------------------------------------------------------------------<LF>
+[79][3202, 85]     :dummyStartRule = odataUri / header / primitiveValue ; just to please the test parser<LF>
+[80][3287, 80]     :;------------------------------------------------------------------------------<LF>
+[81][3367, 1]      :<LF>
+[82][3368, 1]      :<LF>
+[83][3369, 46]     :odataUri = serviceRoot [ odataRelativeUri ]  <LF>
+[84][3415, 1]      :<LF>
+[85][3416, 80]     :serviceRoot = ( "https" / "http" )                    ; Note: case-insensitive <LF>
+[86][3496, 38]     :              "://" host [ ":" port ]<LF>
+[87][3534, 38]     :              "/" *( segment-nz "/" )<LF>
+[88][3572, 1]      :<LF>
+[89][3573, 58]     :; Note: dollar-prefixed path segments are case-sensitive!<LF>
+[90][3631, 50]     :odataRelativeUri = '$batch'  [ "?" batchOptions ]<LF>
+[91][3681, 49]     :                 / '$entity' "?" entityOptions  <LF>
+[92][3730, 91]     :                 / '$entity' "/" optionallyQualifiedEntityTypeName "?" entityCastOptions  <LF>
+[93][3821, 67]     :                 / '$metadata' [ "?" metadataOptions ] [ context ]<LF>
+[94][3888, 54]     :                 / resource-Path [ "?" queryOptions ]<LF>
+[95][3942, 1]      :<LF>
+[96][3943, 1]      :<LF>
+[97][3944, 80]     :;------------------------------------------------------------------------------<LF>
+[98][4024, 19]     :; 1. Resource Path<LF>
+[99][4043, 80]     :;------------------------------------------------------------------------------<LF>
+[100][4123, 1]     :<LF>
+[101][4124, 72]    :resourcePath = entitySetName                  [ collectionNavigation ] <LF>
+[102][4196, 67]    :             / singletonEntity                [ singleNavigation ]<LF>
+[103][4263, 33]    :             / actionImportCall <LF>
+[104][4296, 72]    :             / entityColFunctionImportCall    [ collectionNavigation ] <LF>
+[105][4368, 68]    :             / entityFunctionImportCall       [ singleNavigation ] <LF>
+[106][4436, 66]    :             / complexColFunctionImportCall   [ complexColPath ] <LF>
+[107][4502, 63]    :             / complexFunctionImportCall      [ complexPath ] <LF>
+[108][4565, 68]    :             / primitiveColFunctionImportCall [ primitiveColPath ] <LF>
+[109][4633, 65]    :             / primitiveFunctionImportCall    [ primitivePath ] <LF>
+[110][4698, 42]    :             / functionImportCallNoParens<LF>
+[111][4740, 25]    :             / crossjoin<LF>
+[112][4765, 88]    :             / '$all'                         [ "/" optionallyQualifiedEntityTypeName ]<LF>
+[113][4853, 1]     :<LF>
+[114][4854, 87]    :collectionNavigation = [ "/" optionallyQualifiedEntityTypeName ] [ collectionNavPath ]<LF>
+[115][4941, 57]    :collectionNavPath    = keyPredicate [ singleNavigation ]<LF>
+[116][4998, 61]    :                     / filterInPath [ collectionNavigation ]<LF>
+[117][5059, 47]    :                     / each [ boundOperation ]<LF>
+[118][5106, 38]    :                     / boundOperation<LF>
+[119][5144, 29]    :                     / count<LF>
+[120][5173, 27]    :                     / ref<LF>
+[121][5200, 1]     :<LF>
+[122][5201, 61]    :keyPredicate     = simpleKey / compoundKey / keyPathSegments<LF>
+[123][5262, 68]    :simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE<LF>
+[124][5330, 67]    :compoundKey      = OPEN keyValuePair *( COMMA keyValuePair ) CLOSE<LF>
+[125][5397, 105]   :keyValuePair     = ( primitiveKeyProperty / keyPropertyAlias  ) EQ ( parameterAlias / keyPropertyValue )<LF>
+[126][5502, 36]    :keyPropertyValue = primitiveLiteral<LF>
+[127][5538, 35]    :keyPropertyAlias = odataIdentifier<LF>
+[128][5573, 44]    :keyPathSegments  = 1*( "/" keyPathLiteral )<LF>
+[129][5617, 26]    :keyPathLiteral   = *pchar<LF>
+[130][5643, 1]     :<LF>
+[131][5644, 62]    :singleNavigation = [ "/" optionallyQualifiedEntityTypeName ] <LF>
+[132][5706, 38]    :                   [ "/" propertyPath<LF>
+[133][5744, 36]    :                   / boundOperation<LF>
+[134][5780, 26]    :                   / ref <LF>
+[135][5806, 76]    :                   / value  ; request the media resource of a media entity <LF>
+[136][5882, 21]    :                   ]<LF>
+[137][5903, 1]     :<LF>
+[138][5904, 68]    :propertyPath = entityColNavigationProperty [ collectionNavigation ]<LF>
+[139][5972, 64]    :             / entityNavigationProperty    [ singleNavigation ]<LF>
+[140][6036, 62]    :             / complexColProperty          [ complexColPath ]<LF>
+[141][6098, 59]    :             / complexProperty             [ complexPath ]<LF>
+[142][6157, 64]    :             / primitiveColProperty        [ primitiveColPath ]<LF>
+[143][6221, 61]    :             / primitiveProperty           [ primitivePath ]<LF>
+[144][6282, 62]    :             / streamProperty              [ boundOperation ]<LF>
+[145][6344, 1]     :<LF>
+[146][6345, 57]    :primitiveColPath = count / boundOperation / ordinalIndex<LF>
+[147][6402, 1]     :<LF>
+[148][6403, 40]    :primitivePath  = value / boundOperation<LF>
+[149][6443, 1]     :<LF>
+[150][6444, 30]    :complexColPath = ordinalIndex<LF>
+[151][6474, 87]    :               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation ]<LF>
+[152][6561, 1]     :<LF>
+[153][6562, 61]    :complexPath    = [ "/" optionallyQualifiedComplexTypeName ] <LF>
+[154][6623, 37]    :                 [ "/" propertyPath <LF>
+[155][6660, 34]    :                 / boundOperation<LF>
+[156][6694, 19]    :                 ]<LF>
+[157][6713, 18]    :                 <LF>
+[158][6731, 44]    :filterInPath = '/$filter' EQ parameterAlias<LF>
+[159][6775, 1]     :<LF>
+[160][6776, 17]    :each  = '/$each'<LF>
+[161][6793, 18]    :count = '/$count'<LF>
+[162][6811, 16]    :ref   = '/$ref'<LF>
+[163][6827, 18]    :value = '/$value'<LF>
+[164][6845, 1]     :<LF>
+[165][6846, 27]    :ordinalIndex = "/" 1*DIGIT<LF>
+[166][6873, 1]     :<LF>
+[167][6874, 84]    :; boundOperation segments can only be composed if the type of the previous segment <LF>
+[168][6958, 82]    :; matches the type of the first parameter of the action or function being called.<LF>
+[169][7040, 68]    :; Note that the rule name reflects the return type of the function.<LF>
+[170][7108, 39]    :boundOperation = "/" ( boundActionCall<LF>
+[171][7147, 79]    :                     / boundEntityColFunctionCall    [ collectionNavigation ] <LF>
+[172][7226, 75]    :                     / boundEntityFunctionCall       [ singleNavigation ] <LF>
+[173][7301, 73]    :                     / boundComplexColFunctionCall   [ complexColPath ] <LF>
+[174][7374, 69]    :                     / boundComplexFunctionCall      [ complexPath ]<LF>
+[175][7443, 75]    :                     / boundPrimitiveColFunctionCall [ primitiveColPath ] <LF>
+[176][7518, 72]    :                     / boundPrimitiveFunctionCall    [ primitivePath ] <LF>
+[177][7590, 49]    :                     / boundFunctionCallNoParens<LF>
+[178][7639, 23]    :                     )<LF>
+[179][7662, 1]     :<LF>
+[180][7663, 32]    :actionImportCall = actionImport<LF>
+[181][7695, 44]    :boundActionCall  = [ namespace "." ] action<LF>
+[182][7739, 126]   :                   ; with the added restriction that the binding parameter MUST be either an entity or collection of entities<LF>
+[183][7865, 124]   :                   ; and is specified by reference using the URI immediately preceding (to the left) of the boundActionCall<LF>
+[184][7989, 1]     :<LF>
+[185][7990, 76]    :; The following boundXxxFunctionCall rules have the added restrictions that<LF>
+[186][8066, 45]    :;  - the function MUST support binding, and <LF>
+[187][8111, 83]    :;  - the binding parameter type MUST match the type of resource identified by the <LF>
+[188][8194, 78]    :;    URI immediately preceding (to the left) of the boundXxxFunctionCall, and<LF>
+[189][8272, 67]    :;  - the functionParameters MUST NOT include the bindingParameter.<LF>
+[190][8339, 90]    :boundEntityFunctionCall       = [ namespace "." ] entityFunction       functionParameters<LF>
+[191][8429, 90]    :boundEntityColFunctionCall    = [ namespace "." ] entityColFunction    functionParameters<LF>
+[192][8519, 90]    :boundComplexFunctionCall      = [ namespace "." ] complexFunction      functionParameters<LF>
+[193][8609, 90]    :boundComplexColFunctionCall   = [ namespace "." ] complexColFunction   functionParameters<LF>
+[194][8699, 90]    :boundPrimitiveFunctionCall    = [ namespace "." ] primitiveFunction    functionParameters<LF>
+[195][8789, 90]    :boundPrimitiveColFunctionCall = [ namespace "." ] primitiveColFunction functionParameters<LF>
+[196][8879, 1]     :<LF>
+[197][8880, 65]    :boundFunctionCallNoParens     = [ namespace "." ] entityFunction<LF>
+[198][8945, 68]    :                              / [ namespace "." ] entityColFunction<LF>
+[199][9013, 66]    :                              / [ namespace "." ] complexFunction<LF>
+[200][9079, 69]    :                              / [ namespace "." ] complexColFunction<LF>
+[201][9148, 68]    :                              / [ namespace "." ] primitiveFunction<LF>
+[202][9216, 71]    :                              / [ namespace "." ] primitiveColFunction<LF>
+[203][9287, 1]     :<LF>
+[204][9288, 79]    :entityFunctionImportCall       = entityFunctionImport       functionParameters<LF>
+[205][9367, 79]    :entityColFunctionImportCall    = entityColFunctionImport    functionParameters<LF>
+[206][9446, 79]    :complexFunctionImportCall      = complexFunctionImport      functionParameters<LF>
+[207][9525, 79]    :complexColFunctionImportCall   = complexColFunctionImport   functionParameters<LF>
+[208][9604, 79]    :primitiveFunctionImportCall    = primitiveFunctionImport    functionParameters<LF>
+[209][9683, 79]    :primitiveColFunctionImportCall = primitiveColFunctionImport functionParameters<LF>
+[210][9762, 1]     :<LF>
+[211][9763, 54]    :functionImportCallNoParens     = entityFunctionImport<LF>
+[212][9817, 57]    :                               / entityColFunctionImport<LF>
+[213][9874, 55]    :                               / complexFunctionImport<LF>
+[214][9929, 58]    :                               / complexColFunctionImport<LF>
+[215][9987, 57]    :                               / primitiveFunctionImport<LF>
+[216][10044, 60]   :                               / primitiveColFunctionImport<LF>
+[217][10104, 1]    :<LF>
+[218][10105, 83]   :functionParameters = OPEN [ functionParameter *( COMMA functionParameter ) ] CLOSE<LF>
+[219][10188, 76]   :functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )<LF>
+[220][10264, 37]   :parameterName      = odataIdentifier<LF>
+[221][10301, 41]   :parameterAlias     = AT odataIdentifier <LF>
+[222][10342, 1]    :<LF>
+[223][10343, 30]   :crossjoin = '$crossjoin' OPEN<LF>
+[224][10373, 51]   :            entitySetName *( COMMA entitySetName )<LF>
+[225][10424, 18]   :            CLOSE<LF>
+[226][10442, 1]    :<LF>
+[227][10443, 1]    :<LF>
+[228][10444, 80]   :;------------------------------------------------------------------------------<LF>
+[229][10524, 19]   :; 2. Query Options<LF>
+[230][10543, 80]   :;------------------------------------------------------------------------------<LF>
+[231][10623, 1]    :<LF>
+[232][10624, 56]   :queryOptions = queryOption *( "&" queryOption )        <LF>
+[233][10680, 35]   :queryOption  = systemQueryOption  <LF>
+[234][10715, 30]   :             / aliasAndValue <LF>
+[235][10745, 28]   :             / nameAndValue<LF>
+[236][10773, 35]   :             / customQueryOption  <LF>
+[237][10808, 1]    :<LF>
+[238][10809, 51]   :batchOptions = batchOption *( "&" batchOption )   <LF>
+[239][10860, 22]   :batchOption  = format<LF>
+[240][10882, 35]   :             /customQueryOption   <LF>
+[241][10917, 14]   :             <LF>
+[242][10931, 60]   :metadataOptions = metadataOption *( "&" metadataOption )   <LF>
+[243][10991, 25]   :metadataOption  = format<LF>
+[244][11016, 38]   :                /customQueryOption   <LF>
+[245][11054, 1]    :<LF>
+[246][11055, 68]   :entityOptions  = *( entityIdOption "&" ) id *( "&" entityIdOption )<LF>
+[247][11123, 24]   :entityIdOption = format<LF>
+[248][11147, 35]   :               / customQueryOption<LF>
+[249][11182, 75]   :entityCastOptions = *( entityCastOption "&" ) id *( "&" entityCastOption )<LF>
+[250][11257, 35]   :entityCastOption  = entityIdOption<LF>
+[251][11292, 28]   :                  / expand <LF>
+[252][11320, 27]   :                  / select<LF>
+[253][11347, 1]    :<LF>
+[254][11348, 45]   :id = ( "$id" / "id" ) EQ IRI-in-query       <LF>
+[255][11393, 1]    :<LF>
+[256][11394, 28]   :systemQueryOption = compute<LF>
+[257][11422, 31]   :                  / deltatoken<LF>
+[258][11453, 28]   :                  / expand <LF>
+[259][11481, 28]   :                  / filter <LF>
+[260][11509, 28]   :                  / format <LF>
+[261][11537, 23]   :                  / id<LF>
+[262][11560, 33]   :                  / inlinecount <LF>
+[263][11593, 29]   :                  / orderby <LF>
+[264][11622, 34]   :                  / schemaversion<LF>
+[265][11656, 27]   :                  / search<LF>
+[266][11683, 28]   :                  / select <LF>
+[267][11711, 26]   :                  / skip <LF>
+[268][11737, 30]   :                  / skiptoken<LF>
+[269][11767, 25]   :                  / top <LF>
+[270][11792, 26]   :                  / index<LF>
+[271][11818, 1]    :<LF>
+[272][11819, 84]   :compute          = ( "$compute" / "compute" ) EQ computeItem *( COMMA computeItem )<LF>
+[273][11903, 60]   :computeItem      = commonExpr RWS "as" RWS computedProperty<LF>
+[274][11963, 44]   :computedProperty = odataIdentifier         <LF>
+[275][12007, 1]    :<LF>
+[276][12008, 81]   :expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )<LF>
+[277][12089, 29]   :expandItem        = "$value"<LF>
+[278][12118, 31]   :                  / expandPath<LF>
+[279][12149, 69]   :                  / optionallyQualifiedEntityTypeName "/" expandPath<LF>
+[280][12218, 107]  :expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName ) "/" )<LF>
+[281][12325, 55]   :                    ( STAR [ ref / OPEN levels CLOSE ]<LF>
+[282][12380, 38]   :                    / streamProperty <LF>
+[283][12418, 84]   :                    / navigationProperty [ "/" optionallyQualifiedEntityTypeName ] <LF>
+[284][12502, 91]   :                      [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]<LF>
+[285][12593, 91]   :                      / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]<LF>
+[286][12684, 90]   :                      /         OPEN expandOption      *( SEMI expandOption      ) CLOSE <LF>
+[287][12774, 44]   :                      ]                    <LF>
+[288][12818, 22]   :                    )<LF>
+[289][12840, 27]   :expandCountOption = filter<LF>
+[290][12867, 27]   :                  / search<LF>
+[291][12894, 38]   :expandRefOption   = expandCountOption<LF>
+[292][12932, 28]   :                  / orderby<LF>
+[293][12960, 26]   :                  / skip <LF>
+[294][12986, 25]   :                  / top <LF>
+[295][13011, 32]   :                  / inlinecount<LF>
+[296][13043, 36]   :expandOption      = expandRefOption<LF>
+[297][13079, 28]   :                  / select <LF>
+[298][13107, 27]   :                  / expand<LF>
+[299][13134, 28]   :                  / compute<LF>
+[300][13162, 27]   :                  / levels<LF>
+[301][13189, 34]   :                  / aliasAndValue<LF>
+[302][13223, 17]   :                <LF>
+[303][13240, 66]   :levels = ( "$levels" / "levels" ) EQ ( oneToNine *DIGIT / "max" )<LF>
+[304][13306, 1]    :<LF>
+[305][13307, 52]   :filter = ( "$filter" / "filter" ) EQ boolCommonExpr<LF>
+[306][13359, 1]    :<LF>
+[307][13360, 79]   :orderby     = ( "$orderby" / "orderby" ) EQ orderbyItem *( COMMA orderbyItem )<LF>
+[308][13439, 52]   :orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]<LF>
+[309][13491, 1]    :<LF>
+[310][13492, 39]   :skip = ( "$skip" / "skip" ) EQ 1*DIGIT<LF>
+[311][13531, 39]   :top  = ( "$top"  / "top"  ) EQ 1*DIGIT<LF>
+[312][13570, 1]    :<LF>
+[313][13571, 43]   :index  = ( "$index" / "index" ) EQ 1*DIGIT<LF>
+[314][13614, 1]    :<LF>
+[315][13615, 37]   :format = ( "$format" / "format" ) EQ<LF>
+[316][13652, 18]   :         ( "atom"<LF>
+[317][13670, 19]   :         / "json" <LF>
+[318][13689, 17]   :         / "xml"<LF>
+[319][13706, 77]   :         / 1*pchar "/" 1*pchar ; <a data service specific value indicating a<LF>
+[320][13783, 82]   :         )                     ; format specific to the specific data service> or<LF>
+[321][13865, 75]   :                               ; <An IANA-defined [IANA-MMT] content type><LF>
+[322][13940, 27]   :                          <LF>
+[323][13967, 53]   :inlinecount = ( "$count" / "count" ) EQ booleanValue<LF>
+[324][14020, 1]    :<LF>
+[325][14021, 84]   :schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )<LF>
+[326][14105, 1]    :<LF>
+[327][14106, 56]   :search     = ( "$search" / "search" ) EQ BWS searchExpr<LF>
+[328][14162, 45]   :searchExpr = ( OPEN BWS searchExpr BWS CLOSE<LF>
+[329][14207, 27]   :             / searchTerm <LF>
+[330][14234, 30]   :             ) [ searchOrExpr<LF>
+[331][14264, 31]   :               / searchAndExpr<LF>
+[332][14295, 17]   :               ]<LF>
+[333][14312, 1]    :<LF>
+[334][14313, 41]   :searchOrExpr  = RWS 'OR'  RWS searchExpr<LF>
+[335][14354, 45]   :searchAndExpr = RWS [ 'AND' RWS ] searchExpr<LF>
+[336][14399, 1]    :<LF>
+[337][14400, 59]   :searchTerm   = [ 'NOT' RWS ] ( searchPhrase / searchWord )<LF>
+[338][14459, 67]   :searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark<LF>
+[339][14526, 1]    :<LF>
+[340][14527, 78]   :; A searchWord is a sequence of one or more letters, digits, commas, or dots.<LF>
+[341][14605, 90]   :; This includes Unicode characters of categories L or N using UTF-8 and percent-encoding.<LF>
+[342][14695, 57]   :; The words AND, OR, and NOT are not a valid searchWord.<LF>
+[343][14752, 88]   :; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.<LF>
+[344][14840, 63]   :searchWord   = 1*( ALPHA / DIGIT / COMMA / "." / pct-encoded )<LF>
+[345][14903, 1]    :<LF>
+[346][14904, 78]   :select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )<LF>
+[347][14982, 22]   :selectItem     = STAR<LF>
+[348][15004, 40]   :               / allOperationsInSchema <LF>
+[349][15044, 32]   :               / selectProperty<LF>
+[350][15076, 49]   :               / optionallyQualifiedActionName  <LF>
+[351][15125, 51]   :               / optionallyQualifiedFunctionName  <LF>
+[352][15176, 93]   :               / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) <LF>
+[353][15269, 38]   :                 "/" ( selectProperty<LF>
+[354][15307, 56]   :                     / optionallyQualifiedActionName   <LF>
+[355][15363, 57]   :                     / optionallyQualifiedFunctionName  <LF>
+[356][15420, 23]   :                     )<LF>
+[357][15443, 37]   :selectProperty = primitiveProperty  <LF>
+[358][15480, 93]   :               / primitiveColProperty [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]<LF>
+[359][15573, 36]   :               / navigationProperty<LF>
+[360][15609, 77]   :               / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE<LF>
+[361][15686, 50]   :                            / "/" selectProperty <LF>
+[362][15736, 30]   :                            ]<LF>
+[363][15766, 102]  :selectPath     = ( complexProperty / complexColProperty ) [ "/" optionallyQualifiedComplexTypeName ] <LF>
+[364][15868, 71]   :selectOptionPC = filter / search / inlinecount / orderby / skip / top <LF>
+[365][15939, 32]   :selectOption   = selectOptionPC<LF>
+[366][15971, 59]   :               / compute / select / expand / aliasAndValue<LF>
+[367][16030, 1]    :<LF>
+[368][16031, 60]   :allOperationsInSchema = namespace "." STAR                 <LF>
+[369][16091, 1]    :<LF>
+[370][16092, 67]   :; The parameterNames uniquely identify the bound function overload<LF>
+[371][16159, 37]   :; Necessary only if it has overloads<LF>
+[372][16196, 59]   :optionallyQualifiedActionName   = [ namespace "." ] action<LF>
+[373][16255, 91]   :optionallyQualifiedFunctionName = [ namespace "." ] function [ OPEN parameterNames CLOSE ]<LF>
+[374][16346, 1]    :<LF>
+[375][16347, 64]   :; The names of all non-binding parameters, separated by commas <LF>
+[376][16411, 56]   :parameterNames = parameterName *( COMMA parameterName )<LF>
+[377][16467, 1]    :<LF>
+[378][16468, 49]   :deltatoken = "$deltatoken" EQ 1*( qchar-no-AMP )<LF>
+[379][16517, 1]    :<LF>
+[380][16518, 47]   :skiptoken = "$skiptoken" EQ 1*( qchar-no-AMP )<LF>
+[381][16565, 1]    :<LF>
+[382][16566, 49]   :aliasAndValue = parameterAlias EQ parameterValue<LF>
+[383][16615, 1]    :<LF>
+[384][16616, 47]   :nameAndValue = parameterName EQ parameterValue<LF>
+[385][16663, 1]    :<LF>
+[386][16664, 31]   :parameterValue = arrayOrObject<LF>
+[387][16695, 28]   :               / commonExpr<LF>
+[388][16723, 1]    :<LF>
+[389][16724, 50]   :customQueryOption = customName [ EQ customValue ]<LF>
+[390][16774, 68]   :customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ ) <LF>
+[391][16842, 38]   :customValue       = *( qchar-no-AMP )<LF>
+[392][16880, 1]    :<LF>
+[393][16881, 6]    :     <LF>
+[394][16887, 80]   :;------------------------------------------------------------------------------<LF>
+[395][16967, 27]   :; 3. Context URL Fragments<LF>
+[396][16994, 80]   :;------------------------------------------------------------------------------<LF>
+[397][17074, 1]    :<LF>
+[398][17075, 38]   :context         = "#" contextFragment<LF>
+[399][17113, 37]   :contextFragment = 'Collection($ref)'<LF>
+[400][17150, 25]   :                / '$ref'<LF>
+[401][17175, 47]   :                / 'Collection(Edm.EntityType)'<LF>
+[402][17222, 48]   :                / 'Collection(Edm.ComplexType)'<LF>
+[403][17270, 123]  :                / singletonEntity [ navigation *( containmentNavigation ) [ "/" qualifiedEntityTypeName ] ] [ selectList ]<LF>
+[404][17393, 51]   :                / qualifiedTypeName [ selectList ]<LF>
+[405][17444, 79]   :                / entitySet ( '/$deletedEntity' / '/$link' / '/$deletedLink' )<LF>
+[406][17523, 80]   :                / entitySet keyPredicate "/" contextPropertyPath [ selectList ]<LF>
+[407][17603, 70]   :                / entitySet [ selectList ] [ '/$entity' / '/$delta' ]<LF>
+[408][17673, 17]   :                <LF>
+[409][17690, 85]   :entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]<LF>
+[410][17775, 13]   :            <LF>
+[411][17788, 80]   :containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation<LF>
+[412][17868, 108]  :navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty   <LF>
+[413][17976, 1]    :<LF>
+[414][17977, 77]   :selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE<LF>
+[415][18054, 54]   :selectListItem     = STAR ; all structural properties<LF>
+[416][18108, 44]   :                   / allOperationsInSchema <LF>
+[417][18152, 85]   :                   / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] <LF>
+[418][18237, 43]   :                     ( qualifiedActionName<LF>
+[419][18280, 46]   :                     / qualifiedFunctionName <LF>
+[420][18326, 42]   :                     / selectListProperty<LF>
+[421][18368, 23]   :                     )<LF>
+[422][18391, 41]   :selectListProperty = primitiveProperty  <LF>
+[423][18432, 43]   :                   / primitiveColProperty <LF>
+[424][18475, 63]   :                   / navigationProperty [ "+" ] [ selectList ]<LF>
+[425][18538, 122]  :                   / ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]<LF>
+[426][18660, 1]    :<LF>
+[427][18661, 40]   :contextPropertyPath = primitiveProperty<LF>
+[428][18701, 43]   :                    / primitiveColProperty<LF>
+[429][18744, 41]   :                    / complexColProperty<LF>
+[430][18785, 99]   :                    / complexProperty [ [ "/" qualifiedComplexTypeName ] "/" contextPropertyPath ]<LF>
+[431][18884, 1]    :<LF>
+[432][18885, 45]   :qualifiedActionName   = namespace "." action<LF>
+[433][18930, 77]   :qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]<LF>
+[434][19007, 18]   :                 <LF>
+[435][19025, 1]    :<LF>
+[436][19026, 80]   :;------------------------------------------------------------------------------<LF>
+[437][19106, 17]   :; 4. Expressions<LF>
+[438][19123, 80]   :;------------------------------------------------------------------------------<LF>
+[439][19203, 1]    :<LF>
+[440][19204, 69]   :; Note: a boolCommonExpr is also a commonExpr, e.g. sort by Boolean <LF>
+[441][19273, 32]   :commonExpr = ( primitiveLiteral<LF>
+[442][19305, 29]   :             / arrayOrObject<LF>
+[443][19334, 24]   :             / rootExpr<LF>
+[444][19358, 31]   :             / firstMemberExpr<LF>
+[445][19389, 28]   :             / functionExpr<LF>
+[446][19417, 27]   :             / negateExpr <LF>
+[447][19444, 31]   :             / methodCallExpr <LF>
+[448][19475, 26]   :             / parenExpr <LF>
+[449][19501, 24]   :             / listExpr<LF>
+[450][19525, 25]   :             / castExpr <LF>
+[451][19550, 24]   :             / isofExpr<LF>
+[452][19574, 23]   :             / notExpr<LF>
+[453][19597, 16]   :             ) <LF>
+[454][19613, 24]   :             [ addExpr <LF>
+[455][19637, 24]   :             / subExpr <LF>
+[456][19661, 24]   :             / mulExpr <LF>
+[457][19685, 23]   :             / divExpr<LF>
+[458][19708, 26]   :             / divbyExpr <LF>
+[459][19734, 23]   :             / modExpr<LF>
+[460][19757, 17]   :             ]  <LF>
+[461][19774, 23]   :             [ eqExpr <LF>
+[462][19797, 23]   :             / neExpr <LF>
+[463][19820, 24]   :             / ltExpr  <LF>
+[464][19844, 24]   :             / leExpr  <LF>
+[465][19868, 23]   :             / gtExpr <LF>
+[466][19891, 23]   :             / geExpr <LF>
+[467][19914, 24]   :             / hasExpr <LF>
+[468][19938, 23]   :             / inExpr <LF>
+[469][19961, 15]   :             ]<LF>
+[470][19976, 24]   :             [ andExpr <LF>
+[471][20000, 23]   :             / orExpr <LF>
+[472][20023, 16]   :             ] <LF>
+[473][20039, 1]    :<LF>
+[474][20040, 53]   :boolCommonExpr = commonExpr ; resulting in a Boolean<LF>
+[475][20093, 1]    :<LF>
+[476][20094, 94]   :rootExpr = '$root/' ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]<LF>
+[477][20188, 1]    :<LF>
+[478][20189, 29]   :firstMemberExpr = memberExpr<LF>
+[479][20218, 57]   :                / inscopeVariableExpr [ "/" memberExpr ]<LF>
+[480][20275, 1]    :<LF>
+[481][20276, 30]   :memberExpr = directMemberExpr<LF>
+[482][20306, 109]  :           / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr<LF>
+[483][20415, 14]   :             <LF>
+[484][20429, 36]   :directMemberExpr = propertyPathExpr<LF>
+[485][20465, 38]   :                 / boundFunctionExpr <LF>
+[486][20503, 34]   :                 / annotationExpr<LF>
+[487][20537, 14]   :             <LF>
+[488][20551, 79]   :propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ] <LF>
+[489][20630, 75]   :                   / entityNavigationProperty    [ singleNavigationExpr ] <LF>
+[490][20705, 72]   :                   / complexColProperty          [ complexColPathExpr ]<LF>
+[491][20777, 70]   :                   / complexProperty             [ complexPathExpr ] <LF>
+[492][20847, 72]   :                   / primitiveColProperty        [ collectionPathExpr ]<LF>
+[493][20919, 71]   :                   / primitiveProperty           [ primitivePathExpr ]<LF>
+[494][20990, 71]   :                   / streamProperty              [ primitivePathExpr ]<LF>
+[495][21061, 21]   :                   )<LF>
+[496][21082, 20]   :                   <LF>
+[497][21102, 28]   :annotationExpr = annotation<LF>
+[498][21130, 38]   :                 [ collectionPathExpr<LF>
+[499][21168, 40]   :                 / singleNavigationExpr<LF>
+[500][21208, 35]   :                 / complexPathExpr<LF>
+[501][21243, 37]   :                 / primitivePathExpr<LF>
+[502][21280, 19]   :                 ]<LF>
+[503][21299, 18]   :                 <LF>
+[504][21317, 80]   :annotation          = AT [ namespace "." ] termName [ '#' annotationQualifier ]<LF>
+[505][21397, 54]   :annotationQualifier = odataIdentifier                <LF>
+[506][21451, 20]   :                   <LF>
+[507][21471, 45]   :inscopeVariableExpr  = implicitVariableExpr <LF>
+[508][21516, 38]   :                     / parameterAlias<LF>
+[509][21554, 86]   :                     / lambdaVariableExpr ; only allowed inside a lambdaPredicateExpr<LF>
+[510][21640, 113]  :implicitVariableExpr = '$it'              ; the current instance of the resource identified by the resource path<LF>
+[511][21753, 96]   :                     / '$this'            ; the instance on which the query option is evaluated<LF>
+[512][21849, 39]   :lambdaVariableExpr   = odataIdentifier<LF>
+[513][21888, 1]    :<LF>
+[514][21889, 69]   :collectionNavigationExpr = [ "/" optionallyQualifiedEntityTypeName ]<LF>
+[515][21958, 48]   :                           ( collectionPathExpr<LF>
+[516][22006, 68]   :                           / keyPredicate [ singleNavigationExpr ] <LF>
+[517][22074, 29]   :                           )<LF>
+[518][22103, 1]    :<LF>
+[519][22104, 38]   :singleNavigationExpr = "/" memberExpr<LF>
+[520][22142, 1]    :<LF>
+[521][22143, 40]   :complexColPathExpr = collectionPathExpr<LF>
+[522][22183, 83]   :                   / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]<LF>
+[523][22266, 2]    : <LF>
+[524][22268, 88]   :collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]<LF>
+[525][22356, 33]   :                   / "/" anyExpr<LF>
+[526][22389, 33]   :                   / "/" allExpr<LF>
+[527][22422, 43]   :                   / "/" boundFunctionExpr<LF>
+[528][22465, 40]   :                   / "/" annotationExpr<LF>
+[529][22505, 2]    : <LF>
+[530][22507, 39]   :complexPathExpr = "/" directMemberExpr<LF>
+[531][22546, 82]   :                / "/" optionallyQualifiedComplexTypeName [ "/" directMemberExpr ]<LF>
+[532][22628, 1]    :<LF>
+[533][22629, 63]   :primitivePathExpr = "/" [ annotationExpr / boundFunctionExpr ]<LF>
+[534][22692, 1]    :<LF>
+[535][22693, 102]  :boundFunctionExpr = functionExpr ; boundFunction segments can only be composed if the type of the    <LF>
+[536][22795, 101]  :                                 ; previous segment matches the type of the first function parameter<LF>
+[537][22896, 38]   :                                     <LF>
+[538][22934, 33]   :functionExpr = [ namespace "." ]<LF>
+[539][22967, 91]   :               ( entityColFunction    functionExprParameters [ collectionNavigationExpr ] <LF>
+[540][23058, 87]   :               / entityFunction       functionExprParameters [ singleNavigationExpr ] <LF>
+[541][23145, 84]   :               / complexColFunction   functionExprParameters [ complexColPathExpr ]<LF>
+[542][23229, 82]   :               / complexFunction      functionExprParameters [ complexPathExpr ] <LF>
+[543][23311, 85]   :               / primitiveColFunction functionExprParameters [ collectionPathExpr ] <LF>
+[544][23396, 84]   :               / primitiveFunction    functionExprParameters [ primitivePathExpr ] <LF>
+[545][23480, 17]   :               )<LF>
+[546][23497, 1]    :<LF>
+[547][23498, 95]   :functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE<LF>
+[548][23593, 78]   :functionExprParameter  = parameterName EQ ( parameterAlias / parameterValue )<LF>
+[549][23671, 1]    :<LF>
+[550][23672, 92]   :anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE<LF>
+[551][23764, 92]   :allExpr = "all" OPEN BWS   lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr   BWS CLOSE<LF>
+[552][23856, 82]   :lambdaPredicateExpr = boolCommonExpr ; containing at least one lambdaVariableExpr<LF>
+[553][23938, 1]    :<LF>
+[554][23939, 40]   :methodCallExpr = indexOfMethodCallExpr <LF>
+[555][23979, 40]   :               / toLowerMethodCallExpr <LF>
+[556][24019, 41]   :               / toUpperMethodCallExpr  <LF>
+[557][24060, 37]   :               / trimMethodCallExpr <LF>
+[558][24097, 42]   :               / substringMethodCallExpr <LF>
+[559][24139, 39]   :               / concatMethodCallExpr <LF>
+[560][24178, 39]   :               / lengthMethodCallExpr <LF>
+[561][24217, 37]   :               / yearMethodCallExpr <LF>
+[562][24254, 38]   :               / monthMethodCallExpr <LF>
+[563][24292, 36]   :               / dayMethodCallExpr <LF>
+[564][24328, 37]   :               / hourMethodCallExpr <LF>
+[565][24365, 39]   :               / minuteMethodCallExpr <LF>
+[566][24404, 39]   :               / secondMethodCallExpr <LF>
+[567][24443, 49]   :               / fractionalsecondsMethodCallExpr<LF>
+[568][24492, 44]   :               / totalsecondsMethodCallExpr<LF>
+[569][24536, 37]   :               / dateMethodCallExpr <LF>
+[570][24573, 37]   :               / timeMethodCallExpr <LF>
+[571][24610, 38]   :               / roundMethodCallExpr <LF>
+[572][24648, 38]   :               / floorMethodCallExpr <LF>
+[573][24686, 40]   :               / ceilingMethodCallExpr <LF>
+[574][24726, 41]   :               / distanceMethodCallExpr <LF>
+[575][24767, 42]   :               / geoLengthMethodCallExpr <LF>
+[576][24809, 50]   :               / totalOffsetMinutesMethodCallExpr<LF>
+[577][24859, 43]   :               / minDateTimeMethodCallExpr<LF>
+[578][24902, 43]   :               / maxDateTimeMethodCallExpr<LF>
+[579][24945, 35]   :               / nowMethodCallExpr<LF>
+[580][24980, 36]   :               / boolMethodCallExpr<LF>
+[581][25016, 1]    :<LF>
+[582][25017, 45]   :boolMethodCallExpr = endsWithMethodCallExpr <LF>
+[583][25062, 47]   :                   / startsWithMethodCallExpr <LF>
+[584][25109, 86]   :                   / containsMethodCallExpr                                          <LF>
+[585][25195, 47]   :                   / intersectsMethodCallExpr <LF>
+[586][25242, 45]   :                   / hasSubsetMethodCallExpr<LF>
+[587][25287, 50]   :                   / hasSubsequenceMethodCallExpr<LF>
+[588][25337, 1]    :<LF>
+[589][25338, 95]   :concatMethodCallExpr     = "concat"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[590][25433, 95]   :containsMethodCallExpr   = "contains"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[591][25528, 95]   :endsWithMethodCallExpr   = "endswith"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[592][25623, 95]   :indexOfMethodCallExpr    = "indexof"    OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[593][25718, 70]   :lengthMethodCallExpr     = "length"     OPEN BWS commonExpr BWS CLOSE<LF>
+[594][25788, 95]   :startsWithMethodCallExpr = "startswith" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[595][25883, 124]  :substringMethodCallExpr  = "substring"  OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE<LF>
+[596][26007, 70]   :toLowerMethodCallExpr    = "tolower"    OPEN BWS commonExpr BWS CLOSE<LF>
+[597][26077, 70]   :toUpperMethodCallExpr    = "toupper"    OPEN BWS commonExpr BWS CLOSE<LF>
+[598][26147, 70]   :trimMethodCallExpr       = "trim"       OPEN BWS commonExpr BWS CLOSE<LF>
+[599][26217, 1]    :<LF>
+[600][26218, 86]   :yearMethodCallExpr               = "year"               OPEN BWS commonExpr BWS CLOSE<LF>
+[601][26304, 86]   :monthMethodCallExpr              = "month"              OPEN BWS commonExpr BWS CLOSE<LF>
+[602][26390, 86]   :dayMethodCallExpr                = "day"                OPEN BWS commonExpr BWS CLOSE<LF>
+[603][26476, 86]   :hourMethodCallExpr               = "hour"               OPEN BWS commonExpr BWS CLOSE<LF>
+[604][26562, 86]   :minuteMethodCallExpr             = "minute"             OPEN BWS commonExpr BWS CLOSE<LF>
+[605][26648, 86]   :secondMethodCallExpr             = "second"             OPEN BWS commonExpr BWS CLOSE<LF>
+[606][26734, 86]   :fractionalsecondsMethodCallExpr  = "fractionalseconds"  OPEN BWS commonExpr BWS CLOSE<LF>
+[607][26820, 86]   :totalsecondsMethodCallExpr       = "totalseconds"       OPEN BWS commonExpr BWS CLOSE<LF>
+[608][26906, 86]   :dateMethodCallExpr               = "date"               OPEN BWS commonExpr BWS CLOSE<LF>
+[609][26992, 86]   :timeMethodCallExpr               = "time"               OPEN BWS commonExpr BWS CLOSE<LF>
+[610][27078, 87]   :totalOffsetMinutesMethodCallExpr = "totaloffsetminutes" OPEN BWS commonExpr BWS CLOSE <LF>
+[611][27165, 1]    :<LF>
+[612][27166, 57]   :minDateTimeMethodCallExpr = "mindatetime" OPEN BWS CLOSE<LF>
+[613][27223, 57]   :maxDateTimeMethodCallExpr = "maxdatetime" OPEN BWS CLOSE<LF>
+[614][27280, 57]   :nowMethodCallExpr         = "now"         OPEN BWS CLOSE<LF>
+[615][27337, 1]    :<LF>
+[616][27338, 64]   :roundMethodCallExpr   = "round"   OPEN BWS commonExpr BWS CLOSE<LF>
+[617][27402, 64]   :floorMethodCallExpr   = "floor"   OPEN BWS commonExpr BWS CLOSE<LF>
+[618][27466, 64]   :ceilingMethodCallExpr = "ceiling" OPEN BWS commonExpr BWS CLOSE<LF>
+[619][27530, 1]    :<LF>
+[620][27531, 99]   :distanceMethodCallExpr   = "geo.distance"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[621][27630, 74]   :geoLengthMethodCallExpr  = "geo.length"     OPEN BWS commonExpr BWS CLOSE<LF>
+[622][27704, 99]   :intersectsMethodCallExpr = "geo.intersects" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[623][27803, 1]    :<LF>
+[624][27804, 103]  :hasSubsetMethodCallExpr      = "hassubset"      OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[625][27907, 103]  :hasSubsequenceMethodCallExpr = "hassubsequence" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[626][28010, 1]    :<LF>
+[627][28011, 42]   :parenExpr = OPEN BWS commonExpr BWS CLOSE<LF>
+[628][28053, 72]   :listExpr  = OPEN BWS commonExpr BWS *( COMMA BWS commonExpr BWS ) CLOSE<LF>
+[629][28125, 1]    :<LF>
+[630][28126, 39]   :andExpr = RWS "and" RWS boolCommonExpr<LF>
+[631][28165, 39]   :orExpr  = RWS "or"  RWS boolCommonExpr<LF>
+[632][28204, 1]    :<LF>
+[633][28205, 38]   :eqExpr = RWS "eq" RWS commonExpr     <LF>
+[634][28243, 33]   :neExpr = RWS "ne" RWS commonExpr<LF>
+[635][28276, 33]   :ltExpr = RWS "lt" RWS commonExpr<LF>
+[636][28309, 33]   :leExpr = RWS "le" RWS commonExpr<LF>
+[637][28342, 33]   :gtExpr = RWS "gt" RWS commonExpr<LF>
+[638][28375, 33]   :geExpr = RWS "ge" RWS commonExpr<LF>
+[639][28408, 33]   :inExpr = RWS "in" RWS commonExpr<LF>
+[640][28441, 1]    :<LF>
+[641][28442, 29]   :hasExpr = RWS "has" RWS enum<LF>
+[642][28471, 1]    :<LF>
+[643][28472, 39]   :addExpr   = RWS "add"   RWS commonExpr<LF>
+[644][28511, 39]   :subExpr   = RWS "sub"   RWS commonExpr<LF>
+[645][28550, 39]   :mulExpr   = RWS "mul"   RWS commonExpr<LF>
+[646][28589, 39]   :divExpr   = RWS "div"   RWS commonExpr<LF>
+[647][28628, 39]   :divbyExpr = RWS "divby" RWS commonExpr<LF>
+[648][28667, 39]   :modExpr   = RWS "mod"   RWS commonExpr<LF>
+[649][28706, 1]    :<LF>
+[650][28707, 32]   :negateExpr = "-" BWS commonExpr<LF>
+[651][28739, 1]    :<LF>
+[652][28740, 35]   :notExpr = "not" RWS boolCommonExpr<LF>
+[653][28775, 1]    :<LF>
+[654][28776, 94]   :isofExpr = "isof" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeName BWS CLOSE<LF>
+[655][28870, 94]   :castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeName BWS CLOSE<LF>
+[656][28964, 1]    :<LF>
+[657][28965, 1]    :<LF>
+[658][28966, 80]   :;------------------------------------------------------------------------------<LF>
+[659][29046, 41]   :; 5. JSON format for function parameters<LF>
+[660][29087, 80]   :;------------------------------------------------------------------------------<LF>
+[661][29167, 77]   :; Note: the query part of a URI needs to be partially percent-decoded before<LF>
+[662][29244, 60]   :; applying these rules, see comment at the top of this file<LF>
+[663][29304, 80]   :;------------------------------------------------------------------------------<LF>
+[664][29384, 1]    :<LF>
+[665][29385, 34]   :arrayOrObject = complexColInUri  <LF>
+[666][29419, 29]   :              / complexInUri<LF>
+[667][29448, 28]   :              / rootExprCol<LF>
+[668][29476, 34]   :              / primitiveColInUri<LF>
+[669][29510, 16]   :               <LF>
+[670][29526, 31]   :complexColInUri = begin-array <LF>
+[671][29557, 70]   :                  [ complexInUri *( value-separator complexInUri ) ] <LF>
+[672][29627, 28]   :                  end-array<LF>
+[673][29655, 19]   :                  <LF>
+[674][29674, 28]   :complexInUri = begin-object<LF>
+[675][29702, 36]   :               [ ( annotationInUri <LF>
+[676][29738, 43]   :                 / primitivePropertyInUri <LF>
+[677][29781, 41]   :                 / complexPropertyInUri <LF>
+[678][29822, 45]   :                 / collectionPropertyInUri  <LF>
+[679][29867, 43]   :                 / navigationPropertyInUri<LF>
+[680][29910, 19]   :                 )<LF>
+[681][29929, 37]   :                 *( value-separator <LF>
+[682][29966, 39]   :                    ( annotationInUri <LF>
+[683][30005, 46]   :                    / primitivePropertyInUri <LF>
+[684][30051, 44]   :                    / complexPropertyInUri <LF>
+[685][30095, 48]   :                    / collectionPropertyInUri  <LF>
+[686][30143, 46]   :                    / navigationPropertyInUri<LF>
+[687][30189, 23]   :                    ) <LF>
+[688][30212, 20]   :                  )<LF>
+[689][30232, 19]   :               ]  <LF>
+[690][30251, 26]   :               end-object<LF>
+[691][30277, 1]    :<LF>
+[692][30278, 80]   :collectionPropertyInUri = ( quotation-mark primitiveColProperty quotation-mark <LF>
+[693][30358, 44]   :                            name-separator <LF>
+[694][30402, 47]   :                            primitiveColInUri <LF>
+[695][30449, 29]   :                          ) <LF>
+[696][30478, 78]   :                        / ( quotation-mark complexColProperty quotation-mark <LF>
+[697][30556, 44]   :                            name-separator <LF>
+[698][30600, 44]   :                            complexColInUri<LF>
+[699][30644, 28]   :                          )<LF>
+[700][30672, 1]    :<LF>
+[701][30673, 33]   :primitiveColInUri = begin-array <LF>
+[702][30706, 92]   :                    [ primitiveLiteralInJSON *( value-separator primitiveLiteralInJSON ) ] <LF>
+[703][30798, 30]   :                    end-array<LF>
+[704][30828, 21]   :                    <LF>
+[705][30849, 70]   :complexPropertyInUri = quotation-mark complexProperty quotation-mark <LF>
+[706][30919, 39]   :                       name-separator <LF>
+[707][30958, 36]   :                       complexInUri<LF>
+[708][30994, 29]   :                            <LF>
+[709][31023, 78]   :annotationInUri = quotation-mark AT [ namespace "." ] termName quotation-mark<LF>
+[710][31101, 33]   :                  name-separator<LF>
+[711][31134, 98]   :                  ( complexInUri / complexColInUri / primitiveLiteralInJSON / primitiveColInUri )<LF>
+[712][31232, 1]    :<LF>
+[713][31233, 74]   :primitivePropertyInUri = quotation-mark primitiveProperty quotation-mark <LF>
+[714][31307, 41]   :                         name-separator <LF>
+[715][31348, 48]   :                         primitiveLiteralInJSON<LF>
+[716][31396, 1]    :<LF>
+[717][31397, 46]   :navigationPropertyInUri = singleNavPropInJSON<LF>
+[718][31443, 50]   :                        / collectionNavPropInJSON<LF>
+[719][31493, 81]   :singleNavPropInJSON     = quotation-mark entityNavigationProperty quotation-mark<LF>
+[720][31574, 28]   :             name-separator<LF>
+[721][31602, 22]   :             rootExpr<LF>
+[722][31624, 84]   :collectionNavPropInJSON = quotation-mark entityColNavigationProperty quotation-mark<LF>
+[723][31708, 28]   :             name-separator<LF>
+[724][31736, 25]   :             rootExprCol<LF>
+[725][31761, 1]    :<LF>
+[726][31762, 27]   :rootExprCol = begin-array <LF>
+[727][31789, 57]   :              [ rootExpr *( value-separator rootExpr ) ]<LF>
+[728][31846, 24]   :              end-array<LF>
+[729][31870, 41]   :                                        <LF>
+[730][31911, 75]   :; JSON syntax: adapted to URI restrictions from [RFC4627]                 <LF>
+[731][31986, 39]   :begin-object = BWS ( "{" / "%7B" ) BWS<LF>
+[732][32025, 35]   :end-object   = BWS ( "}" / "%7D" )<LF>
+[733][32060, 1]    :<LF>
+[734][32061, 39]   :begin-array = BWS ( "[" / "%5B" ) BWS <LF>
+[735][32100, 34]   :end-array   = BWS ( "]" / "%5D" )<LF>
+[736][32134, 1]    :<LF>
+[737][32135, 33]   :quotation-mark  = DQUOTE / "%22"<LF>
+[738][32168, 32]   :name-separator  = BWS COLON BWS<LF>
+[739][32200, 32]   :value-separator = BWS COMMA BWS<LF>
+[740][32232, 1]    :<LF>
+[741][32233, 38]   :primitiveLiteralInJSON = stringInJSON<LF>
+[742][32271, 38]   :                       / numberInJSON<LF>
+[743][32309, 33]   :                       / 'true' <LF>
+[744][32342, 33]   :                       / 'false'<LF>
+[745][32375, 32]   :                       / 'null'<LF>
+[746][32407, 1]    :<LF>
+[747][32408, 57]   :stringInJSON = quotation-mark *charInJSON quotation-mark<LF>
+[748][32465, 33]   :charInJSON   = qchar-unescaped  <LF>
+[749][32498, 38]   :             / qchar-JSON-special    <LF>
+[750][32536, 40]   :             / escape ( quotation-mark <LF>
+[751][32576, 31]   :                      / escape<LF>
+[752][32607, 118]  :                      / ( "/" / "%2F" ) ; solidus         U+002F - literal form is allowed in the query part of a URL<LF>
+[753][32725, 81]   :                      / 'b'             ; backspace       U+0008                <LF>
+[754][32806, 65]   :                      / 'f'             ; form feed       U+000C<LF>
+[755][32871, 65]   :                      / 'n'             ; line feed       U+000A<LF>
+[756][32936, 65]   :                      / 'r'             ; carriage return U+000D<LF>
+[757][33001, 65]   :                      / 't'             ; tab             U+0009<LF>
+[758][33066, 65]   :                      / 'u' 4HEXDIG     ;                 U+XXXX<LF>
+[759][33131, 24]   :                      )<LF>
+[760][33155, 1]    :<LF>
+[761][33156, 117]  :qchar-JSON-special = SP / ":" / "{" / "}" / "[" / "]" ; some agents put these unencoded into the query part of a URL<LF>
+[762][33273, 1]    :<LF>
+[763][33274, 50]   :escape = "\" / "%5C"     ; reverse solidus U+005C<LF>
+[764][33324, 1]    :<LF>
+[765][33325, 44]   :numberInJSON = [ "-" ] int [ frac ] [ exp ]<LF>
+[766][33369, 42]   :int          = "0" / ( oneToNine *DIGIT )<LF>
+[767][33411, 27]   :frac         = "." 1*DIGIT<LF>
+[768][33438, 41]   :exp          = "e" [ "-" / "+" ] 1*DIGIT<LF>
+[769][33479, 1]    :<LF>
+[770][33480, 1]    :<LF>
+[771][33481, 80]   :;------------------------------------------------------------------------------<LF>
+[772][33561, 27]   :; 6. Names and identifiers<LF>
+[773][33588, 80]   :;------------------------------------------------------------------------------<LF>
+[774][33668, 1]    :<LF>
+[775][33669, 62]   :qualifiedTypeName = singleQualifiedTypeName                  <LF>
+[776][33731, 68]   :                  / 'Collection' OPEN singleQualifiedTypeName CLOSE<LF>
+[777][33799, 1]    :<LF>
+[778][33800, 72]   :optionallyQualifiedTypeName = singleQualifiedTypeName                  <LF>
+[779][33872, 78]   :                            / 'Collection' OPEN singleQualifiedTypeName CLOSE<LF>
+[780][33950, 45]   :                            / singleTypeName<LF>
+[781][33995, 69]   :                            / 'Collection' OPEN singleTypeName CLOSE<LF>
+[782][34064, 1]    :<LF>
+[783][34065, 51]   :singleQualifiedTypeName = qualifiedEntityTypeName <LF>
+[784][34116, 51]   :                        / qualifiedComplexTypeName<LF>
+[785][34167, 54]   :                        / qualifiedTypeDefinitionName<LF>
+[786][34221, 48]   :                        / qualifiedEnumTypeName<LF>
+[787][34269, 45]   :                        / primitiveTypeName <LF>
+[788][34314, 25]   :                        <LF>
+[789][34339, 33]   :singleTypeName = entityTypeName <LF>
+[790][34372, 34]   :               / complexTypeName <LF>
+[791][34406, 37]   :               / typeDefinitionName <LF>
+[792][34443, 62]   :               / enumerationTypeName                         <LF>
+[793][34505, 19]   :                  <LF>
+[794][34524, 59]   :qualifiedEntityTypeName     = namespace "." entityTypeName<LF>
+[795][34583, 60]   :qualifiedComplexTypeName    = namespace "." complexTypeName<LF>
+[796][34643, 64]   :qualifiedTypeDefinitionName = namespace "." typeDefinitionName <LF>
+[797][34707, 64]   :qualifiedEnumTypeName       = namespace "." enumerationTypeName<LF>
+[798][34771, 1]    :<LF>
+[799][34772, 73]   :optionallyQualifiedEntityTypeName     = [ namespace "." ] entityTypeName<LF>
+[800][34845, 74]   :optionallyQualifiedComplexTypeName    = [ namespace "." ] complexTypeName<LF>
+[801][34919, 1]    :<LF>
+[802][34920, 43]   :; an alias is just a single-part namespace<LF>
+[803][34963, 53]   :namespace     = namespacePart *( "." namespacePart )<LF>
+[804][35016, 32]   :namespacePart = odataIdentifier<LF>
+[805][35048, 1]    :<LF>
+[806][35049, 38]   :entitySetName       = odataIdentifier<LF>
+[807][35087, 48]   :singletonEntity     = odataIdentifier          <LF>
+[808][35135, 38]   :entityTypeName      = odataIdentifier<LF>
+[809][35173, 38]   :complexTypeName     = odataIdentifier<LF>
+[810][35211, 39]   :typeDefinitionName  = odataIdentifier <LF>
+[811][35250, 38]   :enumerationTypeName = odataIdentifier<LF>
+[812][35288, 38]   :enumerationMember   = odataIdentifier<LF>
+[813][35326, 38]   :termName            = odataIdentifier<LF>
+[814][35364, 1]    :<LF>
+[815][35365, 119]  :; Note: this pattern is overly restrictive, the normative definition is type TSimpleIdentifier in OData EDM XML Schema<LF>
+[816][35484, 81]   :odataIdentifier             = identifierLeadingCharacter *127identifierCharacter<LF>
+[817][35565, 104]  :identifierLeadingCharacter  = ALPHA / "_"         ; plus Unicode characters from the categories L or Nl<LF>
+[818][35669, 125]  :identifierCharacter         = ALPHA / "_" / DIGIT ; plus Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf<LF>
+[819][35794, 1]    :<LF>
+[820][35795, 38]   :primitiveTypeName = 'Edm.' ( 'Binary'<LF>
+[821][35833, 39]   :                           / 'Boolean'<LF>
+[822][35872, 36]   :                           / 'Byte'<LF>
+[823][35908, 37]   :                           / 'Date' <LF>
+[824][35945, 46]   :                           / 'DateTimeOffset'<LF>
+[825][35991, 39]   :                           / 'Decimal'<LF>
+[826][36030, 38]   :                           / 'Double'<LF>
+[827][36068, 41]   :                           / 'Duration' <LF>
+[828][36109, 37]   :                           / 'Guid' <LF>
+[829][36146, 37]   :                           / 'Int16'<LF>
+[830][36183, 37]   :                           / 'Int32'<LF>
+[831][36220, 37]   :                           / 'Int64'<LF>
+[832][36257, 37]   :                           / 'SByte'<LF>
+[833][36294, 38]   :                           / 'Single'<LF>
+[834][36332, 38]   :                           / 'Stream'<LF>
+[835][36370, 38]   :                           / 'String'<LF>
+[836][36408, 41]   :                           / 'TimeOfDay'<LF>
+[837][36449, 82]   :                           / abstractSpatialTypeName [ concreteSpatialTypeName ] <LF>
+[838][36531, 29]   :                           )<LF>
+[839][36560, 38]   :abstractSpatialTypeName = 'Geography'<LF>
+[840][36598, 37]   :                        / 'Geometry'<LF>
+[841][36635, 39]   :concreteSpatialTypeName = 'Collection'<LF>
+[842][36674, 39]   :                        / 'LineString'<LF>
+[843][36713, 44]   :                        / 'MultiLineString'<LF>
+[844][36757, 39]   :                        / 'MultiPoint'<LF>
+[845][36796, 41]   :                        / 'MultiPolygon'<LF>
+[846][36837, 34]   :                        / 'Point'<LF>
+[847][36871, 36]   :                        / 'Polygon'<LF>
+[848][36907, 1]    :<LF>
+[849][36908, 73]   :primitiveProperty       = primitiveKeyProperty / primitiveNonKeyProperty<LF>
+[850][36981, 42]   :primitiveKeyProperty    = odataIdentifier<LF>
+[851][37023, 42]   :primitiveNonKeyProperty = odataIdentifier<LF>
+[852][37065, 42]   :primitiveColProperty    = odataIdentifier<LF>
+[853][37107, 42]   :complexProperty         = odataIdentifier<LF>
+[854][37149, 42]   :complexColProperty      = odataIdentifier<LF>
+[855][37191, 42]   :streamProperty          = odataIdentifier<LF>
+[856][37233, 1]    :<LF>
+[857][37234, 87]   :navigationProperty          = entityNavigationProperty / entityColNavigationProperty  <LF>
+[858][37321, 46]   :entityNavigationProperty    = odataIdentifier<LF>
+[859][37367, 46]   :entityColNavigationProperty = odataIdentifier<LF>
+[860][37413, 1]    :<LF>
+[861][37414, 31]   :action       = odataIdentifier<LF>
+[862][37445, 31]   :actionImport = odataIdentifier<LF>
+[863][37476, 1]    :<LF>
+[864][37477, 27]   :function = entityFunction <LF>
+[865][37504, 30]   :         / entityColFunction <LF>
+[866][37534, 28]   :         / complexFunction <LF>
+[867][37562, 31]   :         / complexColFunction <LF>
+[868][37593, 30]   :         / primitiveFunction <LF>
+[869][37623, 32]   :         / primitiveColFunction<LF>
+[870][37655, 10]   :         <LF>
+[871][37665, 39]   :entityFunction       = odataIdentifier<LF>
+[872][37704, 39]   :entityColFunction    = odataIdentifier<LF>
+[873][37743, 39]   :complexFunction      = odataIdentifier<LF>
+[874][37782, 39]   :complexColFunction   = odataIdentifier<LF>
+[875][37821, 39]   :primitiveFunction    = odataIdentifier<LF>
+[876][37860, 39]   :primitiveColFunction = odataIdentifier<LF>
+[877][37899, 1]    :<LF>
+[878][37900, 45]   :entityFunctionImport       = odataIdentifier<LF>
+[879][37945, 45]   :entityColFunctionImport    = odataIdentifier<LF>
+[880][37990, 45]   :complexFunctionImport      = odataIdentifier<LF>
+[881][38035, 45]   :complexColFunctionImport   = odataIdentifier<LF>
+[882][38080, 45]   :primitiveFunctionImport    = odataIdentifier<LF>
+[883][38125, 45]   :primitiveColFunctionImport = odataIdentifier<LF>
+[884][38170, 1]    :<LF>
+[885][38171, 1]    :<LF>
+[886][38172, 80]   :;------------------------------------------------------------------------------<LF>
+[887][38252, 25]   :; 7. Literal Data Values<LF>
+[888][38277, 80]   :;------------------------------------------------------------------------------<LF>
+[889][38357, 1]    :<LF>
+[890][38358, 10]   :; in URLs<LF>
+[891][38368, 78]   :primitiveLiteral = nullValue                  ; plain values up to int64Value<LF>
+[892][38446, 33]   :                 / booleanValue <LF>
+[893][38479, 30]   :                 / guidValue <LF>
+[894][38509, 45]   :                 / dateTimeOffsetValueInUrl <LF>
+[895][38554, 29]   :                 / dateValue<LF>
+[896][38583, 39]   :                 / timeOfDayValueInUrl<LF>
+[897][38622, 33]   :                 / decimalValue <LF>
+[898][38655, 32]   :                 / doubleValue <LF>
+[899][38687, 32]   :                 / singleValue <LF>
+[900][38719, 31]   :                 / sbyteValue <LF>
+[901][38750, 29]   :                 / byteValue<LF>
+[902][38779, 31]   :                 / int16Value <LF>
+[903][38810, 31]   :                 / int32Value <LF>
+[904][38841, 31]   :                 / int64Value <LF>
+[905][38872, 62]   :                 / string                     ; single-quoted<LF>
+[906][38934, 28]   :                 / duration<LF>
+[907][38962, 24]   :                 / enum<LF>
+[908][38986, 84]   :                 / binary                     ; all others are quoted and prefixed <LF>
+[909][39070, 40]   :                 / geographyCollection <LF>
+[910][39110, 40]   :                 / geographyLineString <LF>
+[911][39150, 45]   :                 / geographyMultiLineString <LF>
+[912][39195, 40]   :                 / geographyMultiPoint <LF>
+[913][39235, 42]   :                 / geographyMultiPolygon <LF>
+[914][39277, 35]   :                 / geographyPoint <LF>
+[915][39312, 37]   :                 / geographyPolygon <LF>
+[916][39349, 39]   :                 / geometryCollection <LF>
+[917][39388, 39]   :                 / geometryLineString <LF>
+[918][39427, 44]   :                 / geometryMultiLineString <LF>
+[919][39471, 39]   :                 / geometryMultiPoint <LF>
+[920][39510, 41]   :                 / geometryMultiPolygon <LF>
+[921][39551, 34]   :                 / geometryPoint <LF>
+[922][39585, 35]   :                 / geometryPolygon<LF>
+[923][39620, 10]   :         <LF>
+[924][39630, 84]   :; in Atom and JSON message bodies and CSDL DefaultValue attributes                 <LF>
+[925][39714, 30]   :primitiveValue = booleanValue<LF>
+[926][39744, 27]   :               / guidValue<LF>
+[927][39771, 31]   :               / durationValue<LF>
+[928][39802, 38]   :               / dateTimeOffsetValue <LF>
+[929][39840, 27]   :               / dateValue<LF>
+[930][39867, 32]   :               / timeOfDayValue<LF>
+[931][39899, 27]   :               / enumValue<LF>
+[932][39926, 39]   :               / fullCollectionLiteral<LF>
+[933][39965, 39]   :               / fullLineStringLiteral<LF>
+[934][40004, 39]   :               / fullMultiPointLiteral<LF>
+[935][40043, 44]   :               / fullMultiLineStringLiteral<LF>
+[936][40087, 41]   :               / fullMultiPolygonLiteral<LF>
+[937][40128, 34]   :               / fullPointLiteral<LF>
+[938][40162, 36]   :               / fullPolygonLiteral<LF>
+[939][40198, 31]   :               / decimalValue <LF>
+[940][40229, 30]   :               / doubleValue <LF>
+[941][40259, 30]   :               / singleValue <LF>
+[942][40289, 29]   :               / sbyteValue <LF>
+[943][40318, 27]   :               / byteValue<LF>
+[944][40345, 29]   :               / int16Value <LF>
+[945][40374, 29]   :               / int32Value <LF>
+[946][40403, 29]   :               / int64Value <LF>
+[947][40432, 30]   :               / binaryValue <LF>
+[948][40462, 33]   :               ; also valid are:<LF>
+[949][40495, 73]   :               ; - any XML string for strings in Atom and CSDL documents<LF>
+[950][40568, 55]   :               ; - any JSON string for JSON documents <LF>
+[951][40623, 1]    :<LF>
+[952][40624, 20]   :nullValue = 'null' <LF>
+[953][40644, 1]    :<LF>
+[954][40645, 124]  :; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5                                             <LF>
+[955][40769, 49]   :binary      = "binary" SQUOTE binaryValue SQUOTE<LF>
+[956][40818, 55]   :binaryValue = *(4base64char) [ base64b16  / base64b8 ]<LF>
+[957][40873, 134]  :base64b16   = 2base64char ( 'A' / 'E' / 'I' / 'M' / 'Q' / 'U' / 'Y' / 'c' / 'g' / 'k' / 'o' / 's' / 'w' / '0' / '4' / '8' )   [ "=" ]<LF>
+[958][41007, 60]   :base64b8    = base64char ( 'A' / 'Q' / 'g' / 'w' ) [ "==" ]<LF>
+[959][41067, 40]   :base64char  = ALPHA / DIGIT / "-" / "_"<LF>
+[960][41107, 1]    :<LF>
+[961][41108, 32]   :booleanValue = "true" / "false"<LF>
+[962][41140, 1]    :<LF>
+[963][41141, 87]   :decimalValue = [ SIGN ] 1*DIGIT [ "." 1*DIGIT ] [ "e" [ SIGN ] 1*DIGIT ] / nanInfinity<LF>
+[964][41228, 93]   :doubleValue  = decimalValue ; IEEE 754 binary64 floating-point number (15-17 decimal digits)<LF>
+[965][41321, 91]   :singleValue  = decimalValue ; IEEE 754 binary32 floating-point number (6-9 decimal digits)<LF>
+[966][41412, 38]   :nanInfinity  = 'NaN' / '-INF' / 'INF'<LF>
+[967][41450, 1]    :<LF>
+[968][41451, 70]   :guidValue = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG <LF>
+[969][41521, 1]    :<LF>
+[970][41522, 69]   :byteValue  = 1*3DIGIT           ; numbers in the range from 0 to 255<LF>
+[971][41591, 72]   :sbyteValue = [ SIGN ] 1*3DIGIT  ; numbers in the range from -128 to 127<LF>
+[972][41663, 84]   :int16Value = [ SIGN ] 1*5DIGIT  ; numbers in the range from -32768 to 32767        <LF>
+[973][41747, 86]   :int32Value = [ SIGN ] 1*10DIGIT ; numbers in the range from -2147483648 to 2147483647<LF>
+[974][41833, 104]  :int64Value = [ SIGN ] 1*19DIGIT ; numbers in the range from -9223372036854775808 to 9223372036854775807<LF>
+[975][41937, 1]    :<LF>
+[976][41938, 73]   :string           = SQUOTE *( SQUOTE-in-string / pchar-no-SQUOTE ) SQUOTE<LF>
+[977][42011, 103]  :SQUOTE-in-string = SQUOTE SQUOTE ; two consecutive single quotes represent one within a string literal<LF>
+[978][42114, 1]    :<LF>
+[979][42115, 35]   :dateValue = year "-" month "-" day<LF>
+[980][42150, 1]    :<LF>
+[981][42151, 107]  :dateTimeOffsetValue      = year "-" month "-" day "T" timeOfDayValue      ( "Z" / SIGN hour ":"   minute )<LF>
+[982][42258, 107]  :dateTimeOffsetValueInUrl = year "-" month "-" day "T" timeOfDayValueInUrl ( "Z" / SIGN hour COLON minute )<LF>
+[983][42365, 1]    :<LF>
+[984][42366, 59]   :duration      = [ "duration" ] SQUOTE durationValue SQUOTE<LF>
+[985][42425, 117]  :durationValue = [ SIGN ] "P" [ 1*DIGIT "D" ] [ "T" [ 1*DIGIT "H" ] [ 1*DIGIT "M" ] [ 1*DIGIT [ "." 1*DIGIT ] "S" ] ]<LF>
+[986][42542, 78]   :     ; the above is an approximation of the rules for an xml dayTimeDuration.<LF>
+[987][42620, 133]  :     ; see the lexical representation for dayTimeDuration in http://www.w3.org/TR/xmlschema11-2#dayTimeDuration for more information<LF>
+[988][42753, 1]    :<LF>
+[989][42754, 83]   :timeOfDayValue      = hour ":"   minute [ ":"   second [ "." fractionalSeconds ] ]<LF>
+[990][42837, 83]   :timeOfDayValueInUrl = hour COLON minute [ COLON second [ "." fractionalSeconds ] ]<LF>
+[991][42920, 2]    : <LF>
+[992][42922, 71]   :oneToNine       = "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9" <LF>
+[993][42993, 62]   :zeroToFiftyNine = ( "0" / "1" / "2" / "3" / "4" / "5" ) DIGIT<LF>
+[994][43055, 51]   :year  = [ "-" ] ( "0" 3DIGIT / oneToNine 3*DIGIT )<LF>
+[995][43106, 22]   :month = "0" oneToNine<LF>
+[996][43128, 32]   :      / "1" ( "0" / "1" / "2" )<LF>
+[997][43160, 22]   :day   = "0" oneToNine<LF>
+[998][43182, 28]   :      / ( "1" / "2" ) DIGIT<LF>
+[999][43210, 26]   :      / "3" ( "0" / "1" )<LF>
+[1000][43236, 29]  :hour   = ( "0" / "1" ) DIGIT<LF>
+[1001][43265, 40]  :       / "2" ( "0" / "1" / "2" / "3" ) <LF>
+[1002][43305, 25]  :minute = zeroToFiftyNine<LF>
+[1003][43330, 32]  :second = zeroToFiftyNine       <LF>
+[1004][43362, 30]  :fractionalSeconds = 1*12DIGIT<LF>
+[1005][43392, 1]   :<LF>
+[1006][43393, 68]  :enum            = [ qualifiedEnumTypeName ] SQUOTE enumValue SQUOTE<LF>
+[1007][43461, 61]  :enumValue       = singleEnumValue *( COMMA singleEnumValue )<LF>
+[1008][43522, 54]  :singleEnumValue = enumerationMember / enumMemberValue<LF>
+[1009][43576, 29]  :enumMemberValue = int64Value<LF>
+[1010][43605, 1]   :<LF>
+[1011][43606, 76]  :geographyCollection   = geographyPrefix SQUOTE fullCollectionLiteral SQUOTE<LF>
+[1012][43682, 54]  :fullCollectionLiteral = sridLiteral collectionLiteral<LF>
+[1013][43736, 77]  :collectionLiteral     = "Collection(" geoLiteral *( COMMA geoLiteral ) CLOSE<LF>
+[1014][43813, 42]  :geoLiteral            = collectionLiteral<LF>
+[1015][43855, 42]  :                      / lineStringLiteral<LF>
+[1016][43897, 42]  :                      / multiPointLiteral<LF>
+[1017][43939, 47]  :                      / multiLineStringLiteral<LF>
+[1018][43986, 44]  :                      / multiPolygonLiteral<LF>
+[1019][44030, 37]  :                      / pointLiteral<LF>
+[1020][44067, 39]  :                      / polygonLiteral<LF>
+[1021][44106, 1]   :<LF>
+[1022][44107, 76]  :geographyLineString   = geographyPrefix SQUOTE fullLineStringLiteral SQUOTE<LF>
+[1023][44183, 54]  :fullLineStringLiteral = sridLiteral lineStringLiteral<LF>
+[1024][44237, 52]  :lineStringLiteral     = "LineString" lineStringData<LF>
+[1025][44289, 79]  :lineStringData        = OPEN positionLiteral 1*( COMMA positionLiteral ) CLOSE<LF>
+[1026][44368, 1]   :<LF>
+[1027][44369, 86]  :geographyMultiLineString   = geographyPrefix SQUOTE fullMultiLineStringLiteral SQUOTE<LF>
+[1028][44455, 64]  :fullMultiLineStringLiteral = sridLiteral multiLineStringLiteral<LF>
+[1029][44519, 99]  :multiLineStringLiteral     = "MultiLineString(" [ lineStringData *( COMMA lineStringData ) ] CLOSE<LF>
+[1030][44618, 1]   :<LF>
+[1031][44619, 76]  :geographyMultiPoint   = geographyPrefix SQUOTE fullMultiPointLiteral SQUOTE<LF>
+[1032][44695, 54]  :fullMultiPointLiteral = sridLiteral multiPointLiteral<LF>
+[1033][44749, 79]  :multiPointLiteral     = "MultiPoint(" [ pointData *( COMMA pointData ) ] CLOSE<LF>
+[1034][44828, 1]   :<LF>
+[1035][44829, 80]  :geographyMultiPolygon   = geographyPrefix SQUOTE fullMultiPolygonLiteral SQUOTE<LF>
+[1036][44909, 58]  :fullMultiPolygonLiteral = sridLiteral multiPolygonLiteral<LF>
+[1037][44967, 87]  :multiPolygonLiteral     = "MultiPolygon(" [ polygonData *( COMMA polygonData ) ] CLOSE<LF>
+[1038][45054, 1]   :<LF>
+[1039][45055, 66]  :geographyPoint   = geographyPrefix SQUOTE fullPointLiteral SQUOTE<LF>
+[1040][45121, 44]  :fullPointLiteral = sridLiteral pointLiteral<LF>
+[1041][45165, 43]  :sridLiteral      = "SRID" EQ 1*5DIGIT SEMI<LF>
+[1042][45208, 36]  :pointLiteral     ="Point" pointData<LF>
+[1043][45244, 46]  :pointData        = OPEN positionLiteral CLOSE<LF>
+[1044][45290, 74]  :positionLiteral  = doubleValue SP doubleValue  ; longitude, then latitude<LF>
+[1045][45364, 1]   :<LF>
+[1046][45365, 70]  :geographyPolygon   = geographyPrefix SQUOTE fullPolygonLiteral SQUOTE<LF>
+[1047][45435, 48]  :fullPolygonLiteral = sridLiteral polygonLiteral<LF>
+[1048][45483, 43]  :polygonLiteral     = "Polygon" polygonData<LF>
+[1049][45526, 67]  :polygonData        = OPEN ringLiteral *( COMMA ringLiteral ) CLOSE<LF>
+[1050][45593, 75]  :ringLiteral        = OPEN positionLiteral *( COMMA positionLiteral ) CLOSE<LF>
+[1051][45668, 138] :                   ; Within each ringLiteral, the first and last positionLiteral elements MUST be an exact syntactic match to each other.<LF>
+[1052][45806, 119] :                   ; Within the polygonData, the ringLiterals MUST specify their points in appropriate winding order. <LF>
+[1053][45925, 121] :                   ; In order of traversal, points to the left side of the ring are interpreted as being in the polygon.<LF>
+[1054][46046, 1]   :<LF>
+[1055][46047, 82]  :geometryCollection      = geometryPrefix SQUOTE fullCollectionLiteral      SQUOTE<LF>
+[1056][46129, 82]  :geometryLineString      = geometryPrefix SQUOTE fullLineStringLiteral      SQUOTE<LF>
+[1057][46211, 82]  :geometryMultiLineString = geometryPrefix SQUOTE fullMultiLineStringLiteral SQUOTE<LF>
+[1058][46293, 82]  :geometryMultiPoint      = geometryPrefix SQUOTE fullMultiPointLiteral      SQUOTE<LF>
+[1059][46375, 82]  :geometryMultiPolygon    = geometryPrefix SQUOTE fullMultiPolygonLiteral    SQUOTE<LF>
+[1060][46457, 82]  :geometryPoint           = geometryPrefix SQUOTE fullPointLiteral           SQUOTE<LF>
+[1061][46539, 82]  :geometryPolygon         = geometryPrefix SQUOTE fullPolygonLiteral         SQUOTE<LF>
+[1062][46621, 1]   :<LF>
+[1063][46622, 30]  :geographyPrefix = "geography"<LF>
+[1064][46652, 30]  :geometryPrefix  = "geometry" <LF>
+[1065][46682, 1]   :<LF>
+[1066][46683, 1]   :<LF>
+[1067][46684, 80]  :;------------------------------------------------------------------------------<LF>
+[1068][46764, 19]  :; 8. Header values<LF>
+[1069][46783, 80]  :;------------------------------------------------------------------------------<LF>
+[1070][46863, 1]   :<LF>
+[1071][46864, 20]  :header = content-id<LF>
+[1072][46884, 19]  :       / entityid <LF>
+[1073][46903, 19]  :       / isolation<LF>
+[1074][46922, 26]  :       / odata-maxversion<LF>
+[1075][46948, 23]  :       / odata-version<LF>
+[1076][46971, 16]  :       / prefer<LF>
+[1077][46987, 1]   :<LF>
+[1078][46988, 45]  :content-id = "Content-ID" ":" OWS request-id<LF>
+[1079][47033, 26]  :request-id = 1*unreserved<LF>
+[1080][47059, 8]   :       <LF>
+[1081][47067, 59]  :entityid   = [ "OData-" ] "EntityID" ":" OWS IRI-in-header<LF>
+[1082][47126, 57]  :isolation  = [ "OData-" ] "Isolation" ":" OWS "snapshot"<LF>
+[1083][47183, 71]  :odata-maxversion = "OData-MaxVersion" ":" OWS 1*DIGIT "." 1*DIGIT     <LF>
+[1084][47254, 66]  :odata-version    = "OData-Version"    ":" OWS "4.0" [ oneToNine ]<LF>
+[1085][47320, 7]   :      <LF>
+[1086][47327, 76]  :prefer     = "Prefer" ":" OWS preference *( OWS "," OWS preference )       <LF>
+[1087][47403, 45]  :preference = allowEntityReferencesPreference<LF>
+[1088][47448, 32]  :           / callbackPreference<LF>
+[1089][47480, 39]  :           / continueOnErrorPreference<LF>
+[1090][47519, 42]  :           / includeAnnotationsPreference<LF>
+[1091][47561, 35]  :           / maxpagesizePreference<LF>
+[1092][47596, 36]  :           / respondAsyncPreference<LF>
+[1093][47632, 30]  :           / returnPreference<LF>
+[1094][47662, 36]  :           / trackChangesPreference<LF>
+[1095][47698, 28]  :           / waitPreference<LF>
+[1096][47726, 75]  :           ; and everything allowed by https://tools.ietf.org/html/rfc7240<LF>
+[1097][47801, 80]  :           ; / ( parameter / token ) *( OWS ";" [ OWS ( parameter / token ) ] )<LF>
+[1098][47881, 12]  :           <LF>
+[1099][47893, 72]  :allowEntityReferencesPreference = [ "odata." ] "allow-entityreferences"<LF>
+[1100][47965, 1]   :<LF>
+[1101][47966, 86]  :callbackPreference = [ "odata." ] "callback" OWS ";" OWS "url" EQ-h DQUOTE URI DQUOTE<LF>
+[1102][48052, 1]   :<LF>
+[1103][48053, 86]  :continueOnErrorPreference = [ "odata." ] "continue-on-error" [ EQ-h booleanValue ]   <LF>
+[1104][48139, 12]  :           <LF>
+[1105][48151, 101] :includeAnnotationsPreference = [ "odata." ] "include-annotations" EQ-h DQUOTE annotationsList DQUOTE<LF>
+[1106][48252, 72]  :annotationsList      = annotationIdentifier *("," annotationIdentifier)<LF>
+[1107][48324, 43]  :annotationIdentifier = [ excludeOperator ]<LF>
+[1108][48367, 31]  :                       ( STAR <LF>
+[1109][48398, 60]  :                       / namespace "." ( termName / STAR ) <LF>
+[1110][48458, 26]  :                       ) <LF>
+[1111][48484, 47]  :                       [ "#" odataIdentifier ]<LF>
+[1112][48531, 27]  :excludeOperator      = "-"<LF>
+[1113][48558, 12]  :           <LF>
+[1114][48570, 82]  :maxpagesizePreference = [ "odata." ] "maxpagesize" EQ-h oneToNine *DIGIT         <LF>
+[1115][48652, 1]   :<LF>
+[1116][48653, 41]  :respondAsyncPreference = "respond-async"<LF>
+[1117][48694, 1]   :<LF>
+[1118][48695, 66]  :returnPreference = "return" EQ-h ( 'representation' / 'minimal' )<LF>
+[1119][48761, 1]   :<LF>
+[1120][48762, 54]  :trackChangesPreference = [ "odata." ] "track-changes"<LF>
+[1121][48816, 1]   :<LF>
+[1122][48817, 37]  :waitPreference = "wait" EQ-h 1*DIGIT<LF>
+[1123][48854, 1]   :<LF>
+[1124][48855, 54]  :;parameter      = token "=" ( token / quoted-string )<LF>
+[1125][48909, 26]  :;token          = 1*tchar<LF>
+[1126][48935, 58]  :;tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"<LF>
+[1127][48993, 64]  :;               / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"<LF>
+[1128][49057, 32]  :;               / DIGIT / ALPHA<LF>
+[1129][49089, 58]  :;quoted-string  = DQUOTE *( qdtext / quoted-pair ) DQUOTE<LF>
+[1130][49147, 60]  :;qdtext         = %x21 / %x23-5B / %x5D-7E / obs-text / OWS<LF>
+[1131][49207, 25]  :obs-text       = %x80-FF<LF>
+[1132][49232, 55]  :;quoted-pair    = "\" ( HTAB / SP / VCHAR / obs-text )<LF>
+[1133][49287, 1]   :<LF>
+[1134][49288, 49]  :OWS   = *( SP / HTAB )  ; "optional" whitespace <LF>
+[1135][49337, 61]  :BWS-h = *( SP / HTAB )  ; "bad" whitespace in header values <LF>
+[1136][49398, 24]  :EQ-h  = BWS-h EQ BWS-h <LF>
+[1137][49422, 1]   :<LF>
+[1138][49423, 1]   :<LF>
+[1139][49424, 80]  :;------------------------------------------------------------------------------<LF>
+[1140][49504, 17]  :; 9. Punctuation<LF>
+[1141][49521, 80]  :;------------------------------------------------------------------------------<LF>
+[1142][49601, 1]   :<LF>
+[1143][49602, 64]  :RWS = 1*( SP / HTAB / "%20" / "%09" )  ; "required" whitespace <LF>
+[1144][49666, 59]  :BWS =  *( SP / HTAB / "%20" / "%09" )  ; "bad" whitespace <LF>
+[1145][49725, 1]   :<LF>
+[1146][49726, 21]  :AT     = "@" / "%40"<LF>
+[1147][49747, 21]  :COLON  = ":" / "%3A"<LF>
+[1148][49768, 21]  :COMMA  = "," / "%2C"<LF>
+[1149][49789, 13]  :EQ     = "="<LF>
+[1150][49802, 27]  :SIGN   = "+" / "%2B" / "-"<LF>
+[1151][49829, 21]  :SEMI   = ";" / "%3B"<LF>
+[1152][49850, 21]  :STAR   = "*" / "%2A"<LF>
+[1153][49871, 21]  :SQUOTE = "'" / "%27"<LF>
+[1154][49892, 1]   :<LF>
+[1155][49893, 20]  :OPEN  = "(" / "%28"<LF>
+[1156][49913, 20]  :CLOSE = ")" / "%29"<LF>
+[1157][49933, 1]   :<LF>
+[1158][49934, 1]   :<LF>
+[1159][49935, 80]  :;------------------------------------------------------------------------------<LF>
+[1160][50015, 26]  :; A. URI syntax [RFC3986]<LF>
+[1161][50041, 80]  :;------------------------------------------------------------------------------<LF>
+[1162][50121, 1]   :<LF>
+[1163][50122, 68]  :URI           = scheme ":" hier-part [ "?" query ] [ "#" fragment ]<LF>
+[1164][50190, 44]  :hier-part     = "//" authority path-abempty<LF>
+[1165][50234, 30]  :              / path-absolute<LF>
+[1166][50264, 30]  :              / path-rootless<LF>
+[1167][50294, 28]  :;              / path-empty<LF>
+[1168][50322, 36]  :;URI-reference = URI / relative-ref<LF>
+[1169][50358, 52]  :;absolute-URI  = scheme ":" hier-part [ "?" query ]<LF>
+[1170][50410, 62]  :;relative-ref  = relative-part [ "?" query ] [ "#" fragment ]<LF>
+[1171][50472, 45]  :;relative-part = "//" authority path-abempty<LF>
+[1172][50517, 31]  :;              / path-absolute<LF>
+[1173][50548, 31]  :;              / path-noscheme<LF>
+[1174][50579, 28]  :;              / path-empty<LF>
+[1175][50607, 59]  :scheme        = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )<LF>
+[1176][50666, 51]  :authority     = [ userinfo "@" ] host [ ":" port ]<LF>
+[1177][50717, 65]  :userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )<LF>
+[1178][50782, 52]  :host          = IP-literal / IPv4address / reg-name<LF>
+[1179][50834, 23]  :port          = *DIGIT<LF>
+[1180][50857, 53]  :IP-literal    = "[" ( IPv6address / IPvFuture  ) "]"<LF>
+[1181][50910, 69]  :IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )<LF>
+[1182][50979, 61]  :IPv6address   =                            6( h16 ":" ) ls32<LF>
+[1183][51040, 64]  :                 /                       "::" 5( h16 ":" ) ls32<LF>
+[1184][51104, 64]  :                 / [               h16 ] "::" 4( h16 ":" ) ls32<LF>
+[1185][51168, 64]  :                 / [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32<LF>
+[1186][51232, 64]  :                 / [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32<LF>
+[1187][51296, 64]  :                 / [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32<LF>
+[1188][51360, 64]  :                 / [ *4( h16 ":" ) h16 ] "::"              ls32<LF>
+[1189][51424, 63]  :                 / [ *5( h16 ":" ) h16 ] "::"              h16<LF>
+[1190][51487, 46]  :                 / [ *6( h16 ":" ) h16 ] "::"<LF>
+[1191][51533, 26]  :h16           = 1*4HEXDIG<LF>
+[1192][51559, 46]  :ls32          = ( h16 ":" h16 ) / IPv4address<LF>
+[1193][51605, 68]  :IPv4address   = dec-octet "." dec-octet "." dec-octet "." dec-octet<LF>
+[1194][51673, 48]  :dec-octet     = "1" 2DIGIT            ; 100-199<LF>
+[1195][51721, 48]  :              / "2" %x30-34 DIGIT     ; 200-249<LF>
+[1196][51769, 48]  :              / "25" %x30-35          ; 250-255<LF>
+[1197][51817, 46]  :              / %x31-39 DIGIT         ; 10-99<LF>
+[1198][51863, 44]  :              / DIGIT                 ; 0-9<LF>
+[1199][51907, 59]  :reg-name      = *( unreserved / pct-encoded / sub-delims )<LF>
+[1200][51966, 63]  :;path          = path-abempty    ; begins with "/" or is empty<LF>
+[1201][52029, 64]  :;              / path-absolute   ; begins with "/" but not "//"<LF>
+[1202][52093, 67]  :;              / path-noscheme   ; begins with a non-colon segment<LF>
+[1203][52160, 57]  :;              / path-rootless   ; begins with a segment<LF>
+[1204][52217, 51]  :;              / path-empty      ; zero characters<LF>
+[1205][52268, 33]  :path-abempty  = *( "/" segment )<LF>
+[1206][52301, 52]  :path-absolute = "/" [ segment-nz *( "/" segment ) ]<LF>
+[1207][52353, 48]  :;path-noscheme = segment-nz-nc *( "/" segment )<LF>
+[1208][52401, 44]  :path-rootless = segment-nz *( "/" segment )<LF>
+[1209][52445, 20]  :;path-empty    = ""<LF>
+[1210][52465, 23]  :segment       = *pchar<LF>
+[1211][52488, 24]  :segment-nz    = 1*pchar<LF>
+[1212][52512, 115] :;segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" ) ; non-zero-length segment without any colon ":"<LF>
+[1213][52627, 66]  :pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"<LF>
+[1214][52693, 39]  :query         = *( pchar / "/" / "?" )<LF>
+[1215][52732, 39]  :fragment      = *( pchar / "/" / "?" )<LF>
+[1216][52771, 34]  :pct-encoded   = "%" HEXDIG HEXDIG<LF>
+[1217][52805, 54]  :unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"<LF>
+[1218][52859, 41]  :;reserved      = gen-delims / sub-delims<LF>
+[1219][52900, 57]  :;gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"<LF>
+[1220][52957, 81]  :;sub-delims    = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="<LF>
+[1221][53038, 96]  :sub-delims     =       "$" / "&" / "'" /                                     "=" / other-delims<LF>
+[1222][53134, 75]  :other-delims   = "!" /                   "(" / ")" / "*" / "+" / "," / ";"<LF>
+[1223][53209, 1]   :<LF>
+[1224][53210, 104] :pchar-no-SQUOTE       = unreserved / pct-encoded-no-SQUOTE / other-delims / "$" / "&" / "=" / ":" / "@"<LF>
+[1225][53314, 97]  :pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG <LF>
+[1226][53411, 99]  :                      / "%" "2" ( "0" / "1" / "2" / "3" / "4" / "5" / "6" /   "8" / "9" / A-to-F )<LF>
+[1227][53510, 1]   :<LF>
+[1228][53511, 110] :qchar-no-AMP              = unreserved / pct-encoded / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="<LF>
+[1229][53621, 104] :qchar-no-AMP-EQ           = unreserved / pct-encoded / other-delims / ":" / "@" / "/" / "?" / "$" / "'"<LF>
+[1230][53725, 104] :qchar-no-AMP-EQ-AT-DOLLAR = unreserved / pct-encoded / other-delims / ":" /       "/" / "?" /       "'"<LF>
+[1231][53829, 1]   :<LF>
+[1232][53830, 116] :qchar-unescaped       = unreserved / pct-encoded-unescaped / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="<LF>
+[1233][53946, 99]  :pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" / A-to-F ) HEXDIG <LF>
+[1234][54045, 100] :                      / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) <LF>
+[1235][54145, 74]  :                      / "%" "5" ( DIGIT / "A" / "B" /   "D" / "E" / "F" )<LF>
+[1236][54219, 1]   :<LF>
+[1237][54220, 41]  :qchar-no-AMP-DQUOTE   = qchar-unescaped <LF>
+[1238][54261, 59]  :                      / escape ( escape / quotation-mark )<LF>
+[1239][54320, 18]  :                 <LF>
+[1240][54338, 18]  :                 <LF>
+[1241][54356, 80]  :;------------------------------------------------------------------------------<LF>
+[1242][54436, 26]  :; B. IRI syntax [RFC3987]<LF>
+[1243][54462, 80]  :;------------------------------------------------------------------------------<LF>
+[1244][54542, 80]  :; Note: these are over-generous stubs, for the actual patterns refer to RFC3987<LF>
+[1245][54622, 80]  :;------------------------------------------------------------------------------<LF>
+[1246][54702, 1]   :<LF>
+[1247][54703, 39]  :IRI-in-header = 1*( VCHAR / obs-text )<LF>
+[1248][54742, 31]  :IRI-in-query  = 1*qchar-no-AMP<LF>
+[1249][54773, 1]   :<LF>
+[1250][54774, 23]  :                      <LF>
+[1251][54797, 80]  :;------------------------------------------------------------------------------<LF>
+[1252][54877, 37]  :; C. ABNF core definitions [RFC5234]<LF>
+[1253][54914, 80]  :;------------------------------------------------------------------------------<LF>
+[1254][54994, 1]   :<LF>
+[1255][54995, 28]  :ALPHA  = %x41-5A / %x61-7A <LF>
+[1256][55023, 18]  :DIGIT  = %x30-39 <LF>
+[1257][55041, 24]  :HEXDIG = DIGIT / A-to-F<LF>
+[1258][55065, 44]  :A-to-F = "A" / "B" / "C" / "D" / "E" / "F" <LF>
+[1259][55109, 14]  :DQUOTE = %x22<LF>
+[1260][55123, 15]  :SP     = %x20 <LF>
+[1261][55138, 15]  :HTAB   = %x09 <LF>
+[1262][55153, 21]  :;WSP    = SP / HTAB <LF>
+[1263][55174, 27]  :;LWSP = *(WSP / CRLF WSP) <LF>
+[1264][55201, 17]  :VCHAR = %x21-7E <LF>
+[1265][55218, 16]  :;CHAR = %x01-7F<LF>
+[1266][55234, 19]  :;LOCTET = %x00-FF <LF>
+[1267][55253, 16]  :;CR     = %x0D <LF>
+[1268][55269, 16]  :;LF     = %x0A <LF>
+[1269][55285, 16]  :;CRLF   = CR LF<LF>
+[1270][55301, 18]  :;BIT = "0" / "1" <LF>
+[1271][55319, 1]   :<LF>
+[1272][55320, 1]   :<LF>
+[1273][55321, 80]  :;------------------------------------------------------------------------------<LF>
+[1274][55401, 39]  :; End of odata-abnf-construction-rules<LF>
+[1275][55440, 80]  :;------------------------------------------------------------------------------<LF>
+[1276][55520, 80]  :;------------------------------------------------------------------------------<LF>
+[1277][55600, 56]  :; OData Aggregation ABNF Construction Rules Version 4.0<LF>
+[1278][55656, 80]  :;------------------------------------------------------------------------------<LF>
+[1279][55736, 20]  :;  Working Draft 04<LF>
+[1280][55756, 20]  :;  04 November 2015<LF>
+[1281][55776, 80]  :;------------------------------------------------------------------------------<LF>
+[1282][55856, 2]   :;<LF>
+[1283][55858, 23]  :; Technical Committee:<LF>
+[1284][55881, 40]  :;   OASIS Open Data Protocol (OData) TC<LF>
+[1285][55921, 48]  :;   https://www.oasis-open.org/committees/odata<LF>
+[1286][55969, 2]   :;<LF>
+[1287][55971, 10]  :; Chairs:<LF>
+[1288][55981, 54]  :;   - Barbara Hartel (barbara.hartel@sap.com), SAP AG<LF>
+[1289][56035, 61]  :;   - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft<LF>
+[1290][56096, 2]   :;<LF>
+[1291][56098, 11]  :; Editors:<LF>
+[1292][56109, 46]  :;   - Ralf Handl (ralf.handl@sap.com), SAP AG<LF>
+[1293][56155, 56]  :;   - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM<LF>
+[1294][56211, 52]  :;   - Gerald Krause (gerald.krause@sap.com), SAP AG<LF>
+[1295][56263, 53]  :;   - Michael Pizzo (mikep@microsoft.com), Microsoft<LF>
+[1296][56316, 56]  :;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP AG<LF>
+[1297][56372, 2]   :;<LF>
+[1298][56374, 25]  :; Additional artifacts: <LF>
+[1299][56399, 71]  :;   This grammar is one component of a Work Product which consists of:<LF>
+[1300][56470, 55]  :;   - OData Extension for Data Aggregation Version 4.0<LF>
+[1301][56525, 60]  :;   - OData Aggregation ABNF Construction Rules Version 4.0<LF>
+[1302][56585, 40]  :;   - OData Aggregation ABNF Test Cases<LF>
+[1303][56625, 35]  :;   - OData Aggregation Vocabulary<LF>
+[1304][56660, 2]   :;<LF>
+[1305][56662, 16]  :; Related work:<LF>
+[1306][56678, 38]  :;   This specification is related to:<LF>
+[1307][56716, 41]  :;   - OData Version 4.0 Part 1: Protocol<LF>
+[1308][56757, 48]  :;   - OData Version 4.0 Part 2: URL Conventions<LF>
+[1309][56805, 37]  :;   - OData Version 4.0 Part 3: CSDL<LF>
+[1310][56842, 48]  :;   - OData ABNF Construction Rules Version 4.0<LF>
+[1311][56890, 28]  :;   - OData Core Vocabulary<LF>
+[1312][56918, 32]  :;   - OData Measures Vocabulary<LF>
+[1313][56950, 36]  :;   - OData JSON Format Version 4.0<LF>
+[1314][56986, 47]  :;   This specification replaces or supersedes:<LF>
+[1315][57033, 11]  :;   - None<LF>
+[1316][57044, 2]   :;<LF>
+[1317][57046, 27]  :; Declared XML namespaces:<LF>
+[1318][57073, 11]  :;   - None<LF>
+[1319][57084, 2]   :;<LF>
+[1320][57086, 12]  :; Abstract:<LF>
+[1321][57098, 79]  :;   This specification adds basic grouping and aggregation functionality (e.g.<LF>
+[1322][57177, 78]  :;   sum, min, and max) to the Open Data Protocol (OData) without changing any<LF>
+[1323][57255, 37]  :;   of the base principles of OData.<LF>
+[1324][57292, 2]   :;<LF>
+[1325][57294, 12]  :; Overview:<LF>
+[1326][57306, 80]  :;   This grammar uses the ABNF defined in RFC5234 with one extension: literals <LF>
+[1327][57386, 78]  :;   enclosed in single quotes (e.g. '$metadata') are treated case-sensitive. <LF>
+[1328][57464, 2]   :;<LF>
+[1329][57466, 61]  :;   It extends the OData ABNF Construction Rules Version 4.0<LF>
+[1330][57527, 2]   :;<LF>
+[1331][57529, 12]  :; Contents:<LF>
+[1332][57541, 58]  :;   1. New alternatives for OData ABNF Construction Rules<LF>
+[1333][57599, 34]  :;   2. System Query Option $apply<LF>
+[1334][57633, 30]  :;   3. Extensions to $filter <LF>
+[1335][57663, 2]   :;<LF>
+[1336][57665, 80]  :;------------------------------------------------------------------------------<LF>
+[1337][57745, 1]   :<LF>
+[1338][57746, 80]  :;------------------------------------------------------------------------------<LF>
+[1339][57826, 56]  :; 1. New alternatives for OData ABNF Construction Rules<LF>
+[1340][57882, 80]  :;------------------------------------------------------------------------------<LF>
+[1341][57962, 1]   :<LF>
+[1342][57963, 27]  :systemQueryOption =/ apply<LF>
+[1343][57990, 1]   :<LF>
+[1344][57991, 22]  :expandOption =/ apply<LF>
+[1345][58013, 1]   :<LF>
+[1346][58014, 36]  :boolMethodCallExpr =/ isdefinedExpr<LF>
+[1347][58050, 1]   :<LF>
+[1348][58051, 55]  :primitiveProperty =/ expressionAlias / customAggregate<LF>
+[1349][58106, 1]   :<LF>
+[1350][58107, 1]   :<LF>
+[1351][58108, 80]  :;------------------------------------------------------------------------------<LF>
+[1352][58188, 32]  :; 2. System Query Option $apply<LF>
+[1353][58220, 80]  :;------------------------------------------------------------------------------<LF>
+[1354][58300, 1]   :<LF>
+[1355][58301, 35]  :apply      = '$apply' EQ applyExpr<LF>
+[1356][58336, 44]  :applyExpr  = applyTrafo *( "/" applyTrafo )<LF>
+[1357][58380, 28]  :applyTrafo = aggregateTrafo<LF>
+[1358][58408, 30]  :           / bottomcountTrafo<LF>
+[1359][58438, 32]  :           / bottompercentTrafo<LF>
+[1360][58470, 28]  :           / bottomsumTrafo<LF>
+[1361][58498, 26]  :           / computeTrafo<LF>
+[1362][58524, 25]  :           / concatTrafo<LF>
+[1363][58549, 25]  :           / expandTrafo<LF>
+[1364][58574, 25]  :           / filterTrafo<LF>
+[1365][58599, 26]  :           / groupbyTrafo<LF>
+[1366][58625, 27]  :           / identityTrafo<LF>
+[1367][58652, 25]  :           / searchTrafo<LF>
+[1368][58677, 27]  :           / topcountTrafo<LF>
+[1369][58704, 29]  :           / toppercentTrafo<LF>
+[1370][58733, 25]  :           / topsumTrafo<LF>
+[1371][58758, 28]  :           / customFunction<LF>
+[1372][58786, 12]  :           <LF>
+[1373][58798, 96]  :aggregateTrafo  = 'aggregate' OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE<LF>
+[1374][58894, 60]  :aggregateExpr   = customAggregate [ asAlias aggregateFrom ]<LF>
+[1375][58954, 69]  :                / commonExpr aggregateWith asAlias [ aggregateFrom ]<LF>
+[1376][59023, 47]  :                / pathPrefix '$count' asAlias <LF>
+[1377][59070, 45]  :                / pathPrefix customAggregate<LF>
+[1378][59115, 67]  :                / pathPrefix pathSegment OPEN aggregateExpr CLOSE <LF>
+[1379][59182, 57]  :aggregateWith   = RWS 'with' RWS aggregateMethod        <LF>
+[1380][59239, 86]  :aggregateFrom   = RWS 'from' RWS groupingProperty [ aggregateWith ] [ aggregateFrom ]<LF>
+[1381][59325, 25]  :aggregateMethod = 'sum' <LF>
+[1382][59350, 25]  :                / 'min' <LF>
+[1383][59375, 25]  :                / 'max' <LF>
+[1384][59400, 29]  :                / 'average' <LF>
+[1385][59429, 35]  :                / 'countdistinct' <LF>
+[1386][59464, 48]  :                / namespace "." odataIdentifier<LF>
+[1387][59512, 1]   :<LF>
+[1388][59513, 47]  :asAlias         = RWS 'as' RWS expressionAlias<LF>
+[1389][59560, 34]  :expressionAlias = odataIdentifier<LF>
+[1390][59594, 17]  :                <LF>
+[1391][59611, 34]  :customAggregate = odataIdentifier<LF>
+[1392][59645, 17]  :                <LF>
+[1393][59662, 30]  :groupingProperty = pathPrefix<LF>
+[1394][59692, 79]  :                   ( entityNavigationProperty [ "/" qualifiedEntityTypeName ] <LF>
+[1395][59771, 40]  :                   / primitiveProperty <LF>
+[1396][59811, 37]  :                   / complexProperty<LF>
+[1397][59848, 21]  :                   )<LF>
+[1398][59869, 104] :pathPrefix       = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" ) <LF>
+[1399][59973, 93]  :pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]<LF>
+[1400][60066, 72]  :                 / navigationProperty [ "/" qualifiedEntityTypeName  ] <LF>
+[1401][60138, 20]  :                   <LF>
+[1402][60158, 92]  :computeTrafo = 'compute' OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE     <LF>
+[1403][60250, 47]  :computeExpr  = commonExpr asAlias             <LF>
+[1404][60297, 28]  :                           <LF>
+[1405][60325, 92]  :bottomcountTrafo   = 'bottomcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1406][60417, 92]  :bottompercentTrafo = 'bottompercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1407][60509, 92]  :bottomsumTrafo     = 'bottomsum'     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1408][60601, 1]   :<LF>
+[1409][60602, 82]  :concatTrafo = 'concat' OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE<LF>
+[1410][60684, 1]   :<LF>
+[1411][60685, 61]  :expandTrafo = 'expand' OPEN BWS expandNavPath BWS COMMA BWS <LF>
+[1412][60746, 59]  :              ( expandTrafo *( BWS COMMA BWS expandTrafo )<LF>
+[1413][60805, 60]  :              / filterTrafo *( BWS COMMA BWS expandTrafo ) <LF>
+[1414][60865, 26]  :              ) BWS CLOSE<LF>
+[1415][60891, 80]  :expandNavPath = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] <LF>
+[1416][60971, 99]  :                *( ( complexProperty / complexColProperty ) "/" [ qualifiedComplexTypeName "/" ] )<LF>
+[1417][61070, 67]  :                navigationProperty [ "/" qualifiedEntityTypeName ]<LF>
+[1418][61137, 1]   :<LF>
+[1419][61138, 57]  :filterTrafo = 'filter' OPEN BWS boolCommonExpr BWS CLOSE<LF>
+[1420][61195, 1]   :<LF>
+[1421][61196, 53]  :searchTrafo = 'search' OPEN BWS searchExpr BWS CLOSE<LF>
+[1422][61249, 1]   :<LF>
+[1423][61250, 86]  :groupbyTrafo   = 'groupby' OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE<LF>
+[1424][61336, 85]  :groupbyList    = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE<LF>
+[1425][61421, 47]  :groupbyElement = groupingProperty / rollupSpec<LF>
+[1426][61468, 36]  :rollupSpec     = 'rollup' OPEN BWS <LF>
+[1427][61504, 48]  :                  ( '$all' / groupingProperty )<LF>
+[1428][61552, 56]  :                  1*( BWS COMMA BWS groupingProperty ) <LF>
+[1429][61608, 28]  :                  BWS CLOSE<LF>
+[1430][61636, 1]   :<LF>
+[1431][61637, 27]  :identityTrafo = 'identity'<LF>
+[1432][61664, 1]   :<LF>
+[1433][61665, 86]  :topcountTrafo   = 'topcount'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1434][61751, 86]  :toppercentTrafo = 'toppercent' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1435][61837, 86]  :topsumTrafo     = 'topsum'     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE<LF>
+[1436][61923, 1]   :<LF>
+[1437][61924, 120] :customFunction = namespace "." ( entityColFunction / complexColFunction / primitiveColFunction ) functionExprParameters<LF>
+[1438][62044, 1]   :<LF>
+[1439][62045, 1]   :<LF>
+[1440][62046, 80]  :;------------------------------------------------------------------------------<LF>
+[1441][62126, 27]  :; 3. Extensions to $filter<LF>
+[1442][62153, 80]  :;------------------------------------------------------------------------------<LF>
+[1443][62233, 1]   :<LF>
+[1444][62234, 67]  :isdefinedExpr = 'isdefined' OPEN BWS ( firstMemberExpr ) BWS CLOSE<LF>
+[1445][62301, 1]   :<LF>
+[1446][62302, 1]   :<LF>
+[1447][62303, 80]  :;------------------------------------------------------------------------------<LF>
+[1448][62383, 32]  :; End of odata-aggregation-abnf<LF>
+[1449][62415, 80]  :;------------------------------------------------------------------------------<LF>
+[1450][62495, 78]  :;----------------------------------------------------------------------------<LF>
+[1451][62573, 53]  :; OData Temporal ABNF Construction Rules Version 4.0<LF>
+[1452][62626, 80]  :;------------------------------------------------------------------------------<LF>
+[1453][62706, 20]  :;  Working Draft 01<LF>
+[1454][62726, 17]  :;  29 April 2015<LF>
+[1455][62743, 80]  :;------------------------------------------------------------------------------<LF>
+[1456][62823, 2]   :;<LF>
+[1457][62825, 23]  :; Technical Committee:<LF>
+[1458][62848, 40]  :;   OASIS Open Data Protocol (OData) TC<LF>
+[1459][62888, 48]  :;   https://www.oasis-open.org/committees/odata<LF>
+[1460][62936, 2]   :;<LF>
+[1461][62938, 10]  :; Chairs:<LF>
+[1462][62948, 54]  :;   - Barbara Hartel (barbara.hartel@sap.com), SAP AG<LF>
+[1463][63002, 61]  :;   - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft<LF>
+[1464][63063, 2]   :;<LF>
+[1465][63065, 11]  :; Editors:<LF>
+[1466][63076, 46]  :;   - Ralf Handl (ralf.handl@sap.com), SAP AG<LF>
+[1467][63122, 56]  :;   - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM<LF>
+[1468][63178, 53]  :;   - Michael Pizzo (mikep@microsoft.com), Microsoft<LF>
+[1469][63231, 56]  :;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP AG<LF>
+[1470][63287, 2]   :;<LF>
+[1471][63289, 25]  :; Additional artifacts: <LF>
+[1472][63314, 71]  :;   This grammar is one component of a Work Product which consists of:<LF>
+[1473][63385, 52]  :;   - OData Extension for Temporal Data Version 4.0<LF>
+[1474][63437, 57]  :;   - OData Temporal ABNF Construction Rules Version 4.0<LF>
+[1475][63494, 37]  :;   - OData Temporal ABNF Test Cases<LF>
+[1476][63531, 32]  :;   - OData Temporal Vocabulary<LF>
+[1477][63563, 2]   :;<LF>
+[1478][63565, 16]  :; Related work:<LF>
+[1479][63581, 38]  :;   This specification is related to:<LF>
+[1480][63619, 41]  :;   - OData Version 4.0 Part 1: Protocol<LF>
+[1481][63660, 48]  :;   - OData Version 4.0 Part 2: URL Conventions<LF>
+[1482][63708, 37]  :;   - OData Version 4.0 Part 3: CSDL<LF>
+[1483][63745, 48]  :;   - OData ABNF Construction Rules Version 4.0<LF>
+[1484][63793, 28]  :;   - OData Core Vocabulary<LF>
+[1485][63821, 36]  :;   - OData JSON Format Version 4.0<LF>
+[1486][63857, 47]  :;   This specification replaces or supersedes:<LF>
+[1487][63904, 11]  :;   - None<LF>
+[1488][63915, 2]   :;<LF>
+[1489][63917, 27]  :; Declared XML namespaces:<LF>
+[1490][63944, 11]  :;   - None<LF>
+[1491][63955, 2]   :;<LF>
+[1492][63957, 12]  :; Abstract:<LF>
+[1493][63969, 80]  :;   This specification defines how to represent and interact with temporal data<LF>
+[1494][64049, 42]  :;   using the Open Data Protocol (OData).<LF>
+[1495][64091, 2]   :;<LF>
+[1496][64093, 12]  :; Overview:<LF>
+[1497][64105, 80]  :;   This grammar uses the ABNF defined in RFC5234 with one extension: literals <LF>
+[1498][64185, 78]  :;   enclosed in single quotes (e.g. '$metadata') are treated case-sensitive. <LF>
+[1499][64263, 2]   :;<LF>
+[1500][64265, 61]  :;   It extends the OData ABNF Construction Rules Version 4.0<LF>
+[1501][64326, 2]   :;<LF>
+[1502][64328, 12]  :; Contents:<LF>
+[1503][64340, 58]  :;   1. New alternatives for OData ABNF Construction Rules<LF>
+[1504][64398, 28]  :;   2. System Query Options<LF>
+[1505][64426, 2]   :;<LF>
+[1506][64428, 80]  :;------------------------------------------------------------------------------<LF>
+[1507][64508, 1]   :<LF>
+[1508][64509, 80]  :;------------------------------------------------------------------------------<LF>
+[1509][64589, 56]  :; 1. New alternatives for OData ABNF Construction Rules<LF>
+[1510][64645, 80]  :;------------------------------------------------------------------------------<LF>
+[1511][64725, 1]   :<LF>
+[1512][64726, 27]  :systemQueryOption =/ from <LF>
+[1513][64753, 25]  :                   / to <LF>
+[1514][64778, 33]  :                   / systemfrom <LF>
+[1515][64811, 30]  :                   / systemto<LF>
+[1516][64841, 1]   :<LF>
+[1517][64842, 30]  :contextFragment =/ timeseries<LF>
+[1518][64872, 1]   :<LF>
+[1519][64873, 1]   :<LF>
+[1520][64874, 80]  :;------------------------------------------------------------------------------<LF>
+[1521][64954, 26]  :; 2. System Query Options<LF>
+[1522][64980, 80]  :;------------------------------------------------------------------------------<LF>
+[1523][65060, 1]   :<LF>
+[1524][65061, 43]  :from       = '$from'       EQ temporalExpr<LF>
+[1525][65104, 43]  :to         = '$to'         EQ temporalExpr<LF>
+[1526][65147, 43]  :systemfrom = '$systemfrom' EQ temporalExpr<LF>
+[1527][65190, 43]  :systemto   = '$systemto'   EQ temporalExpr<LF>
+[1528][65233, 1]   :<LF>
+[1529][65234, 22]  :temporalExpr = 'min' <LF>
+[1530][65256, 22]  :             / 'max' <LF>
+[1531][65278, 22]  :             / 'now' <LF>
+[1532][65300, 36]  :             / dateTimeOffsetValue <LF>
+[1533][65336, 25]  :             / dateValue<LF>
+[1534][65361, 1]   :<LF>
+[1535][65362, 1]   :<LF>
+[1536][65363, 80]  :;------------------------------------------------------------------------------<LF>
+[1537][65443, 27]  :; 3. Context URL Fragments<LF>
+[1538][65470, 80]  :;------------------------------------------------------------------------------<LF>
+[1539][65550, 1]   :<LF>
+[1540][65551, 68]  :timeseries = entitySet [ selectList ] [ '/$entity' ] '/$timeseries'<LF>
+[1541][65619, 1]   :<LF>
+[1542][65620, 1]   :<LF>
+[1543][65621, 80]  :;------------------------------------------------------------------------------<LF>
+[1544][65701, 29]  :; End of odata-temporal-abnf<LF>
+[1545][65730, 80]  :;------------------------------------------------------------------------------<LF>
+
+   parser result: success
+           state: true
+     totalPhrase: 65810
+   matchedPhrase: 65810
+maxMatchedPhrase: 65810
+
+  operator      MATCH      EMPTY    NOMATCH       hits
+       ALT      89634          0      36090     125724
+       REP      10791       3931      12220      26942
+       AND          0          0          0          0
+       NOT          0          0          0          0
+       CAT      11169          0      65030      76199
+       TRG      49574          0      31533      81107
+       TBS      35253          0     105001     140254
+       TLS          0          0          0          0
+       UDT          0          0          0          0
+       RNM      58294       1620     103296     163210
+     -----      -----      -----      -----      -----
+     TOTAL     254715       5551     353170     613436
+
+RNM node statistics: sorted by hit count, omitted if no hits
+     MATCH      EMPTY    NOMATCH       hits  rule name 
+     27691          0       8111      35802  fsp       
+      3557          0       7147      10704  LineEnd   
+       480          0      10220      10700  comment   
+      1095          0       8111       9206  LineContinue
+       233          0       7774       8007  StarOp    
+       110          0       7874       7984  rep-min   
+      3655       1620          0       5275  owsp      
+      2835          0       1161       3996  Repetition
+       139          0       3857       3996  Repeat    
+       139          0       3857       3996  Rep       
+      2835          0       1161       3996  Element   
+         8          0       3988       3996  TrgOp     
+         3          0       3985       3988  TbsOp     
+       516          0       3469       3985  TlsOp     
+        15          0       3857       3872  rep-min-max
+         0          0       3857       3857  Predicate 
+         0          0       3857       3857  AndOp     
+         0          0       3857       3857  NotOp     
+      2291          0       1534       3825  alphanum  
+       128          0       3341       3469  TcsOp     
+      1808          0       1533       3341  RnmOp     
+         0          0       3341       3341  UdtOp     
+      2455          0        380       2835  CatOp     
+      2455          0        380       2835  wsp       
+      1541          0          0       1541  Concatenation
+       686          0        855       1541  AltOp     
+       173          0       1360       1533  Group     
+       350          0       1014       1364  sp        
+       199          0       1161       1360  Option    
+         0          0       1161       1161  ProsVal   
+       530          0        484       1014  BlankLine 
+       855          0          0        855  Alternation
+       483          0          1        484  Rule      
+       483          0          1        484  NameDef   
+         6          0        477        483  IncAlt    
+       477          0          0        477  DefinedAs 
+        15          0        109        124  rep-max   
+        22          0          0         22  xnum      
+         0          0         14         14  Dec       
+        14          0          0         14  Hex       
+         8          0          3         11  TrgRange  
+         3          0          0          3  TbsString 
+         0          0          3          3  Bin       
+         1          0          0          1  File      
+         0          0          1          1  RuleError 
+SyntaxMetrics:
+  rules: 477
+   udts: 0
+opcodes: 3611
+    ALT: 218 children: 910
+    CAT: 592 children: 1886
+    AND: 0
+    NOT: 0
+    REP: 338
+    RNM: 1808
+    UDT: 0
+    TRG: 8
+    TBS: 131
+    TLS: 516
+
+RNM opcodes:
+count: Rule Name
+    5: A-to-F
+    1: abstractSpatialTypeName
+    3: action
+    1: actionImport
+    1: actionImportCall
+    1: addExpr
+    3: aggregateExpr
+    3: aggregateFrom
+    1: aggregateMethod
+    1: aggregateTrafo
+    2: aggregateWith
+    3: aliasAndValue
+    1: allExpr
+    2: allOperationsInSchema
+    1: allowEntityReferencesPreference
+    7: ALPHA
+    1: andExpr
+    1: annotation
+    3: annotationExpr
+    2: annotationIdentifier
+    2: annotationInUri
+    1: annotationQualifier
+    1: annotationsList
+    1: anyExpr
+    2: apply
+    4: applyExpr
+    2: applyTrafo
+    2: arrayOrObject
+    4: asAlias
+    3: AT
+    1: authority
+    1: base64b16
+    1: base64b8
+    3: base64char
+    2: batchOption
+    1: batchOptions
+    3: begin-array
+    1: begin-object
+    1: binary
+    2: binaryValue
+    6: boolCommonExpr
+    4: booleanValue
+    1: boolMethodCallExpr
+    1: bottomcountTrafo
+    1: bottompercentTrafo
+    1: bottomsumTrafo
+    1: boundActionCall
+    1: boundComplexColFunctionCall
+    1: boundComplexFunctionCall
+    1: boundEntityColFunctionCall
+    1: boundEntityFunctionCall
+    1: boundFunctionCallNoParens
+    3: boundFunctionExpr
+    8: boundOperation
+    1: boundPrimitiveColFunctionCall
+    1: boundPrimitiveFunctionCall
+  181: BWS
+    2: BWS-h
+    2: byteValue
+    1: callbackPreference
+    1: castExpr
+    1: ceilingMethodCallExpr
+    1: charInJSON
+   82: CLOSE
+    2: collectionLiteral
+    5: collectionNavigation
+    2: collectionNavigationExpr
+    1: collectionNavPath
+    1: collectionNavPropInJSON
+    6: collectionPathExpr
+    2: collectionPropertyInUri
+    6: COLON
+   49: COMMA
+   77: commonExpr
+    5: complexColFunction
+    2: complexColFunctionImport
+    1: complexColFunctionImportCall
+    3: complexColInUri
+    3: complexColPath
+    2: complexColPathExpr
+    9: complexColProperty
+    4: complexFunction
+    2: complexFunctionImport
+    1: complexFunctionImportCall
+    5: complexInUri
+    3: complexPath
+    3: complexPathExpr
+   11: complexProperty
+    2: complexPropertyInUri
+    3: complexTypeName
+    1: compoundKey
+    3: compute
+    1: computedProperty
+    2: computeExpr
+    2: computeItem
+    1: computeTrafo
+    1: concatMethodCallExpr
+    1: concatTrafo
+    1: concreteSpatialTypeName
+    2: containmentNavigation
+    1: containsMethodCallExpr
+    1: content-id
+    1: context
+    1: contextFragment
+    2: contextPropertyPath
+    1: continueOnErrorPreference
+    5: count
+    1: crossjoin
+    3: customAggregate
+    1: customFunction
+    1: customName
+    4: customQueryOption
+    1: customValue
+    1: dateMethodCallExpr
+    2: dateTimeOffsetValue
+    1: dateTimeOffsetValueInUrl
+    3: dateValue
+    3: day
+    1: dayMethodCallExpr
+    4: dec-octet
+    4: decimalValue
+    1: deltatoken
+   44: DIGIT
+    4: directMemberExpr
+    1: distanceMethodCallExpr
+    1: divbyExpr
+    1: divExpr
+    4: doubleValue
+    5: DQUOTE
+    0: dummyStartRule
+    1: duration
+    2: durationValue
+    1: each
+    3: end-array
+    1: end-object
+    1: endsWithMethodCallExpr
+    2: entityCastOption
+    1: entityCastOptions
+    5: entityColFunction
+    2: entityColFunctionImport
+    1: entityColFunctionImportCall
+    4: entityColNavigationProperty
+    4: entityFunction
+    2: entityFunctionImport
+    1: entityFunctionImportCall
+    1: entityid
+    3: entityIdOption
+    5: entityNavigationProperty
+    1: entityOptions
+    4: entitySet
+    5: entitySetName
+    3: entityTypeName
+    2: enum
+    1: enumerationMember
+    2: enumerationTypeName
+    1: enumMemberValue
+    2: enumValue
+   30: EQ
+    6: EQ-h
+    1: eqExpr
+    4: escape
+    1: excludeOperator
+    1: exp
+    4: expand
+    5: expandCountOption
+    2: expandItem
+    1: expandNavPath
+    2: expandOption
+    2: expandPath
+    3: expandRefOption
+    4: expandTrafo
+    2: expressionAlias
+    3: filter
+    1: filterInPath
+    2: filterTrafo
+    2: firstMemberExpr
+    1: floorMethodCallExpr
+    4: format
+    1: frac
+    2: fractionalSeconds
+    1: fractionalsecondsMethodCallExpr
+    1: fragment
+    1: from
+    3: fullCollectionLiteral
+    3: fullLineStringLiteral
+    3: fullMultiLineStringLiteral
+    3: fullMultiPointLiteral
+    3: fullMultiPolygonLiteral
+    3: fullPointLiteral
+    3: fullPolygonLiteral
+    2: function
+    2: functionExpr
+    2: functionExprParameter
+    7: functionExprParameters
+    1: functionImportCallNoParens
+    2: functionParameter
+   12: functionParameters
+    1: geExpr
+    1: geographyCollection
+    1: geographyLineString
+    1: geographyMultiLineString
+    1: geographyMultiPoint
+    1: geographyMultiPolygon
+    1: geographyPoint
+    1: geographyPolygon
+    7: geographyPrefix
+    1: geoLengthMethodCallExpr
+    2: geoLiteral
+    1: geometryCollection
+    1: geometryLineString
+    1: geometryMultiLineString
+    1: geometryMultiPoint
+    1: geometryMultiPolygon
+    1: geometryPoint
+    1: geometryPolygon
+    7: geometryPrefix
+    2: groupbyElement
+    1: groupbyList
+    1: groupbyTrafo
+    4: groupingProperty
+    1: gtExpr
+    2: guidValue
+   22: h16
+    1: hasExpr
+    1: hasSubsequenceMethodCallExpr
+    1: hasSubsetMethodCallExpr
+    1: header
+   12: HEXDIG
+    1: hier-part
+    2: host
+    4: hour
+    1: hourMethodCallExpr
+    4: HTAB
+    3: id
+    1: identifierCharacter
+    1: identifierLeadingCharacter
+    1: identityTrafo
+    1: implicitVariableExpr
+    1: includeAnnotationsPreference
+    1: index
+    1: indexOfMethodCallExpr
+    1: inExpr
+    3: inlinecount
+    1: inscopeVariableExpr
+    1: int
+    2: int16Value
+    2: int32Value
+    3: int64Value
+    1: intersectsMethodCallExpr
+    1: IP-literal
+    2: IPv4address
+    1: IPv6address
+    1: IPvFuture
+    1: IRI-in-header
+    1: IRI-in-query
+    1: isdefinedExpr
+    1: isofExpr
+    1: isolation
+    1: keyPathLiteral
+    1: keyPathSegments
+    5: keyPredicate
+    1: keyPropertyAlias
+    2: keyPropertyValue
+    2: keyValuePair
+    2: lambdaPredicateExpr
+    3: lambdaVariableExpr
+    1: leExpr
+    1: lengthMethodCallExpr
+    2: levels
+    3: lineStringData
+    2: lineStringLiteral
+    1: listExpr
+    7: ls32
+    1: ltExpr
+    1: maxDateTimeMethodCallExpr
+    1: maxpagesizePreference
+    3: memberExpr
+    2: metadataOption
+    1: metadataOptions
+    1: methodCallExpr
+    1: minDateTimeMethodCallExpr
+    4: minute
+    1: minuteMethodCallExpr
+    1: modExpr
+    3: month
+    1: monthMethodCallExpr
+    1: mulExpr
+    2: multiLineStringLiteral
+    2: multiPointLiteral
+    2: multiPolygonLiteral
+    7: name-separator
+    1: nameAndValue
+   30: namespace
+    2: namespacePart
+    1: nanInfinity
+    2: navigation
+    6: navigationProperty
+    2: navigationPropertyInUri
+    1: neExpr
+    1: negateExpr
+    1: notExpr
+    1: nowMethodCallExpr
+    1: nullValue
+    1: numberInJSON
+    1: obs-text
+    1: odata-maxversion
+    1: odata-version
+   41: odataIdentifier
+    1: odataRelativeUri
+    1: odataUri
+    7: oneToNine
+   78: OPEN
+    2: optionallyQualifiedActionName
+    8: optionallyQualifiedComplexTypeName
+    9: optionallyQualifiedEntityTypeName
+    2: optionallyQualifiedFunctionName
+    2: optionallyQualifiedTypeName
+    3: orderby
+    2: orderbyItem
+    2: ordinalIndex
+    1: orExpr
+    6: other-delims
+   10: OWS
+    7: parameterAlias
+    5: parameterName
+    2: parameterNames
+    3: parameterValue
+    1: parenExpr
+    1: path-abempty
+    1: path-absolute
+    1: path-rootless
+    4: pathPrefix
+    2: pathSegment
+    7: pchar
+    1: pchar-no-SQUOTE
+    7: pct-encoded
+    1: pct-encoded-no-SQUOTE
+    1: pct-encoded-unescaped
+    3: pointData
+    2: pointLiteral
+    3: polygonData
+    2: polygonLiteral
+    2: port
+    5: positionLiteral
+    1: prefer
+    2: preference
+    5: primitiveColFunction
+    2: primitiveColFunctionImport
+    1: primitiveColFunctionImportCall
+    3: primitiveColInUri
+    3: primitiveColPath
+    6: primitiveColProperty
+    4: primitiveFunction
+    2: primitiveFunctionImport
+    1: primitiveFunctionImportCall
+    2: primitiveKeyProperty
+    3: primitiveLiteral
+    4: primitiveLiteralInJSON
+    1: primitiveNonKeyProperty
+    3: primitivePath
+    4: primitivePathExpr
+    7: primitiveProperty
+    2: primitivePropertyInUri
+    1: primitiveTypeName
+    1: primitiveValue
+    2: propertyPath
+    1: propertyPathExpr
+    1: qchar-JSON-special
+    4: qchar-no-AMP
+    1: qchar-no-AMP-DQUOTE
+    1: qchar-no-AMP-EQ
+    1: qchar-no-AMP-EQ-AT-DOLLAR
+    2: qchar-unescaped
+    1: qualifiedActionName
+    9: qualifiedComplexTypeName
+   10: qualifiedEntityTypeName
+    2: qualifiedEnumTypeName
+    1: qualifiedFunctionName
+    1: qualifiedTypeDefinitionName
+    1: qualifiedTypeName
+    1: query
+    2: queryOption
+    1: queryOptions
+   20: quotation-mark
+    4: ref
+    1: reg-name
+    1: request-id
+    0: resourcePath
+    1: respondAsyncPreference
+    1: returnPreference
+    2: ringLiteral
+    1: rollupSpec
+    4: rootExpr
+    2: rootExprCol
+    1: roundMethodCallExpr
+   47: RWS
+    2: sbyteValue
+    1: schemaversion
+    1: scheme
+    3: search
+    1: searchAndExpr
+    5: searchExpr
+    1: searchOrExpr
+    1: searchPhrase
+    1: searchTerm
+    1: searchTrafo
+    1: searchWord
+    2: second
+    1: secondMethodCallExpr
+    3: segment
+    3: segment-nz
+    4: select
+    2: selectItem
+    6: selectList
+    2: selectListItem
+    2: selectListProperty
+    2: selectOption
+    3: selectOptionPC
+    1: selectPath
+    3: selectProperty
+    7: SEMI
+    1: serviceRoot
+    9: SIGN
+    1: simpleKey
+    2: singleEnumValue
+    5: singleNavigation
+    5: singleNavigationExpr
+    1: singleNavPropInJSON
+    4: singleQualifiedTypeName
+    3: singletonEntity
+    2: singleTypeName
+    2: singleValue
+    3: skip
+    1: skiptoken
+    6: SP
+   38: SQUOTE
+    1: SQUOTE-in-string
+    7: sridLiteral
+    7: STAR
+    1: startsWithMethodCallExpr
+    3: streamProperty
+    1: string
+    1: stringInJSON
+    4: sub-delims
+    1: subExpr
+    1: substringMethodCallExpr
+    1: systemfrom
+    1: systemQueryOption
+    1: systemto
+    4: temporalExpr
+    3: termName
+    1: timeMethodCallExpr
+    2: timeOfDayValue
+    2: timeOfDayValueInUrl
+    1: timeseries
+    1: to
+    1: toLowerMethodCallExpr
+    3: top
+    1: topcountTrafo
+    1: toppercentTrafo
+    1: topsumTrafo
+    1: totalOffsetMinutesMethodCallExpr
+    1: totalsecondsMethodCallExpr
+    1: toUpperMethodCallExpr
+    1: trackChangesPreference
+    1: trimMethodCallExpr
+    2: typeDefinitionName
+   11: unreserved
+    1: URI
+    1: userinfo
+    2: value
+    4: value-separator
+    1: VCHAR
+    1: waitPreference
+    3: year
+    1: yearMethodCallExpr
+    2: zeroToFiftyNine
+
+rule attributes: (o = true, - = false, x = unparsable)
+LEFT   NESTED    RIGHT    EMPTY INFINITE   CYCLIC  Rule Name
+   -        -        -        -        -        -  A-to-F
+   -        -        -        -        -        -  abstractSpatialTypeName
+   -        -        -        -        -        -  action
+   -        -        -        -        -        -  actionImport
+   -        -        -        -        -        -  actionImportCall
+   -        o        o        -        -        -  addExpr
+   -        o        -        -        -        -  aggregateExpr
+   -        -        o        -        -        -  aggregateFrom
+   -        -        -        -        -        -  aggregateMethod
+   -        -        -        -        -        -  aggregateTrafo
+   -        -        -        -        -        -  aggregateWith
+   -        -        -        -        -        -  aliasAndValue
+   -        o        -        -        -        -  allExpr
+   -        -        -        -        -        -  allOperationsInSchema
+   -        -        -        -        -        -  allowEntityReferencesPreference
+   -        -        -        -        -        -  ALPHA
+   -        -        o        -        -        -  andExpr
+   -        -        -        -        -        -  annotation
+   -        o        o        -        -        -  annotationExpr
+   -        -        -        -        -        -  annotationIdentifier
+   -        o        -        -        -        -  annotationInUri
+   -        -        -        -        -        -  annotationQualifier
+   -        -        -        -        -        -  annotationsList
+   -        o        -        -        -        -  anyExpr
+   -        -        -        -        -        -  apply
+   -        o        -        -        -        -  applyExpr
+   -        o        -        -        -        -  applyTrafo
+   -        o        -        -        -        -  arrayOrObject
+   -        -        -        -        -        -  asAlias
+   -        -        -        -        -        -  AT
+   -        -        -        o        -        -  authority
+   -        -        -        -        -        -  base64b16
+   -        -        -        -        -        -  base64b8
+   -        -        -        -        -        -  base64char
+   -        -        -        -        -        -  batchOption
+   -        -        -        -        -        -  batchOptions
+   -        -        -        -        -        -  begin-array
+   -        -        -        -        -        -  begin-object
+   -        -        -        -        -        -  binary
+   -        -        -        o        -        -  binaryValue
+   -        o        o        -        -        -  boolCommonExpr
+   -        -        -        -        -        -  booleanValue
+   -        o        -        -        -        -  boolMethodCallExpr
+   -        -        -        -        -        -  bottomcountTrafo
+   -        -        -        -        -        -  bottompercentTrafo
+   -        -        -        -        -        -  bottomsumTrafo
+   -        -        -        -        -        -  boundActionCall
+   -        -        -        -        -        -  boundComplexColFunctionCall
+   -        -        -        -        -        -  boundComplexFunctionCall
+   -        -        -        -        -        -  boundEntityColFunctionCall
+   -        -        -        -        -        -  boundEntityFunctionCall
+   -        -        -        -        -        -  boundFunctionCallNoParens
+   -        o        o        -        -        -  boundFunctionExpr
+   -        -        o        -        -        -  boundOperation
+   -        -        -        -        -        -  boundPrimitiveColFunctionCall
+   -        -        -        -        -        -  boundPrimitiveFunctionCall
+   -        -        -        o        -        -  BWS
+   -        -        -        o        -        -  BWS-h
+   -        -        -        -        -        -  byteValue
+   -        -        -        -        -        -  callbackPreference
+   -        o        -        -        -        -  castExpr
+   -        o        -        -        -        -  ceilingMethodCallExpr
+   -        -        -        -        -        -  charInJSON
+   -        -        -        -        -        -  CLOSE
+   -        o        -        -        -        -  collectionLiteral
+   -        -        o        o        -        -  collectionNavigation
+   -        o        o        -        -        -  collectionNavigationExpr
+   -        -        o        -        -        -  collectionNavPath
+   -        o        -        -        -        -  collectionNavPropInJSON
+   -        o        o        -        -        -  collectionPathExpr
+   -        o        -        -        -        -  collectionPropertyInUri
+   -        -        -        -        -        -  COLON
+   -        -        -        -        -        -  COMMA
+   -        o        o        -        -        -  commonExpr
+   -        -        -        -        -        -  complexColFunction
+   -        -        -        -        -        -  complexColFunctionImport
+   -        -        -        -        -        -  complexColFunctionImportCall
+   -        o        -        -        -        -  complexColInUri
+   -        -        o        o        -        -  complexColPath
+   -        o        o        -        -        -  complexColPathExpr
+   -        -        -        -        -        -  complexColProperty
+   -        -        -        -        -        -  complexFunction
+   -        -        -        -        -        -  complexFunctionImport
+   -        -        -        -        -        -  complexFunctionImportCall
+   -        o        -        -        -        -  complexInUri
+   -        -        o        o        -        -  complexPath
+   -        o        o        -        -        -  complexPathExpr
+   -        -        -        -        -        -  complexProperty
+   -        o        -        -        -        -  complexPropertyInUri
+   -        -        -        -        -        -  complexTypeName
+   -        -        -        -        -        -  compoundKey
+   -        -        -        -        -        -  compute
+   -        -        -        -        -        -  computedProperty
+   -        -        -        -        -        -  computeExpr
+   -        -        -        -        -        -  computeItem
+   -        -        -        -        -        -  computeTrafo
+   -        o        -        -        -        -  concatMethodCallExpr
+   -        o        -        -        -        -  concatTrafo
+   -        -        -        -        -        -  concreteSpatialTypeName
+   -        -        -        -        -        -  containmentNavigation
+   -        o        -        -        -        -  containsMethodCallExpr
+   -        -        -        -        -        -  content-id
+   -        -        -        -        -        -  context
+   -        -        -        -        -        -  contextFragment
+   -        -        o        -        -        -  contextPropertyPath
+   -        -        -        -        -        -  continueOnErrorPreference
+   -        -        -        -        -        -  count
+   -        -        -        -        -        -  crossjoin
+   -        -        -        -        -        -  customAggregate
+   -        -        -        -        -        -  customFunction
+   -        -        -        -        -        -  customName
+   -        -        -        -        -        -  customQueryOption
+   -        -        -        o        -        -  customValue
+   -        o        -        -        -        -  dateMethodCallExpr
+   -        -        -        -        -        -  dateTimeOffsetValue
+   -        -        -        -        -        -  dateTimeOffsetValueInUrl
+   -        -        -        -        -        -  dateValue
+   -        -        -        -        -        -  day
+   -        o        -        -        -        -  dayMethodCallExpr
+   -        -        -        -        -        -  dec-octet
+   -        -        -        -        -        -  decimalValue
+   -        -        -        -        -        -  deltatoken
+   -        -        -        -        -        -  DIGIT
+   -        o        o        -        -        -  directMemberExpr
+   -        o        -        -        -        -  distanceMethodCallExpr
+   -        o        o        -        -        -  divbyExpr
+   -        o        o        -        -        -  divExpr
+   -        -        -        -        -        -  doubleValue
+   -        -        -        -        -        -  DQUOTE
+   -        -        o        o        -        -  dummyStartRule
+   -        -        -        -        -        -  duration
+   -        -        -        -        -        -  durationValue
+   -        -        -        -        -        -  each
+   -        -        -        -        -        -  end-array
+   -        -        -        -        -        -  end-object
+   -        o        -        -        -        -  endsWithMethodCallExpr
+   -        -        -        -        -        -  entityCastOption
+   -        -        -        -        -        -  entityCastOptions
+   -        -        -        -        -        -  entityColFunction
+   -        -        -        -        -        -  entityColFunctionImport
+   -        -        -        -        -        -  entityColFunctionImportCall
+   -        -        -        -        -        -  entityColNavigationProperty
+   -        -        -        -        -        -  entityFunction
+   -        -        -        -        -        -  entityFunctionImport
+   -        -        -        -        -        -  entityFunctionImportCall
+   -        -        -        -        -        -  entityid
+   -        -        -        -        -        -  entityIdOption
+   -        -        -        -        -        -  entityNavigationProperty
+   -        -        -        -        -        -  entityOptions
+   -        -        -        -        -        -  entitySet
+   -        -        -        -        -        -  entitySetName
+   -        -        -        -        -        -  entityTypeName
+   -        -        -        -        -        -  enum
+   -        -        -        -        -        -  enumerationMember
+   -        -        -        -        -        -  enumerationTypeName
+   -        -        -        -        -        -  enumMemberValue
+   -        -        -        -        -        -  enumValue
+   -        -        -        -        -        -  EQ
+   -        -        -        -        -        -  EQ-h
+   -        o        o        -        -        -  eqExpr
+   -        -        -        -        -        -  escape
+   -        -        -        -        -        -  excludeOperator
+   -        -        -        -        -        -  exp
+   -        o        -        -        -        -  expand
+   -        o        -        -        -        -  expandCountOption
+   -        o        -        -        -        -  expandItem
+   -        -        -        -        -        -  expandNavPath
+   -        o        -        -        -        -  expandOption
+   -        o        -        -        -        -  expandPath
+   -        -        -        -        -        -  expandRefOption
+   -        o        -        -        -        -  expandTrafo
+   -        -        -        -        -        -  expressionAlias
+   -        o        -        -        -        -  filter
+   -        -        -        -        -        -  filterInPath
+   -        -        -        -        -        -  filterTrafo
+   -        o        -        -        -        -  firstMemberExpr
+   -        o        -        -        -        -  floorMethodCallExpr
+   -        -        -        -        -        -  format
+   -        -        -        -        -        -  frac
+   -        -        -        -        -        -  fractionalSeconds
+   -        o        -        -        -        -  fractionalsecondsMethodCallExpr
+   -        -        -        o        -        -  fragment
+   -        -        -        -        -        -  from
+   -        -        -        -        -        -  fullCollectionLiteral
+   -        -        -        -        -        -  fullLineStringLiteral
+   -        -        -        -        -        -  fullMultiLineStringLiteral
+   -        -        -        -        -        -  fullMultiPointLiteral
+   -        -        -        -        -        -  fullMultiPolygonLiteral
+   -        -        -        -        -        -  fullPointLiteral
+   -        -        -        -        -        -  fullPolygonLiteral
+   -        -        -        -        -        -  function
+   -        o        o        -        -        -  functionExpr
+   -        o        -        -        -        -  functionExprParameter
+   -        o        -        -        -        -  functionExprParameters
+   -        -        -        -        -        -  functionImportCallNoParens
+   -        -        -        -        -        -  functionParameter
+   -        -        -        -        -        -  functionParameters
+   -        o        o        -        -        -  geExpr
+   -        -        -        -        -        -  geographyCollection
+   -        -        -        -        -        -  geographyLineString
+   -        -        -        -        -        -  geographyMultiLineString
+   -        -        -        -        -        -  geographyMultiPoint
+   -        -        -        -        -        -  geographyMultiPolygon
+   -        -        -        -        -        -  geographyPoint
+   -        -        -        -        -        -  geographyPolygon
+   -        -        -        -        -        -  geographyPrefix
+   -        o        -        -        -        -  geoLengthMethodCallExpr
+   -        o        -        -        -        -  geoLiteral
+   -        -        -        -        -        -  geometryCollection
+   -        -        -        -        -        -  geometryLineString
+   -        -        -        -        -        -  geometryMultiLineString
+   -        -        -        -        -        -  geometryMultiPoint
+   -        -        -        -        -        -  geometryMultiPolygon
+   -        -        -        -        -        -  geometryPoint
+   -        -        -        -        -        -  geometryPolygon
+   -        -        -        -        -        -  geometryPrefix
+   -        -        -        -        -        -  groupbyElement
+   -        -        -        -        -        -  groupbyList
+   -        o        -        -        -        -  groupbyTrafo
+   -        -        -        -        -        -  groupingProperty
+   -        o        o        -        -        -  gtExpr
+   -        -        -        -        -        -  guidValue
+   -        -        -        -        -        -  h16
+   -        -        -        -        -        -  hasExpr
+   -        o        -        -        -        -  hasSubsequenceMethodCallExpr
+   -        o        -        -        -        -  hasSubsetMethodCallExpr
+   -        -        -        -        -        -  header
+   -        -        -        -        -        -  HEXDIG
+   -        -        -        -        -        -  hier-part
+   -        -        -        o        -        -  host
+   -        -        -        -        -        -  hour
+   -        o        -        -        -        -  hourMethodCallExpr
+   -        -        -        -        -        -  HTAB
+   -        -        -        -        -        -  id
+   -        -        -        -        -        -  identifierCharacter
+   -        -        -        -        -        -  identifierLeadingCharacter
+   -        -        -        -        -        -  identityTrafo
+   -        -        -        -        -        -  implicitVariableExpr
+   -        -        -        -        -        -  includeAnnotationsPreference
+   -        -        -        -        -        -  index
+   -        o        -        -        -        -  indexOfMethodCallExpr
+   -        o        o        -        -        -  inExpr
+   -        -        -        -        -        -  inlinecount
+   -        -        -        -        -        -  inscopeVariableExpr
+   -        -        -        -        -        -  int
+   -        -        -        -        -        -  int16Value
+   -        -        -        -        -        -  int32Value
+   -        -        -        -        -        -  int64Value
+   -        o        -        -        -        -  intersectsMethodCallExpr
+   -        -        -        -        -        -  IP-literal
+   -        -        -        -        -        -  IPv4address
+   -        -        -        -        -        -  IPv6address
+   -        -        -        -        -        -  IPvFuture
+   -        -        -        -        -        -  IRI-in-header
+   -        -        -        -        -        -  IRI-in-query
+   -        o        -        -        -        -  isdefinedExpr
+   -        o        -        -        -        -  isofExpr
+   -        -        -        -        -        -  isolation
+   -        -        -        o        -        -  keyPathLiteral
+   -        -        -        -        -        -  keyPathSegments
+   -        -        -        -        -        -  keyPredicate
+   -        -        -        -        -        -  keyPropertyAlias
+   -        -        -        -        -        -  keyPropertyValue
+   -        -        -        -        -        -  keyValuePair
+   -        o        -        -        -        -  lambdaPredicateExpr
+   -        -        -        -        -        -  lambdaVariableExpr
+   -        o        o        -        -        -  leExpr
+   -        o        -        -        -        -  lengthMethodCallExpr
+   -        -        -        -        -        -  levels
+   -        -        -        -        -        -  lineStringData
+   -        -        -        -        -        -  lineStringLiteral
+   -        o        -        -        -        -  listExpr
+   -        -        -        -        -        -  ls32
+   -        o        o        -        -        -  ltExpr
+   -        -        -        -        -        -  maxDateTimeMethodCallExpr
+   -        -        -        -        -        -  maxpagesizePreference
+   -        o        o        -        -        -  memberExpr
+   -        -        -        -        -        -  metadataOption
+   -        -        -        -        -        -  metadataOptions
+   -        o        -        -        -        -  methodCallExpr
+   -        -        -        -        -        -  minDateTimeMethodCallExpr
+   -        -        -        -        -        -  minute
+   -        o        -        -        -        -  minuteMethodCallExpr
+   -        o        o        -        -        -  modExpr
+   -        -        -        -        -        -  month
+   -        o        -        -        -        -  monthMethodCallExpr
+   -        o        o        -        -        -  mulExpr
+   -        -        -        -        -        -  multiLineStringLiteral
+   -        -        -        -        -        -  multiPointLiteral
+   -        -        -        -        -        -  multiPolygonLiteral
+   -        -        -        -        -        -  name-separator
+   -        -        -        -        -        -  nameAndValue
+   -        -        -        -        -        -  namespace
+   -        -        -        -        -        -  namespacePart
+   -        -        -        -        -        -  nanInfinity
+   -        -        -        -        -        -  navigation
+   -        -        -        -        -        -  navigationProperty
+   -        o        -        -        -        -  navigationPropertyInUri
+   -        o        o        -        -        -  neExpr
+   -        -        o        -        -        -  negateExpr
+   -        -        o        -        -        -  notExpr
+   -        -        -        -        -        -  nowMethodCallExpr
+   -        -        -        -        -        -  nullValue
+   -        -        -        -        -        -  numberInJSON
+   -        -        -        -        -        -  obs-text
+   -        -        -        -        -        -  odata-maxversion
+   -        -        -        -        -        -  odata-version
+   -        -        -        -        -        -  odataIdentifier
+   -        o        o        o        -        -  odataRelativeUri
+   -        -        o        -        -        -  odataUri
+   -        -        -        -        -        -  oneToNine
+   -        -        -        -        -        -  OPEN
+   -        -        -        -        -        -  optionallyQualifiedActionName
+   -        -        -        -        -        -  optionallyQualifiedComplexTypeName
+   -        -        -        -        -        -  optionallyQualifiedEntityTypeName
+   -        -        -        -        -        -  optionallyQualifiedFunctionName
+   -        -        -        -        -        -  optionallyQualifiedTypeName
+   -        -        -        -        -        -  orderby
+   -        -        -        -        -        -  orderbyItem
+   -        -        -        -        -        -  ordinalIndex
+   -        -        o        -        -        -  orExpr
+   -        -        -        -        -        -  other-delims
+   -        -        -        o        -        -  OWS
+   -        -        -        -        -        -  parameterAlias
+   -        -        -        -        -        -  parameterName
+   -        -        -        -        -        -  parameterNames
+   -        o        -        -        -        -  parameterValue
+   -        o        -        -        -        -  parenExpr
+   -        -        -        o        -        -  path-abempty
+   -        -        -        -        -        -  path-absolute
+   -        -        -        -        -        -  path-rootless
+   -        -        -        o        -        -  pathPrefix
+   -        -        -        -        -        -  pathSegment
+   -        -        -        -        -        -  pchar
+   -        -        -        -        -        -  pchar-no-SQUOTE
+   -        -        -        -        -        -  pct-encoded
+   -        -        -        -        -        -  pct-encoded-no-SQUOTE
+   -        -        -        -        -        -  pct-encoded-unescaped
+   -        -        -        -        -        -  pointData
+   -        -        -        -        -        -  pointLiteral
+   -        -        -        -        -        -  polygonData
+   -        -        -        -        -        -  polygonLiteral
+   -        -        -        o        -        -  port
+   -        -        -        -        -        -  positionLiteral
+   -        -        -        -        -        -  prefer
+   -        -        -        -        -        -  preference
+   -        -        -        -        -        -  primitiveColFunction
+   -        -        -        -        -        -  primitiveColFunctionImport
+   -        -        -        -        -        -  primitiveColFunctionImportCall
+   -        -        -        -        -        -  primitiveColInUri
+   -        -        o        -        -        -  primitiveColPath
+   -        -        -        -        -        -  primitiveColProperty
+   -        -        -        -        -        -  primitiveFunction
+   -        -        -        -        -        -  primitiveFunctionImport
+   -        -        -        -        -        -  primitiveFunctionImportCall
+   -        -        -        -        -        -  primitiveKeyProperty
+   -        -        -        -        -        -  primitiveLiteral
+   -        -        -        -        -        -  primitiveLiteralInJSON
+   -        -        -        -        -        -  primitiveNonKeyProperty
+   -        -        o        -        -        -  primitivePath
+   -        o        o        -        -        -  primitivePathExpr
+   -        -        -        -        -        -  primitiveProperty
+   -        -        -        -        -        -  primitivePropertyInUri
+   -        -        -        -        -        -  primitiveTypeName
+   -        -        -        o        -        -  primitiveValue
+   -        -        o        -        -        -  propertyPath
+   -        o        o        -        -        -  propertyPathExpr
+   -        -        -        -        -        -  qchar-JSON-special
+   -        -        -        -        -        -  qchar-no-AMP
+   -        -        -        -        -        -  qchar-no-AMP-DQUOTE
+   -        -        -        -        -        -  qchar-no-AMP-EQ
+   -        -        -        -        -        -  qchar-no-AMP-EQ-AT-DOLLAR
+   -        -        -        -        -        -  qchar-unescaped
+   -        -        -        -        -        -  qualifiedActionName
+   -        -        -        -        -        -  qualifiedComplexTypeName
+   -        -        -        -        -        -  qualifiedEntityTypeName
+   -        -        -        -        -        -  qualifiedEnumTypeName
+   -        -        -        -        -        -  qualifiedFunctionName
+   -        -        -        -        -        -  qualifiedTypeDefinitionName
+   -        -        -        -        -        -  qualifiedTypeName
+   -        -        -        o        -        -  query
+   -        -        -        -        -        -  queryOption
+   -        -        -        -        -        -  queryOptions
+   -        -        -        -        -        -  quotation-mark
+   -        -        -        -        -        -  ref
+   -        -        -        o        -        -  reg-name
+   -        -        -        -        -        -  request-id
+   -        -        -        -        -        -  resourcePath
+   -        -        -        -        -        -  respondAsyncPreference
+   -        -        -        -        -        -  returnPreference
+   -        -        -        -        -        -  ringLiteral
+   -        -        -        -        -        -  rollupSpec
+   -        o        -        -        -        -  rootExpr
+   -        o        -        -        -        -  rootExprCol
+   -        o        -        -        -        -  roundMethodCallExpr
+   -        -        -        -        -        -  RWS
+   -        -        -        -        -        -  sbyteValue
+   -        -        -        -        -        -  schemaversion
+   -        -        -        -        -        -  scheme
+   -        -        -        -        -        -  search
+   -        -        o        -        -        -  searchAndExpr
+   -        o        o        -        -        -  searchExpr
+   -        -        o        -        -        -  searchOrExpr
+   -        -        -        -        -        -  searchPhrase
+   -        -        -        -        -        -  searchTerm
+   -        -        -        -        -        -  searchTrafo
+   -        -        -        -        -        -  searchWord
+   -        -        -        -        -        -  second
+   -        o        -        -        -        -  secondMethodCallExpr
+   -        -        -        o        -        -  segment
+   -        -        -        -        -        -  segment-nz
+   -        o        -        -        -        -  select
+   -        o        -        -        -        -  selectItem
+   -        o        -        -        -        -  selectList
+   -        o        -        -        -        -  selectListItem
+   -        o        o        -        -        -  selectListProperty
+   -        o        -        -        -        -  selectOption
+   -        -        -        -        -        -  selectOptionPC
+   -        -        -        -        -        -  selectPath
+   -        o        o        -        -        -  selectProperty
+   -        -        -        -        -        -  SEMI
+   -        -        -        -        -        -  serviceRoot
+   -        -        -        -        -        -  SIGN
+   -        -        -        -        -        -  simpleKey
+   -        -        -        -        -        -  singleEnumValue
+   -        -        o        o        -        -  singleNavigation
+   -        o        o        -        -        -  singleNavigationExpr
+   -        o        -        -        -        -  singleNavPropInJSON
+   -        -        -        -        -        -  singleQualifiedTypeName
+   -        -        -        -        -        -  singletonEntity
+   -        -        -        -        -        -  singleTypeName
+   -        -        -        -        -        -  singleValue
+   -        -        -        -        -        -  skip
+   -        -        -        -        -        -  skiptoken
+   -        -        -        -        -        -  SP
+   -        -        -        -        -        -  SQUOTE
+   -        -        -        -        -        -  SQUOTE-in-string
+   -        -        -        -        -        -  sridLiteral
+   -        -        -        -        -        -  STAR
+   -        o        -        -        -        -  startsWithMethodCallExpr
+   -        -        -        -        -        -  streamProperty
+   -        -        -        -        -        -  string
+   -        -        -        -        -        -  stringInJSON
+   -        -        -        -        -        -  sub-delims
+   -        o        o        -        -        -  subExpr
+   -        o        -        -        -        -  substringMethodCallExpr
+   -        -        -        -        -        -  systemfrom
+   -        -        -        -        -        -  systemQueryOption
+   -        -        -        -        -        -  systemto
+   -        -        -        -        -        -  temporalExpr
+   -        -        -        -        -        -  termName
+   -        o        -        -        -        -  timeMethodCallExpr
+   -        -        -        -        -        -  timeOfDayValue
+   -        -        -        -        -        -  timeOfDayValueInUrl
+   -        -        -        -        -        -  timeseries
+   -        -        -        -        -        -  to
+   -        o        -        -        -        -  toLowerMethodCallExpr
+   -        -        -        -        -        -  top
+   -        -        -        -        -        -  topcountTrafo
+   -        -        -        -        -        -  toppercentTrafo
+   -        -        -        -        -        -  topsumTrafo
+   -        o        -        -        -        -  totalOffsetMinutesMethodCallExpr
+   -        o        -        -        -        -  totalsecondsMethodCallExpr
+   -        o        -        -        -        -  toUpperMethodCallExpr
+   -        -        -        -        -        -  trackChangesPreference
+   -        o        -        -        -        -  trimMethodCallExpr
+   -        -        -        -        -        -  typeDefinitionName
+   -        -        -        -        -        -  unreserved
+   -        -        -        -        -        -  URI
+   -        -        -        o        -        -  userinfo
+   -        -        -        -        -        -  value
+   -        -        -        -        -        -  value-separator
+   -        -        -        -        -        -  VCHAR
+   -        -        -        -        -        -  waitPreference
+   -        -        -        -        -        -  year
+   -        o        -        -        -        -  yearMethodCallExpr
+   -        -        -        -        -        -  zeroToFiftyNine
+
+*** java.lang.Error caught - errors ***
+line[1]: RNM name: resource-Path referenced but not defined
+*** java.lang.Error caught - warnings ***
+line[101]: resourcePath: rule not referenced by start rule
+line[114]: collectionNavigation: rule not referenced by start rule
+line[115]: collectionNavPath: rule not referenced by start rule
+line[131]: singleNavigation: rule not referenced by start rule
+line[138]: propertyPath: rule not referenced by start rule
+line[146]: primitiveColPath: rule not referenced by start rule
+line[148]: primitivePath: rule not referenced by start rule
+line[150]: complexColPath: rule not referenced by start rule
+line[153]: complexPath: rule not referenced by start rule
+line[158]: filterInPath: rule not referenced by start rule
+line[160]: each: rule not referenced by start rule
+line[163]: value: rule not referenced by start rule
+line[165]: ordinalIndex: rule not referenced by start rule
+line[170]: boundOperation: rule not referenced by start rule
+line[180]: actionImportCall: rule not referenced by start rule
+line[181]: boundActionCall: rule not referenced by start rule
+line[190]: boundEntityFunctionCall: rule not referenced by start rule
+line[191]: boundEntityColFunctionCall: rule not referenced by start rule
+line[192]: boundComplexFunctionCall: rule not referenced by start rule
+line[193]: boundComplexColFunctionCall: rule not referenced by start rule
+line[194]: boundPrimitiveFunctionCall: rule not referenced by start rule
+line[195]: boundPrimitiveColFunctionCall: rule not referenced by start rule
+line[197]: boundFunctionCallNoParens: rule not referenced by start rule
+line[204]: entityFunctionImportCall: rule not referenced by start rule
+line[205]: entityColFunctionImportCall: rule not referenced by start rule
+line[206]: complexFunctionImportCall: rule not referenced by start rule
+line[207]: complexColFunctionImportCall: rule not referenced by start rule
+line[208]: primitiveFunctionImportCall: rule not referenced by start rule
+line[209]: primitiveColFunctionImportCall: rule not referenced by start rule
+line[211]: functionImportCallNoParens: rule not referenced by start rule
+line[218]: functionParameters: rule not referenced by start rule
+line[219]: functionParameter: rule not referenced by start rule
+line[223]: crossjoin: rule not referenced by start rule
+line[862]: actionImport: rule not referenced by start rule
+line[878]: entityFunctionImport: rule not referenced by start rule
+line[879]: entityColFunctionImport: rule not referenced by start rule
+line[880]: complexFunctionImport: rule not referenced by start rule
+line[881]: complexColFunctionImport: rule not referenced by start rule
+line[882]: primitiveFunctionImport: rule not referenced by start rule
+line[883]: primitiveColFunctionImport: rule not referenced by start rule
+
+java.lang.AssertionError:
+stack trace:
+apg.Generator.main(Generator.java:279)
+
+message:
+errors detected
+
