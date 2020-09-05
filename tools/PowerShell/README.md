@@ -46,3 +46,13 @@ All 8 test cases passed
 
 477 of 477 rules covered (100%)
 ```
+
+If called with the `-watch` option the script also watches the `abnf` directory for changes, recompiles the parser if necessary, and reruns the tests:
+
+```posh
+./check-abnf.ps1 -watch
+```
+
+Press `Ctrl-C` to stop the script.
+
+In Visual Studio Code you can run the script in the background via **Run Task...** from the global **Terminal** menu and selecting `Check ABNF & watch`.

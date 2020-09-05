@@ -14,6 +14,10 @@
     - ABNF test tool   https://github.com/SAP/abnf-test-tool
 #>
 
+param (
+    [switch]$watch = $false
+)
+
 if ((Get-Command "javac.exe" -ErrorAction SilentlyContinue) -eq $null) { echo "Cannot find javac.exe in PATH, please install a Java SE JDK"; exit 1 }
 if ((Get-Command "java.exe"  -ErrorAction SilentlyContinue) -eq $null) { echo "Cannot find java.exe in PATH, please install a Java SE JDK"; exit 1 }
 
@@ -68,32 +72,54 @@ if ( !(Test-Path "../../../abnf-test-tool/build/abnf-test-tool.jar") ) {
     popd
 }
 
-# generate parser for ABNF
-if ( !(Test-Path "grammar") ) { md "grammar" >$null }
+function CompileAndCheck {
+    # generate parser for ABNF
+    if ( !(Test-Path "grammar") ) { md "grammar" >$null }
 
-if ( !(Test-Path "grammar/GrammarUnderTest.java") -or
-     (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-abnf-construction-rules.txt").LastWriteTime -or 
-     (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-aggregation-abnf.txt").LastWriteTime -or
-     (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-temporal-abnf.txt").LastWriteTime ) {
+    if ( !(Test-Path "grammar/GrammarUnderTest.java") -or
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-abnf-construction-rules.txt").LastWriteTime -or 
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-aggregation-abnf.txt").LastWriteTime -or
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-temporal-abnf.txt").LastWriteTime ) {
 
-	echo "Compiling ABNF..."
+        echo "Compiling ABNF..."
 
-	rm grammar/GrammarUnderTest*
+        rm grammar/GrammarUnderTest*
 
-	java.exe -cp ../../../apg-java/build/apg.jar apg/Generator /in=../../../abnf/odata-abnf-construction-rules.txt /in=../../../abnf/odata-aggregation-abnf.txt /in=../../../abnf/odata-temporal-abnf.txt /package=grammar /java=GrammarUnderTest /dir=grammar/ /dv >grammar/apg.log
+        java.exe -cp ../../../apg-java/build/apg.jar apg/Generator /in=../../../abnf/odata-abnf-construction-rules.txt /in=../../../abnf/odata-aggregation-abnf.txt /in=../../../abnf/odata-temporal-abnf.txt /package=grammar /java=GrammarUnderTest /dir=grammar/ /dv >grammar/apg.log
 
-    select-string -pattern "^\*\*\* java.lang.Error|^line" -casesensitive -path grammar/apg.log | select -exp line
+        select-string -pattern "^\*\*\* java.lang.Error|^line" -casesensitive -path grammar/apg.log | select -exp line
 
-    if ( !(Test-Path "grammar/GrammarUnderTest.java") ) { exit 1 }
+        if ( !(Test-Path "grammar/GrammarUnderTest.java") ) { exit 1 }
+    }
+
+    # compile parser
+    if ( !(Test-Path "grammar/GrammarUnderTest.class") -or
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -gt (get-item "grammar/GrammarUnderTest.class").LastWriteTime ) {
+
+        javac.exe -cp ../../../apg-java/build/apg.jar grammar/GrammarUnderTest.java
+        if (!$?) { exit 1 }
+    }
+
+    # run tests	
+    java.exe -cp "../../../apg-java/build/apg.jar;../../../abnf-test-tool/build/abnf-test-tool.jar;." checker.Check ../../abnf/odata-abnf-testcases.xml ../../abnf/odata-aggregation-testcases.xml ../../abnf/odata-temporal-testcases.xml
 }
 
-# compile parser
-if ( !(Test-Path "grammar/GrammarUnderTest.class") -or
-     (get-item "grammar/GrammarUnderTest.java").LastWriteTime -gt (get-item "grammar/GrammarUnderTest.class").LastWriteTime ) {
+CompileAndCheck
 
-    javac.exe -cp ../../../apg-java/build/apg.jar grammar/GrammarUnderTest.java
-    if (!$?) { exit 1 }
+if ($watch) {
+    $PathToMonitor = Resolve-Path "$pwd\..\..\abnf"
+
+    $FileSystemWatcher = New-Object System.IO.FileSystemWatcher
+    $FileSystemWatcher.Path  = $PathToMonitor
+    $FileSystemWatcher.IncludeSubdirectories = $true
+    
+    Write-Host "Monitoring content of $PathToMonitor"
+    
+    while ($true) {
+        $Change = $FileSystemWatcher.WaitForChanged('All', 1000)
+        if ($Change.TimedOut -eq $false)
+        {
+            CompileAndCheck
+        }
+    }
 }
-
-# run tests	
-java.exe -cp "../../../apg-java/build/apg.jar;../../../abnf-test-tool/build/abnf-test-tool.jar;." checker.Check ../../abnf/odata-abnf-testcases.xml ../../abnf/odata-aggregation-testcases.xml ../../abnf/odata-temporal-testcases.xml
