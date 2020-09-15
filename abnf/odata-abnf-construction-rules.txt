@@ -315,7 +315,7 @@ orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]
 skip = ( "$skip" / "skip" ) EQ 1*DIGIT
 top  = ( "$top"  / "top"  ) EQ 1*DIGIT
 
-index  = ( "$index" / "index" ) EQ [ "-"] 1*DIGIT
+index  = ( "$index" / "index" ) EQ [ "-" ] 1*DIGIT
 
 format = ( "$format" / "format" ) EQ
          ( "atom"
