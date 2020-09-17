@@ -2188,6 +2188,9 @@
   <TestCase Name="5.1.9 Index - $ is optional" Rule="queryOptions">
     <Input>index=42</Input>
   </TestCase>
+  <TestCase Name="5.1.9 Index - negative indexes allowed with V4.01" Rule="queryOptions">
+    <Input>index=-42</Input>
+  </TestCase>
   <TestCase Name="5.1.9 Index" Rule="queryOptions" FailAt="7">
     <Input>$index=fortytwo</Input>
   </TestCase>

@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
 ; OData ABNF Construction Rules Version 4.01 and 4.0
 ;------------------------------------------------------------------------------
-; 07 April 2020
+; 14 September 2020
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -315,7 +315,7 @@ orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]
 skip = ( "$skip" / "skip" ) EQ 1*DIGIT
 top  = ( "$top"  / "top"  ) EQ 1*DIGIT
 
-index  = ( "$index" / "index" ) EQ 1*DIGIT
+index  = ( "$index" / "index" ) EQ [ "-" ] 1*DIGIT
 
 format = ( "$format" / "format" ) EQ
          ( "atom"
