@@ -103,9 +103,9 @@ resourcePath = entitySetName                  collectionnavigation
              / actionImportCall 
              / entityColFunctionImportCall    collectionnavigation
              / entityFunctionImportCall       singlenavigation 
-             / complexColFunctionImportCall   [ complexColPath ] 
-             / complexFunctionImportCall      [ complexPath ] 
-             / primitiveColFunctionImportCall [ primitiveColPath ] 
+             / complexColFunctionImportCall   complexcolPath 
+             / complexFunctionImportCall      complexPath 
+             / primitiveColFunctionImportCall [ collectionPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
              / functionImportCallNoParens     [ querySegment ]
              / crossjoin                      [ querySegment ]
@@ -139,18 +139,17 @@ singleNavigation = [ "/" optionallyQualifiedEntityTypeName ]
 
 propertyPath = entityColNavigationProperty collectionNavigation
              / entityNavigationProperty    singlenavigation
-             / complexColProperty          [ complexColPath ]
-             / complexProperty             [ complexPath ]
-             / primitiveColProperty        [ primitiveColPath ]
+             / complexColProperty          complexcolPath
+             / complexProperty             complexPath
+             / primitiveColProperty        [ collectionPath ]
              / primitiveProperty           [ primitivePath ]
              / streamProperty              [ boundOperation ]
 
-primitiveColPath = count / boundOperation / ordinalIndex / querySegment
+collectionPath = count / boundOperation / ordinalIndex / querySegment
 
 primitivePath  = value / boundOperation / querySegment
 
-complexColPath = ordinalIndex
-               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation / querySegment ]
+complexColPath = [ "/" optionallyQualifiedComplexTypeName ] [ collectionPath ]
 
 complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
                  [ "/" propertyPath 
@@ -175,9 +174,9 @@ ordinalIndex = "/" [ "-" ] 1*DIGIT
 boundOperation = "/" ( boundActionCall
                      / boundEntityColFunctionCall    collectionnavigation
                      / boundEntityFunctionCall       singlenavigation 
-                     / boundComplexColFunctionCall   [ complexColPath ] 
-                     / boundComplexFunctionCall      [ complexPath ]
-                     / boundPrimitiveColFunctionCall [ primitiveColPath ] 
+                     / boundComplexColFunctionCall   complexcolPath 
+                     / boundComplexFunctionCall      complexPath
+                     / boundPrimitiveColFunctionCall [ collectionPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
                      / boundFunctionCallNoParens     [ querySegment ]
                      )
