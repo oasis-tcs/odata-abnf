@@ -98,12 +98,12 @@ odataRelativeUri = '$batch'  [ "?" batchOptions ]
 ; 1. Resource Path
 ;------------------------------------------------------------------------------
 
-resourcePath = entitySetName                  collectionnavigation
-             / singletonEntity                singlenavigation
+resourcePath = entitySetName                  [ collectionNavigation ]
+             / singletonEntity                [ singleNavigation ]
              / actionImportCall 
-             / entityColFunctionImportCall    collectionnavigation
-             / entityFunctionImportCall       singlenavigation 
-             / complexColFunctionImportCall   complexcolPath 
+             / entityColFunctionImportCall    [ collectionNavigation ]
+             / entityFunctionImportCall       [ singleNavigation ]
+             / complexColFunctionImportCall   [ complexcolPath ]
              / complexFunctionImportCall      complexPath 
              / primitiveColFunctionImportCall [ collectionPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
@@ -111,9 +111,11 @@ resourcePath = entitySetName                  collectionnavigation
              / crossjoin                      [ querySegment ]
              / '$all'                         [ "/" optionallyQualifiedEntityTypeName ]
 
-collectionNavigation = [ "/" optionallyQualifiedEntityTypeName ] [ collectionNavPath ]
-collectionNavPath    = keyPredicate singlenavigation
-                     / filterInPath collectionNavigation
+collectionNavigation = collectionNavPath
+                     / "/" optionallyQualifiedEntityTypeName [ collectionNavPath ]
+
+collectionNavPath    = keyPredicate [ singleNavigation ]
+                     / filterInPath [ collectionNavigation ]
                      / each [ boundOperation ]
                      / boundOperation
                      / count
@@ -129,7 +131,10 @@ keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
 
-singleNavigation = [ "/" optionallyQualifiedEntityTypeName ] 
+singleNavigation = singleNavPath
+                 / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
+
+singleNavPath = [ "/" optionallyQualifiedEntityTypeName ] 
                    [ "/" propertyPath
                    / boundOperation
                    / ref 
@@ -137,9 +142,9 @@ singleNavigation = [ "/" optionallyQualifiedEntityTypeName ]
                    / querySegment
                    ]
 
-propertyPath = entityColNavigationProperty collectionNavigation
-             / entityNavigationProperty    singlenavigation
-             / complexColProperty          complexcolPath
+propertyPath = entityColNavigationProperty [ collectionNavigation ]
+             / entityNavigationProperty    [ singleNavigation ]
+             / complexColProperty          [ complexColPath ]
              / complexProperty             complexPath
              / primitiveColProperty        [ collectionPath ]
              / primitiveProperty           [ primitivePath ]
@@ -149,7 +154,8 @@ collectionPath = count / boundOperation / ordinalIndex / querySegment
 
 primitivePath  = value / boundOperation / querySegment
 
-complexColPath = [ "/" optionallyQualifiedComplexTypeName ] [ collectionPath ]
+complexColPath = collectionPath 
+               / "/" optionallyQualifiedComplexTypeName [ collectionPath ]
 
 complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
                  [ "/" propertyPath 
@@ -172,9 +178,9 @@ ordinalIndex = "/" [ "-" ] 1*DIGIT
 ; matches the type of the first parameter of the action or function being called.
 ; Note that the rule name reflects the return type of the function.
 boundOperation = "/" ( boundActionCall
-                     / boundEntityColFunctionCall    collectionnavigation
-                     / boundEntityFunctionCall       singlenavigation 
-                     / boundComplexColFunctionCall   complexcolPath 
+                     / boundEntityColFunctionCall    [ collectionnavigation ]
+                     / boundEntityFunctionCall       [ singleNavigation ]
+                     / boundComplexColFunctionCall   [ complexColPath ]
                      / boundComplexFunctionCall      complexPath
                      / boundPrimitiveColFunctionCall [ collectionPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
