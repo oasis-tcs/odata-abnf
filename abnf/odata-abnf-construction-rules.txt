@@ -99,12 +99,12 @@ odataRelativeUri = '$batch'  [ "?" batchOptions ]
 ;------------------------------------------------------------------------------
 
 resourcePath = entitySetName                  [ collectionNavigation ] 
-             / singletonEntity                [ singleNavigation ] 
+             / singletonEntity                [ singleNavigation ]  
              / actionImportCall 
-             / entityColFunctionImportCall    [ collectionNavigation ]
-             / entityFunctionImportCall       [ singleNavigation ]
+             / entityColFunctionImportCall    [ collectionNavigation ] 
+             / entityFunctionImportCall       [ singleNavigation ] 
              / complexColFunctionImportCall   [ complexColPath ] 
-             / complexFunctionImportCall      [ complexPath ]
+             / complexFunctionImportCall      [ complexPath ] 
              / primitiveColFunctionImportCall [ collectionPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
              / functionImportCallNoParens     [ querySegment ]
@@ -134,13 +134,11 @@ keyPathLiteral   = *pchar
 singleNavigation = singleNavPath
                  / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
 
-singleNavPath = [ "/" optionallyQualifiedEntityTypeName ] 
-                   [ "/" propertyPath
-                   / boundOperation
-                   / ref 
-                   / value  ; request the media resource of a media entity 
-                   / querySegment
-                   ]
+singleNavPath = "/" propertyPath
+              / boundOperation
+              / ref 
+              / value  ; request the media resource of a media entity 
+              / querySegment
 
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
              / entityNavigationProperty    [ singleNavigation ]
@@ -179,9 +177,9 @@ ordinalIndex = "/" [ "-" ] 1*DIGIT
 ; matches the type of the first parameter of the action or function being called.
 ; Note that the rule name reflects the return type of the function.
 boundOperation = "/" ( boundActionCall
-                     / boundEntityColFunctionCall    [ collectionnavigation ]
+                     / boundEntityColFunctionCall    [ collectionNavigation ] 
                      / boundEntityFunctionCall       [ singleNavigation ]
-                     / boundComplexColFunctionCall   [ complexColPath ]
+                     / boundComplexColFunctionCall   [ complexColPath ] 
                      / boundComplexFunctionCall      [ complexPath ]
                      / boundPrimitiveColFunctionCall [ collectionPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
