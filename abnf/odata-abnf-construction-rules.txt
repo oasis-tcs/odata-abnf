@@ -98,13 +98,13 @@ odataRelativeUri = '$batch'  [ "?" batchOptions ]
 ; 1. Resource Path
 ;------------------------------------------------------------------------------
 
-resourcePath = entitySetName                  [ collectionNavigation ]
-             / singletonEntity                [ singleNavigation ]
+resourcePath = entitySetName                  [ collectionNavigation ] 
+             / singletonEntity                [ singleNavigation ] 
              / actionImportCall 
              / entityColFunctionImportCall    [ collectionNavigation ]
              / entityFunctionImportCall       [ singleNavigation ]
-             / complexColFunctionImportCall   [ complexcolPath ]
-             / complexFunctionImportCall      complexPath 
+             / complexColFunctionImportCall   [ complexColPath ] 
+             / complexFunctionImportCall      [ complexPath ]
              / primitiveColFunctionImportCall [ collectionPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
              / functionImportCallNoParens     [ querySegment ]
@@ -145,7 +145,7 @@ singleNavPath = [ "/" optionallyQualifiedEntityTypeName ]
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
              / entityNavigationProperty    [ singleNavigation ]
              / complexColProperty          [ complexColPath ]
-             / complexProperty             complexPath
+             / complexProperty             [ complexPath ]
              / primitiveColProperty        [ collectionPath ]
              / primitiveProperty           [ primitivePath ]
              / streamProperty              [ boundOperation ]
@@ -157,11 +157,12 @@ primitivePath  = value / boundOperation / querySegment
 complexColPath = collectionPath 
                / "/" optionallyQualifiedComplexTypeName [ collectionPath ]
 
-complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
-                 [ "/" propertyPath 
-                 / boundOperation
-                 / querySegment
-                 ]
+complexPath = complexNavPath 
+            / "/" optionallyQualifiedComplexTypeName [ complexNavPath ]
+
+complexNavPath = "/" propertyPath 
+               / boundOperation
+               / querySegment
                  
 filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
 
@@ -181,7 +182,7 @@ boundOperation = "/" ( boundActionCall
                      / boundEntityColFunctionCall    [ collectionnavigation ]
                      / boundEntityFunctionCall       [ singleNavigation ]
                      / boundComplexColFunctionCall   [ complexColPath ]
-                     / boundComplexFunctionCall      complexPath
+                     / boundComplexFunctionCall      [ complexPath ]
                      / boundPrimitiveColFunctionCall [ collectionPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
                      / boundFunctionCallNoParens     [ querySegment ]
