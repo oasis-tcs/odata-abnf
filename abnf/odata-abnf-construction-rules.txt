@@ -167,7 +167,7 @@ value = '/$value'
 
 querySegment = '/$query'
 
-ordinalIndex = "/" 1*DIGIT
+ordinalIndex = "/" [ "-" ] 1*DIGIT
 
 ; boundOperation segments can only be composed if the type of the previous segment 
 ; matches the type of the first parameter of the action or function being called.
