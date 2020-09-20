@@ -99,7 +99,7 @@ odataRelativeUri = '$batch'  [ "?" batchOptions ]
 ;------------------------------------------------------------------------------
 
 resourcePath = entitySetName                  [ collectionNavigation ] 
-             / singletonEntity                [ singleNavigation ]  
+             / singletonEntity                [ singleNavigation ]
              / actionImportCall 
              / entityColFunctionImportCall    [ collectionNavigation ] 
              / entityFunctionImportCall       [ singleNavigation ] 
