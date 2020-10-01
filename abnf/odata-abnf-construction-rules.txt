@@ -105,13 +105,15 @@ resourcePath = entitySetName                  [ collectionNavigation ]
              / entityFunctionImportCall       [ singleNavigation ] 
              / complexColFunctionImportCall   [ complexColPath ] 
              / complexFunctionImportCall      [ complexPath ] 
-             / primitiveColFunctionImportCall [ primitiveColPath ] 
+             / primitiveColFunctionImportCall [ collectionPath ] 
              / primitiveFunctionImportCall    [ primitivePath ] 
              / functionImportCallNoParens     [ querySegment ]
              / crossjoin                      [ querySegment ]
              / '$all'                         [ "/" optionallyQualifiedEntityTypeName ]
 
-collectionNavigation = [ "/" optionallyQualifiedEntityTypeName ] [ collectionNavPath ]
+collectionNavigation = collectionNavPath
+                     / "/" optionallyQualifiedEntityTypeName [ collectionNavPath ]
+
 collectionNavPath    = keyPredicate [ singleNavigation ]
                      / filterInPath [ collectionNavigation ]
                      / each [ boundOperation ]
@@ -129,34 +131,36 @@ keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
 
-singleNavigation = [ "/" optionallyQualifiedEntityTypeName ] 
-                   [ "/" propertyPath
-                   / boundOperation
-                   / ref 
-                   / value  ; request the media resource of a media entity 
-                   / querySegment
-                   ]
+singleNavigation = singleNavPath
+                 / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
+
+singleNavPath = "/" propertyPath
+              / boundOperation
+              / ref 
+              / value  ; request the media resource of a media entity 
+              / querySegment
 
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
              / entityNavigationProperty    [ singleNavigation ]
              / complexColProperty          [ complexColPath ]
              / complexProperty             [ complexPath ]
-             / primitiveColProperty        [ primitiveColPath ]
+             / primitiveColProperty        [ collectionPath ]
              / primitiveProperty           [ primitivePath ]
              / streamProperty              [ boundOperation ]
 
-primitiveColPath = count / boundOperation / ordinalIndex / querySegment
+collectionPath = count / boundOperation / ordinalIndex / querySegment
 
 primitivePath  = value / boundOperation / querySegment
 
-complexColPath = ordinalIndex
-               / [ "/" optionallyQualifiedComplexTypeName ] [ count / boundOperation / querySegment ]
+complexColPath = collectionPath 
+               / "/" optionallyQualifiedComplexTypeName [ collectionPath ]
 
-complexPath    = [ "/" optionallyQualifiedComplexTypeName ] 
-                 [ "/" propertyPath 
-                 / boundOperation
-                 / querySegment
-                 ]
+complexPath = complexNavPath 
+            / "/" optionallyQualifiedComplexTypeName [ complexNavPath ]
+
+complexNavPath = "/" propertyPath 
+               / boundOperation
+               / querySegment
                  
 filterInPath = '/$filter' OPEN boolCommonExpr CLOSE
 
@@ -167,17 +171,17 @@ value = '/$value'
 
 querySegment = '/$query'
 
-ordinalIndex = "/" 1*DIGIT
+ordinalIndex = "/" [ "-" ] 1*DIGIT
 
 ; boundOperation segments can only be composed if the type of the previous segment 
 ; matches the type of the first parameter of the action or function being called.
 ; Note that the rule name reflects the return type of the function.
 boundOperation = "/" ( boundActionCall
                      / boundEntityColFunctionCall    [ collectionNavigation ] 
-                     / boundEntityFunctionCall       [ singleNavigation ] 
+                     / boundEntityFunctionCall       [ singleNavigation ]
                      / boundComplexColFunctionCall   [ complexColPath ] 
                      / boundComplexFunctionCall      [ complexPath ]
-                     / boundPrimitiveColFunctionCall [ primitiveColPath ] 
+                     / boundPrimitiveColFunctionCall [ collectionPath ] 
                      / boundPrimitiveFunctionCall    [ primitivePath ] 
                      / boundFunctionCallNoParens     [ querySegment ]
                      )

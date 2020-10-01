@@ -1114,8 +1114,8 @@
   <TestCase Name="4.10 Addressing a Member of an Ordered Complex Collection" Rule="odataRelativeUri">
     <Input>MainSupplier/Addresses/0</Input>
   </TestCase>
-  <TestCase Name="4.10 Addressing a Member of an Ordered Complex Collection with type-cast" Rule="odataRelativeUri" FailAt="49">
-    <Input>Suppliers(1)/Addresses/Model.AddressWithLocation/1</Input>
+  <TestCase Name="4.10 Addressing a Member of an Ordered Complex Collection with type-cast" Rule="odataRelativeUri">
+    <Input>Suppliers(1)/Addresses/Model.AddressWithLocation/-1</Input>
   </TestCase>
   <TestCase Name="4.11 Inheritance - set of subtypes" Rule="odataRelativeUri">
     <Input>Products/Model.BestSellingProduct</Input>
