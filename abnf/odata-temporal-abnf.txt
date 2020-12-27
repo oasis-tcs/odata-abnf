@@ -76,15 +76,15 @@ temporalOption = at-option
 ; 2. Temporal System Query Options
 ;------------------------------------------------------------------------------
 
-at-option  = '$at'         EQ temporalExpr
-from       = '$from'       EQ temporalExpr
-to         = '$to'         EQ temporalExpr
-systemat   = '$systemat'   EQ temporalExpr
-systemfrom = '$systemfrom' EQ temporalExpr
-systemto   = '$systemto'   EQ temporalExpr
+at-option  = %s"$at"         EQ temporalExpr
+from       = %s"$from"       EQ temporalExpr
+to         = %s"$to"         EQ temporalExpr
+systemat   = %s"$systemat"   EQ temporalExpr
+systemfrom = %s"$systemfrom" EQ temporalExpr
+systemto   = %s"$systemto"   EQ temporalExpr
 
-temporalExpr = 'min' 
-             / 'max' 
+temporalExpr = %s"min" 
+             / %s"max" 
              / dateTimeOffsetValue 
              / dateValue
 
