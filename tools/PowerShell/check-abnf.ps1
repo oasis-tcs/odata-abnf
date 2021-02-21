@@ -10,8 +10,6 @@
     Prerequisites 
     - Java SDK         http://jdk.java.net
     - Git              https://git-scm.com/download/win 
-    - Java APG         https://github.com/ralfhandl/apg-java
-    - ABNF test tool   https://github.com/SAP/abnf-test-tool
 #>
 
 param (
@@ -77,9 +75,9 @@ function CompileAndCheck {
     if ( !(Test-Path "grammar") ) { mkdir "grammar" >$null }
 
     if ( !(Test-Path "grammar/GrammarUnderTest.java") -or
-         (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-abnf-construction-rules.txt").LastWriteTime -or 
-         (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-aggregation-abnf.txt").LastWriteTime -or
-         (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-temporal-abnf.txt").LastWriteTime ) {
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-abnf-construction-rules.txt").LastWriteTime -or 
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-aggregation-abnf.txt").LastWriteTime -or
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -lt (get-item "../../abnf/odata-temporal-abnf.txt").LastWriteTime ) {
 
         Write-Output "Compiling ABNF..."
 
@@ -94,7 +92,7 @@ function CompileAndCheck {
 
     # compile parser
     if ( !(Test-Path "grammar/GrammarUnderTest.class") -or
-         (get-item "grammar/GrammarUnderTest.java").LastWriteTime -gt (get-item "grammar/GrammarUnderTest.class").LastWriteTime ) {
+        (get-item "grammar/GrammarUnderTest.java").LastWriteTime -gt (get-item "grammar/GrammarUnderTest.class").LastWriteTime ) {
 
         javac.exe -cp ../../../apg-java/build/apg.jar grammar/GrammarUnderTest.java
         if (!$?) { return }
@@ -110,15 +108,14 @@ if ($watch) {
     $PathToMonitor = Resolve-Path "$pwd\..\..\abnf"
 
     $FileSystemWatcher = New-Object System.IO.FileSystemWatcher
-    $FileSystemWatcher.Path  = $PathToMonitor
+    $FileSystemWatcher.Path = $PathToMonitor
     $FileSystemWatcher.IncludeSubdirectories = $true
     
     Write-Host "Monitoring content of $PathToMonitor"
     
     while ($true) {
         $Change = $FileSystemWatcher.WaitForChanged('All', 1000)
-        if ($Change.TimedOut -eq $false)
-        {
+        if ($Change.TimedOut -eq $false) {
             CompileAndCheck
         }
     }
