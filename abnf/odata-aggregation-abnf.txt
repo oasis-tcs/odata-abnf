@@ -76,7 +76,7 @@ primitiveProperty =/ expressionAlias / customAggregate
 ; 2. System Query Option $apply
 ;------------------------------------------------------------------------------
 
-apply      = %s"$apply" EQ applyExpr
+apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
            / bottomcountTrafo
@@ -101,14 +101,14 @@ aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
                 / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
                 / pathPrefix customAggregate [ customFrom asAlias ]
                 / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
-aggregateWith   = RWS %s"with" RWS aggregateMethod        
+aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
 customFrom      = RWS %s"from" RWS groupingProperty [ aggregateWith ] [ customFrom ]
-aggregateMethod = %s"sum" 
-                / %s"min" 
-                / %s"max" 
-                / %s"average" 
-                / %s"countdistinct" 
+aggregateMethod = %s"sum"
+                / %s"min"
+                / %s"max"
+                / %s"average"
+                / %s"countdistinct"
                 / namespace "." odataIdentifier
 
 asAlias         = RWS %s"as" RWS expressionAlias
@@ -117,15 +117,15 @@ expressionAlias = odataIdentifier
 customAggregate = odataIdentifier
                 
 groupingProperty = pathPrefix
-                   ( entityNavigationProperty [ "/" qualifiedEntityTypeName ] 
+                   ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
                    / primitiveProperty 
                    / complexProperty
                    )
-pathPrefix       = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" ) 
+pathPrefix       = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" )
 pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
-                 / navigationProperty [ "/" qualifiedEntityTypeName  ] 
+                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
                    
-computeTrafo = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE     
+computeTrafo = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr  = commonExpr asAlias             
                            
 bottomcountTrafo   = %s"bottomcount"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
@@ -134,9 +134,9 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-expandTrafo = %s"expand" OPEN BWS expandNavPath BWS COMMA BWS 
+expandTrafo = %s"expand" OPEN BWS expandNavPath BWS COMMA BWS
               ( expandTrafo *( BWS COMMA BWS expandTrafo )
-              / filterTrafo *( BWS COMMA BWS expandTrafo ) 
+              / filterTrafo *( BWS COMMA BWS expandTrafo )
               ) BWS CLOSE
 expandNavPath = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] 
                 *( ( complexProperty / complexColProperty ) "/" [ qualifiedComplexTypeName "/" ] )
@@ -151,7 +151,7 @@ groupbyList    = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS C
 groupbyElement = groupingProperty / rollupSpec
 rollupSpec     = %s"rollup" OPEN BWS 
                   ( %s"$all" / groupingProperty )
-                  1*( BWS COMMA BWS groupingProperty ) 
+                  1*( BWS COMMA BWS groupingProperty )
                   BWS CLOSE
 
 identityTrafo = %s"identity"
