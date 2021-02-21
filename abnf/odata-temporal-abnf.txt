@@ -45,8 +45,7 @@
 ;   using the Open Data Protocol (OData).
 ;
 ; Overview:
-;   This grammar uses the ABNF defined in RFC5234 with one extension: literals 
-;   enclosed in single quotes (e.g. '$metadata') are treated case-sensitive. 
+;   This grammar uses the ABNF defined in RFC5234 and RFC7405. 
 ;
 ;   It extends the OData ABNF Construction Rules Version 4.0
 ;

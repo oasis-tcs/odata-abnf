@@ -41,8 +41,7 @@
 ;   literals in request and response payloads.
 ;
 ; Overview:
-;   This grammar uses the ABNF defined in RFC5234 with one extension: literals 
-;   enclosed in single quotes (e.g. '$metadata') are treated case-sensitive. 
+;   This grammar uses the ABNF defined in RFC5234 and RFC7405. 
 ;
 ;   The following rules assume that URIs have been percent-encoding normalized
 ;   as described in section 6.2.2.2 of RFC3986 
