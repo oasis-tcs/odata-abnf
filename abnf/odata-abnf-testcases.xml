@@ -364,6 +364,10 @@
     <Match>MonetaryAmount</Match>
   </Constraint>
 
+  <TestCase Name="Verifying the generated parser" Rule="namespace">
+    <Input>This.Should.Not.Fail</Input>
+  </TestCase>
+  
   <TestCase Name="Just to test the dummy start rule" Rule="dummyStartRule">
     <Input>http://services.odata.org/</Input>
   </TestCase>
