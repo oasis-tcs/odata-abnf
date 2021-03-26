@@ -97,25 +97,39 @@ odataRelativeUri = %s"$batch"  [ "?" batchOptions ]
 ; 1. Resource Path
 ;------------------------------------------------------------------------------
 
-resourcePath = entitySetName                  [ collectionNavigation ] 
-             / singletonEntity                [ singleNavigation ]
+resourcePath = entitySetName                  collectionNavigation 
+             / singletonEntity                singleNavigation
              / actionImportCall 
-             / entityColFunctionImportCall    [ collectionNavigation ] 
-             / entityFunctionImportCall       [ singleNavigation ] 
-             / complexColFunctionImportCall   [ complexColPath ] 
-             / complexFunctionImportCall      [ complexPath ] 
-             / primitiveColFunctionImportCall [ collectionPath ] 
-             / primitiveFunctionImportCall    [ primitivePath ] 
-             / functionImportCallNoParens     [ querySegment ]
-             / crossjoin                      [ querySegment ]
-             / %s"$all"                         [ "/" optionallyQualifiedEntityTypeName ]
+             / entityColFunctionImportCall    collectionNavigation 
+             / entityFunctionImportCall       singleNavigation 
+             / complexColFunctionImportCall   complexColPath 
+             / complexFunctionImportCall      complexPath 
+             / primitiveColFunctionImportCall collectionPath 
+             / primitiveFunctionImportCall    primitivePath 
+             / functionImportCallNoParens     querySegment
+             / crossjoin                      querySegment
+             / %s"$all"                       "/" optionallyQualifiedEntityTypeName
+             / entitySetName                   
+             / singletonEntity                
+             / entityColFunctionImportCall     
+             / entityFunctionImportCall        
+             / complexColFunctionImportCall    
+             / complexFunctionImportCall       
+             / primitiveColFunctionImportCall  
+             / primitiveFunctionImportCall     
+             / functionImportCallNoParens     
+             / crossjoin                      
+             / %s"$all"                       
 
 collectionNavigation = collectionNavPath
                      / "/" optionallyQualifiedEntityTypeName [ collectionNavPath ]
 
-collectionNavPath    = keyPredicate [ singleNavigation ]
-                     / filterInPath [ collectionNavigation ]
-                     / each [ boundOperation ]
+collectionNavPath    = keyPredicate singleNavigation
+                     / filterInPath collectionNavigation
+                     / each         boundOperation
+                     / keyPredicate 
+                     / filterInPath 
+                     / each         
                      / boundOperation
                      / count
                      / ref
@@ -139,13 +153,20 @@ singleNavPath = "/" propertyPath
               / value  ; request the media resource of a media entity 
               / querySegment
 
-propertyPath = entityColNavigationProperty [ collectionNavigation ]
-             / entityNavigationProperty    [ singleNavigation ]
-             / complexColProperty          [ complexColPath ]
-             / complexProperty             [ complexPath ]
-             / primitiveColProperty        [ collectionPath ]
-             / primitiveProperty           [ primitivePath ]
-             / streamProperty              [ boundOperation ]
+propertyPath = entityColNavigationProperty collectionNavigation
+             / entityNavigationProperty    singleNavigation
+             / complexColProperty          complexColPath
+             / complexProperty             complexPath
+             / primitiveColProperty        collectionPath
+             / primitiveProperty           primitivePath
+             / streamProperty              boundOperation
+             / entityColNavigationProperty 
+             / entityNavigationProperty    
+             / complexColProperty          
+             / complexProperty             
+             / primitiveColProperty        
+             / primitiveProperty           
+             / streamProperty              
 
 collectionPath = count / boundOperation / ordinalIndex / querySegment
 
@@ -176,13 +197,20 @@ ordinalIndex = "/" [ "-" ] 1*DIGIT
 ; matches the type of the first parameter of the action or function being called.
 ; Note that the rule name reflects the return type of the function.
 boundOperation = "/" ( boundActionCall
-                     / boundEntityColFunctionCall    [ collectionNavigation ] 
-                     / boundEntityFunctionCall       [ singleNavigation ]
-                     / boundComplexColFunctionCall   [ complexColPath ] 
-                     / boundComplexFunctionCall      [ complexPath ]
-                     / boundPrimitiveColFunctionCall [ collectionPath ] 
-                     / boundPrimitiveFunctionCall    [ primitivePath ] 
-                     / boundFunctionCallNoParens     [ querySegment ]
+                     / boundEntityColFunctionCall    collectionNavigation 
+                     / boundEntityFunctionCall       singleNavigation
+                     / boundComplexColFunctionCall   complexColPath 
+                     / boundComplexFunctionCall      complexPath
+                     / boundPrimitiveColFunctionCall collectionPath 
+                     / boundPrimitiveFunctionCall    primitivePath 
+                     / boundFunctionCallNoParens     querySegment
+                     / boundEntityColFunctionCall     
+                     / boundEntityFunctionCall       
+                     / boundComplexColFunctionCall    
+                     / boundComplexFunctionCall      
+                     / boundPrimitiveColFunctionCall  
+                     / boundPrimitiveFunctionCall     
+                     / boundFunctionCallNoParens     
                      )
 
 actionImportCall = actionImport
@@ -513,14 +541,20 @@ directMemberExpr = propertyPathExpr
                  / boundFunctionExpr 
                  / annotationExpr
              
-propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ] 
-                   / entityNavigationProperty    [ singleNavigationExpr ] 
-                   / complexColProperty          [ complexColPathExpr ]
-                   / complexProperty             [ complexPathExpr ] 
-                   / primitiveColProperty        [ collectionPathExpr ]
-                   / primitiveProperty           [ primitivePathExpr ]
-                   / streamProperty              [ primitivePathExpr ]
-                   )
+propertyPathExpr = entityColNavigationProperty   collectionNavigationExpr 
+                   / entityNavigationProperty    singleNavigationExpr 
+                   / complexColProperty          complexColPathExpr
+                   / complexProperty             complexPathExpr 
+                   / primitiveColProperty        collectionPathExpr
+                   / primitiveProperty           primitivePathExpr
+                   / streamProperty              primitivePathExpr
+                   / entityColNavigationProperty  
+                   / entityNavigationProperty     
+                   / complexColProperty          
+                   / complexProperty              
+                   / primitiveColProperty        
+                   / primitiveProperty           
+                   / streamProperty              
                    
 annotationExpr = annotationInQuery
                  [ collectionPathExpr
@@ -569,12 +603,19 @@ boundFunctionExpr = functionExpr ; boundFunction segments can only be composed i
                                  ; previous segment matches the type of the first function parameter
                                      
 functionExpr = [ namespace "." ]
-               ( entityColFunction    functionExprParameters [ collectionNavigationExpr ] 
-               / entityFunction       functionExprParameters [ singleNavigationExpr ] 
-               / complexColFunction   functionExprParameters [ complexColPathExpr ]
-               / complexFunction      functionExprParameters [ complexPathExpr ] 
-               / primitiveColFunction functionExprParameters [ collectionPathExpr ] 
-               / primitiveFunction    functionExprParameters [ primitivePathExpr ] 
+               ( 
+               entityColFunction      functionExprParameters collectionNavigationExpr 
+               / entityFunction       functionExprParameters singleNavigationExpr 
+               / complexColFunction   functionExprParameters complexColPathExpr
+               / complexFunction      functionExprParameters complexPathExpr 
+               / primitiveColFunction functionExprParameters collectionPathExpr 
+               / primitiveFunction    functionExprParameters primitivePathExpr 
+               / entityColFunction    functionExprParameters 
+               / entityFunction       functionExprParameters 
+               / complexColFunction   functionExprParameters
+               / complexFunction      functionExprParameters 
+               / primitiveColFunction functionExprParameters 
+               / primitiveFunction    functionExprParameters 
                )
 
 functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE
