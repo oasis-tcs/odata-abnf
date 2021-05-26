@@ -113,6 +113,7 @@
   <Constraint Rule="complexFunctionImport">
   </Constraint>
   <Constraint Rule="complexProperty">
+    <Match>ShipTo</Match>
   </Constraint>
   <Constraint Rule="complexTypeName">
   </Constraint>
@@ -345,6 +346,12 @@
   </TestCase>
   <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions" FailAt="89">
     <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,expand(Products)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - expand with filter on $this" Rule="queryOptions">
+    <Input>$apply=expand(Sales,filter($this/Customer/City eq ShipTo/City))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - expand with filter on $root" Rule="queryOptions">
+    <Input>$apply=filter(Name eq $root/Products('P2')/Name)</Input>
   </TestCase>
   <TestCase Name="aggregate - search" Rule="queryOptions">
     <Input>$apply=search(coffee)</Input>
