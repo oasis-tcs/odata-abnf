@@ -102,4 +102,7 @@
   <TestCase Name="Temporal - from and to with datetimestamp" Rule="odataRelativeUri">
     <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$to=2012-07-26T11:00:00.00-08:00</Input>
   </TestCase>
+  <TestCase Name="Temporal - from and toInclusive with datetimestamp" Rule="odataRelativeUri">
+    <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$toInclusive=2012-07-26T11:00:00.00-08:00</Input>
+  </TestCase>
 </TestSuite>
