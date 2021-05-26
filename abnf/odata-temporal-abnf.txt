@@ -68,15 +68,17 @@ expandOption =/ temporalOption
 temporalOption = at-option
                / from 
                / to 
+               / toInclusive
 
 
 ;------------------------------------------------------------------------------
 ; 2. Temporal System Query Options
 ;------------------------------------------------------------------------------
 
-at-option  = "$at"         EQ temporalExpr
-from       = "$from"       EQ temporalExpr
-to         = "$to"         EQ temporalExpr
+at-option   = "$at"          EQ temporalExpr
+from        = "$from"        EQ temporalExpr
+to          = "$to"          EQ temporalExpr
+toInclusive = "$toInclusive" EQ temporalExpr
 
 temporalExpr = "min" 
              / "max" 
