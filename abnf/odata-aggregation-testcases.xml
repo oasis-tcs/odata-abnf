@@ -88,20 +88,27 @@
     <Match>CustomerAmount</Match>
     <Match>CustomerCountryAverage</Match>
     <Match>CustomerYearAmount</Match>
+    <Match>CustomerIDs</Match>
     <Match>DailyAverage</Match>
+    <Match>Detail</Match>
     <Match>DistinctProducts</Match>
+    <Match>FilteredSales</Match>
+    <Match>FirstLetter</Match>
     <Match>ItemAmount</Match>
     <Match>MaxAmount</Match>
     <Match>MinAmount</Match>
     <Match>MonthlyAverage</Match>
     <Match>ProductNames</Match>
+    <Match>ProductIDs</Match>
     <Match>Profit</Match>
     <Match>RelativeAmount</Match>
     <Match>RelativeOrderSize</Match>
     <Match>RegionAmount</Match>
     <Match>RevenueContribution</Match>
     <Match>RevenueTrend</Match>
+    <Match>Sale</Match>
     <Match>SalesCount</Match>
+    <Match>SomeCustomers</Match>
     <Match>Stuff</Match>
     <Match>PaperSalesCount</Match>
     <Match>SalesOrgCount</Match>
@@ -110,11 +117,8 @@
     <Match>TotalAmount</Match>    
     <Match>TotalPlannedRevenue</Match>
     <Match>TotalPopulation</Match>
-    <Match>WeekDay</Match>
-    <Match>FilteredSales</Match>
-    <Match>Sale</Match>
     <Match>TotalSales</Match>
-    <Match>Detail</Match>
+    <Match>WeekDay</Match>
   </Constraint>
   <Constraint Rule="complexColProperty">
     <Match>Details</Match>
@@ -394,6 +398,9 @@
   <TestCase Name="aggregate - nest with filter on $this" Rule="queryOptions">
     <Input>$apply=nest(Sales,filter($this/Customer/City eq ShipTo/City))</Input>
   </TestCase>
+  <TestCase Name="aggregate - nest without path" Rule="queryOptions">
+    <Input>$apply=nest(groupby((Customer/ID)) as CustomerIDs,groupby((Product/ID)) as ProductIDs)</Input>
+  </TestCase>
   <TestCase Name="aggregate - join" Rule="queryOptions">
     <Input>$apply=join(Sales as Sale)</Input>
   </TestCase>
@@ -605,6 +612,9 @@
   </TestCase>
   <TestCase Name="transformation sequences - post-aggregate" Rule="queryOptions">
     <Input>$apply=groupby((Time),aggregate(Amount with sum as Total))/aggregate(Total with average as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - compute, groupby, and nest" Rule="queryOptions">
+    <Input>$apply=compute(substring(Name,0,1) as FirstLetter)/groupby((FirstLetter),nest(identity as SomeCustomers))</Input>
   </TestCase>
   <TestCase Name="transformation sequences - simple" Rule="queryOptions">
     <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as TotalPopulation))</Input>

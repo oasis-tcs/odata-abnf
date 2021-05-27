@@ -149,7 +149,10 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo       = %s"nest" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+nestTrafo       = %s"nest" OPEN BWS
+                  ( ( nestPath BWS COMMA BWS nestApplyExpr )
+                    / nestApplyAliasdExpr )
+                  BWS CLOSE
 nestPath        = nestComplexTypeInstancePath 
                   / nestNavigationPropertyPath
                   / nestComplexTypeInstancePath 
@@ -162,8 +165,10 @@ nestComplexTypeInstancePath = 1*( ( complexProperty
 nestNavigationPropertyPath  = ( navigationProperty 
                                 / entityAnnotationInQuery ) 
                               [ "/" optionallyQualifiedEntityTypeName ]
-nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias ) [ BWS COMMA BWS applyExpr ]
-                  / applyExpr [ asAlias ]
+nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias ) [ BWS COMMA BWS applyExpr ]
+                              / applyExpr [ asAlias ]
+nestApplyAliasdExpr         = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
