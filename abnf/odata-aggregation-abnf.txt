@@ -71,6 +71,7 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ expressionAlias / customAggregate
 
+methodCallExpr =/ aggregateMethodCallExpr
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
@@ -79,21 +80,31 @@ primitiveProperty =/ expressionAlias / customAggregate
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / bottomcountTrafo
-           / bottompercentTrafo
-           / bottomsumTrafo
-           / computeTrafo
-           / concatTrafo
-           / expandTrafo
-           / filterTrafo
-           / groupbyTrafo
-           / identityTrafo
-           / searchTrafo
            / topcountTrafo
-           / toppercentTrafo
            / topsumTrafo
+           / toppercentTrafo
+           / bottomcountTrafo
+           / bottomsumTrafo
+           / bottompercentTrafo
+           / identityTrafo
+           / concatTrafo
+           / groupbyTrafo
+           / filterTrafo
+           / nestTrafo
+           / joinTrafo
+           / outerjoinTrafo
+           / searchTrafo
+           / computeTrafo
+           / orderbyTrafo
+           / topTrafo
+           / skipTrafo
+           / ancestorsTrafo
+           / descendantsTrafo
+           / traverseTrafo
            / customFunction
            
+
+
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
                 / aggregateExpr
@@ -116,59 +127,118 @@ expressionAlias = odataIdentifier
                 
 customAggregate = odataIdentifier
                 
-groupingProperty = pathPrefix
+pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" )
+pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
+                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
+
+groupingProperty = grpPropPathPrefix
                    ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
                    / primitiveProperty 
                    / complexProperty
                    )
-pathPrefix       = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" )
-pathSegment      = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
-                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
+grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
+grpPropPathSegment = ( complexProperty  ) [ "/" qualifiedComplexTypeName ]
+                 / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
                    
-computeTrafo = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
-computeExpr  = commonExpr asAlias             
+computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
+computeExpr     = commonExpr asAlias             
                            
 bottomcountTrafo   = %s"bottomcount"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottompercentTrafo = %s"bottompercent" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 
-concatTrafo = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
+concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-expandTrafo = %s"expand" OPEN BWS expandNavPath BWS COMMA BWS
-              ( expandTrafo *( BWS COMMA BWS expandTrafo )
-              / filterTrafo *( BWS COMMA BWS expandTrafo )
-              ) BWS CLOSE
-expandNavPath = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] 
-                *( ( complexProperty / complexColProperty ) "/" [ qualifiedComplexTypeName "/" ] )
-                navigationProperty [ "/" qualifiedEntityTypeName ]
+nestTrafo       = %s"nest" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+nestPath        = nestComplexTypeInstancePath 
+                  / nestNavigationPropertyPath
+                  / nestComplexTypeInstancePath 
+                  / nestComplexTypeInstancePath "/" nestNavigationPropertyPath
+; possible nest paths borrowed from expandPath expandPath, because nestPath accepts a subset of those paths accepted by the $expand query option
+nestComplexTypeInstancePath = 1*( ( complexProperty 
+                                    / complexColProperty 
+                                    / optionallyQualifiedComplexTypeName 
+                                    / complexAnnotationInQuery ) )
+nestNavigationPropertyPath  = ( navigationProperty 
+                                / entityAnnotationInQuery ) 
+                              [ "/" optionallyQualifiedEntityTypeName ]
+nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias ) [ BWS COMMA BWS applyExpr ]
+                  / applyExpr [ asAlias ]
 
-filterTrafo = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
+joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
+outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
+joinProperty    = ( complexColProperty 
+                    / optionallyQualifiedComplexTypeName 
+                    / complexAnnotationInQuery ; must be collection-valued 
+                    / entityColNavigationProperty 
+                    / entityAnnotationInQuery  ; must be collection-valued
+                  ) [ "/" optionallyQualifiedEntityTypeName ]
 
-searchTrafo = %s"search" OPEN BWS searchExpr BWS CLOSE
+ancestorsTrafo  = %s"ancestors" OPEN 
+                  BWS recHierQualifier BWS 
+                  COMMA BWS filterTrafo BWS
+                  [ COMMA BWS 1*DIGIT BWS ]
+                  [ COMMA BWS %s"keep start" BWS]
+                  CLOSE
 
-groupbyTrafo   = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
-groupbyList    = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement = groupingProperty / rollupSpec
-rollupSpec     = %s"rollup" OPEN BWS 
-                  ( %s"$all" / groupingProperty )
-                  1*( BWS COMMA BWS groupingProperty )
+descendantsTrafo = %s"descendants" OPEN 
+                 BWS recHierQualifier BWS 
+                 COMMA BWS filterTrafo BWS
+                 [ COMMA BWS 1*DIGIT BWS ]
+                 [ COMMA BWS %s"keep start" BWS]
+                 CLOSE
+
+traverseTrafo   = %s"traverse" OPEN 
+                  BWS recHierQualifier BWS 
+                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
+                  CLOSE 
+
+recHierQualifier = odataIdentifier
+
+
+filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
+
+searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
+
+groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
+groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
+groupbyElement  = groupingProperty / rollupSpec / rollupallSpec
+
+rollupSpec      = %s"rollup" OPEN BWS 
+                  ( rollupUnnamedHier / rollupNamedHier ) 
                   BWS CLOSE
+rollupallSpec   = %s"rollupall" OPEN BWS 
+                  ( rollupUnnamedHier / rollupNamedHier ) 
+                  BWS CLOSE
+rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
+rollupNamedHier = recHierQualifier
 
-identityTrafo = %s"identity"
+identityTrafo   = %s"identity"
 
 topcountTrafo   = %s"topcount"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 toppercentTrafo = %s"toppercent" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 topsumTrafo     = %s"topsum"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 
-customFunction = namespace "." ( entityColFunction / complexColFunction / primitiveColFunction ) functionExprParameters
+topTrafo        = %s"top" OPEN BWS 1*DIGIT BWS CLOSE
+skipTrafo       = %s"skip" OPEN BWS 1*DIGIT BWS CLOSE
+
+orderbyTrafo    = %s"orderby" OPEN orderbyItem *( COMMA orderbyItem ) CLOSE
+
+
+customFunction  = namespace "." ( entityColFunction / complexColFunction / primitiveColFunction ) functionExprParameters
 
 
 ;------------------------------------------------------------------------------
-; 3. Extensions to $filter
+; 3. New functions
 ;------------------------------------------------------------------------------
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
+aggregateMethodCallExpr = 'aggregate' OPEN BWS aggregateFunctionExpr BWS CLOSE
+aggregateFunctionExpr   = '$count'
+                          / commonExpr aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] pathPrefix customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf

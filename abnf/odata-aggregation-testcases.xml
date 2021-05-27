@@ -85,7 +85,9 @@
     <Match>AveragePrice</Match>
     <Match>AvgAmt</Match>
     <Match>CountryPopulation</Match>
+    <Match>CustomerAmount</Match>
     <Match>CustomerCountryAverage</Match>
+    <Match>CustomerYearAmount</Match>
     <Match>DailyAverage</Match>
     <Match>DistinctProducts</Match>
     <Match>ItemAmount</Match>
@@ -94,12 +96,25 @@
     <Match>MonthlyAverage</Match>
     <Match>ProductNames</Match>
     <Match>Profit</Match>
+    <Match>RelativeAmount</Match>
+    <Match>RelativeOrderSize</Match>
+    <Match>RegionAmount</Match>
+    <Match>RevenueContribution</Match>
+    <Match>RevenueTrend</Match>
     <Match>SalesCount</Match>
+    <Match>Stuff</Match>
+    <Match>PaperSalesCount</Match>
+    <Match>SalesOrgCount</Match>
     <Match>Tax</Match>
     <Match>Total</Match>
+    <Match>TotalAmount</Match>    
     <Match>TotalPlannedRevenue</Match>
     <Match>TotalPopulation</Match>
     <Match>WeekDay</Match>
+    <Match>FilteredSales</Match>
+    <Match>Sale</Match>
+    <Match>TotalSales</Match>
+    <Match>Detail</Match>
   </Constraint>
   <Constraint Rule="complexColProperty">
     <Match>Details</Match>
@@ -175,6 +190,7 @@
   <Constraint Rule="keyPropertyAlias">
   </Constraint>
   <Constraint Rule="lambdaVariableExpr">
+    <Match>p</Match>
   </Constraint>
   <Constraint Rule="namespacePart">
     <Match>Aggregation</Match>
@@ -206,6 +222,7 @@
     <Match>City</Match>
     <Match>Cost</Match>
     <Match>CountryCode</Match>
+    <Match>Region</Match>
     <Match>Month</Match>
     <Match>Name</Match>
     <Match>PlannedRevenue</Match>
@@ -215,6 +232,7 @@
     <Match>Quantity</Match>
     <Match>Revenue</Match>
     <Match>SalesArea</Match>
+    <Match>SalesNumber</Match>
     <Match>Shipped</Match>
     <Match>Status</Match>
     <Match>Street</Match>
@@ -281,6 +299,9 @@
   <TestCase Name="aggregate - property from requires with" Rule="queryOptions" FailAt="24">
     <Input>$apply=aggregate(Amount from Time with average as DailyAverage)</Input>
   </TestCase>
+  <TestCase Name="aggregate - custom aggregate reached via path" Rule="queryOptions">
+    <Input>$apply=aggregate(Sales/Forecast)</Input>
+  </TestCase>
   <TestCase Name="aggregate - custom aggregate and from" Rule="queryOptions">
     <Input>$apply=aggregate(Forecast from Time with average as DailyAverage)</Input>
   </TestCase>
@@ -326,41 +347,106 @@
   <TestCase Name="aggregate - groupby distinct" Rule="queryOptions">
     <Input>$apply=groupby((Product/Name,Amount))</Input>
   </TestCase>
-  <TestCase Name="aggregate - groupby rollup" Rule="queryOptions">
+  <TestCase Name="aggregate - groupby with custom aggregates calculated from aggregated instances" Rule="queryOptions">
+    <Input>$apply=groupby((Country),aggregate(Budget))/filter(Budget gt 1000)/aggregate(Budget)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - groupby rollup leveled hierarchy" Rule="queryOptions">
     <Input>$apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount with sum as Total))</Input>
   </TestCase>
+<!-- 
+  <TestCase Name="aggregate - groupby rollup recursive hierarchy" Rule="queryOptions">
+    <Input>$apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as SalesOrgCnt)</Input>
+  </TestCase>
+-->
   <TestCase Name="aggregate - filter" Rule="queryOptions">
     <Input>$apply=filter(Amount gt 3)</Input>
   </TestCase>
-  <TestCase Name="aggregate - expand" Rule="queryOptions">
-    <Input>$apply=expand(Sales,filter(Amount gt 3))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - multi-level expand" Rule="queryOptions">
-    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions">
-    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,expand(Products,filter(true))))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions" FailAt="102">
-    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,filter(true),expand(Products)))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions" FailAt="89">
-    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,expand(Products)))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - expand with filter on $this" Rule="queryOptions">
-    <Input>$apply=expand(Sales,filter($this/Customer/City eq ShipTo/City))</Input>
-  </TestCase>
-  <TestCase Name="aggregate - expand with filter on $root" Rule="queryOptions">
+  <TestCase Name="aggregate - filter on $root" Rule="queryOptions">
     <Input>$apply=filter(Name eq $root/Products('P2')/Name)</Input>
   </TestCase>
   <TestCase Name="aggregate - search" Rule="queryOptions">
     <Input>$apply=search(coffee)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - nest" Rule="queryOptions">
+    <Input>$apply=nest(Sales,filter(Amount gt 3))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - nest with alias" Rule="queryOptions">
+    <Input>$apply=nest(Sales,filter(Amount gt 3) as FilteredSales)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - nesting complex property" Rule="queryOptions">
+    <Input>$apply=nest(ShipTo,identity)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - nesting collection-valued complex property" Rule="queryOptions">
+    <Input>$apply=nest(Details,filter(Cost gt 1000))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level nest" Rule="queryOptions">
+    <Input>$apply=nest(Products,nest(Sales,filter(Amount gt 3)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level nest with branches" Rule="queryOptions">
+    <Input>$apply=nest(Products,nest(Sales,filter(Amount gt 3)) as FilteredSales,nest(Suppliers,nest(Products,filter(true))))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level nest with branches" Rule="queryOptions" FailAt="52">
+    <Input>$apply=nest(Products,nest(Sales,filter(Amount gt 3)),nest(Suppliers,filter(true),nest(Products)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level nest with branches" Rule="queryOptions" FailAt="98">
+    <Input>$apply=nest(Products,nest(Sales,filter(Amount gt 3)) as FilteredSales,nest(Suppliers,nest(Products)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - nest with filter on $this" Rule="queryOptions">
+    <Input>$apply=nest(Sales,filter($this/Customer/City eq ShipTo/City))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join" Rule="queryOptions">
+    <Input>$apply=join(Sales as Sale)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join" Rule="queryOptions">
+    <Input>$apply=join(Sales as Sale,filter(Customer/Country eq 'US'))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join with collection-valued complex property" Rule="queryOptions">
+    <Input>$apply=join(Details as Detail,filter(Cost gt 1000))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join with single-valued complex property" Rule="queryOptions" FailAt="18">
+    <Input>$apply=join(ShipTo as Detail,identity)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join" Rule="queryOptions">
+    <Input>$apply=outerjoin(Sales as Sale)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - join" Rule="queryOptions">
+    <Input>$apply=outerjoin(Sales as Sale,filter(Customer/Country eq 'FR'))</Input>
   </TestCase>
   <TestCase Name="aggregate - isdefined" Rule="queryOptions">
     <Input>$filter=isdefined(Product) and isdefined(Customer/Name) and isdefined(Forecast)</Input>
   </TestCase>
   <TestCase Name="aggregate - isdefined: get totals last" Rule="queryOptions">
     <Input>$orderby=isdefined(Product) desc,Product asc</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - after grouping" Rule="queryOptions">
+    <Input>$apply=groupby((Customer),aggregate(Amount with sum as CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with sum) as RevenueContribution)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - within a group" Rule="queryOptions">
+    <Input>$apply=groupby((Customer,Year),aggregate(Amount with sum as CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div aggregate(CustomerYearAmount with sum) as RevenueTrend))</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set" Rule="queryOptions">
+    <Input>$apply=compute(Amount div aggregate(Amount with average) as RelativeOrderSize)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set with custom aggregate" Rule="queryOptions">
+    <Input>$apply=compute(Amount div aggregate(Budget) as RelativeAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set with related custom aggregate" Rule="queryOptions">
+    <Input>$apply=compute(Amount div aggregate(Product/Budget) as RelativeAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set with from" Rule="queryOptions">
+    <Input>$apply=compute(Amount div aggregate(Amount with sum from Time with average) as RelativeAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set with $count" Rule="queryOptions">
+    <Input>$apply=compute(aggregate($count) as SalesCount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - across input set with $count" Rule="queryOptions">
+    <Input>$apply=groupby((Customer),compute(aggregate($count) as SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as TotalAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - within a group - ..." Rule="queryOptions">
+    <Input>$apply=groupby((Region),compute(aggregate(SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
+  </TestCase>
+  <TestCase Name="aggregate function - within filter and lambda" Rule="queryOptions">
+    <Input>$filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)</Input>
   </TestCase>
   <TestCase Name="aggregate - crossjoin" Rule="odataRelativeUri">
     <!-- entity set names suffixed with _cj to distinguish from identically named collection-valued navigation properties -->
@@ -400,6 +486,30 @@
   <TestCase Name="hierarchy functions - isleaf" Rule="odataRelativeUri">
     <Input>SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')</Input>
   </TestCase>
+  <TestCase Name="hierarchy transformations - ancestors" Rule="queryOptions">
+    <Input>$apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or contains(Name,'Central')))</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - ancestors" Rule="queryOptions">
+    <Input>$apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or contains(Name,'Central')), 2)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - ancestors" Rule="queryOptions">
+    <Input>$apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or contains(Name,'Central')), keep start)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - ancestors" Rule="queryOptions">
+    <Input>$apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or contains(Name,'Central')), 2, keep start)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - descendants" Rule="queryOptions">
+    <Input>$apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'))</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - descendants" Rule="queryOptions">
+    <Input>$apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'), 3)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - descendants" Rule="queryOptions">
+    <Input>$apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),3,keep start)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy transformations - traverse" Rule="queryOptions">
+    <Input>$apply=traverse(SalesOrgHierarchy,preorder)</Input>
+  </TestCase>
   <TestCase Name="distinct values - no aggregate" Rule="odataRelativeUri">
     <Input>Customers?$apply=groupby((Name))</Input>
   </TestCase>
@@ -416,10 +526,13 @@
     <Input>$apply=groupby((Name),aggregate(Sales(Amount with sum as Total)))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - multiple grouping" Rule="queryOptions">
-    <Input>$apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum as Total)))</Input>
+    <Input>$apply=groupby((Country,Name),aggregate(Sales(Amount with sum as Total)))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - multiple grouping - distinct" Rule="queryOptions">
-    <Input>$apply=groupby((Country,Sales/Product/Name))</Input>
+    <Input>$apply=groupby((Customer,Product/Name))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - collection-valued navigation property" Rule="queryOptions" FailAt="21">
+    <Input>$apply=groupby((Sales/Product/Name))</Input>
   </TestCase>
   <TestCase Name="aggregation methods - average" Rule="queryOptions">
     <Input>$apply=groupby((Customer/Country),aggregate(Amount with average as AverageAmount))</Input>
@@ -463,6 +576,15 @@
   <TestCase Name="compute" Rule="queryOptions">
     <Input>$apply=compute(Amount mul Product/TaxRate as Tax, day(Time/Date) as WeekDay)</Input>
   </TestCase>
+  <TestCase Name="top" Rule="queryOptions">
+    <Input>$apply=top(5)</Input>
+  </TestCase>
+  <TestCase Name="skip" Rule="queryOptions">
+    <Input>$apply=skip(5)</Input>
+  </TestCase>
+  <TestCase Name="orderby" Rule="queryOptions">
+    <Input>$apply=orderby(Country asc,Name desc)</Input>
+  </TestCase>
   <TestCase Name="model functions as set transformations" Rule="queryOptions">
     <Input>$apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum as Total))/groupby((Customer/Country),Self.TopCountAndBalance(Count=1,Property='Total'))</Input>
   </TestCase>
@@ -473,7 +595,7 @@
     <Input>$apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum from Time/Month with average as MonthlyAverage))</Input>
   </TestCase>
   <TestCase Name="controlling aggregation - rollup and from" Rule="queryOptions">
-    <Input>$apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount with sum from Customer/ID with average from Customer/Country with average as CustomerCountryAverage))</Input>
+    <Input>$apply=groupby((rollupall(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount with sum from Customer/ID with average from Customer/Country with average as CustomerCountryAverage))</Input>
   </TestCase>
   <TestCase Name="transformation sequences - filter and aggregate" Rule="queryOptions">
     <Input>$apply=filter(Amount le 1)/aggregate(Amount with sum as Total)</Input>
@@ -499,10 +621,34 @@
   <TestCase Name="transformation sequences - Population 4" Rule="queryOptions">
     <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as CountryPopulation))/concat(filter(CountryPopulation ge 10000000),groupby((Continent/Name),aggregate(CountryPopulation with sum as TotalPopulation)))</Input>
   </TestCase>
-  <TestCase Name="transformation sequences - filter and expand" Rule="queryOptions">
-    <Input>$apply=filter(Status eq 'incomplete')/expand(Items,filter(not Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as ItemAmount)))</Input>
+  <TestCase Name="transformation sequences - filter and nest" Rule="queryOptions">
+    <Input>$apply=filter(Status eq 'incomplete')/nest(Items,filter(not Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as ItemAmount)))</Input>
   </TestCase>
-  <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
+  <TestCase Name="transformation sequences - paging with skip and top" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/City),aggregate(Amount with sum as Total))/skip(10)/top(5)</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - sorting" Rule="queryOptions">
+    <Input>$apply=groupby((Product/Name),aggregate(Amount with sum as Total))/orderby(Total desc)</Input>
+  </TestCase>
+<!-- 
+  <TestCase Name="transformation sequences - joining related instances" Rule="queryOptions">
+    <Input>$apply=join(Sales as TotalSales,aggregate(Amount with sum as Total))/groupby((Name,TotalSales/Total))</Input>
+  </TestCase>
+-->
+<!-- 
+  <TestCase Name="transformation sequences - joining related instances keeping unrelated ones" Rule="queryOptions">
+    <Input>$apply=outerjoin(Sales as TotalSales,aggregate(Amount with sum as Total))/groupby((Name,TotalSales/Total))</Input>
+  </TestCase>
+-->
+  <TestCase Name="transformation sequences - sub-hierarchy selection" Rule="queryOptions">
+    <Input>$apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),keep start)/ancestors(SalesOrgHierarchy,filter(contains(Name,'East')),keep start)/traverse(SalesOrgHierarchy,preorder)</Input>
+  </TestCase>
+<!-- 
+  <TestCase Name="transformation sequences - aggregation along hierarchy" Rule="queryOptions">
+    <Input>$apply=nest(Sales,filter(Product/Name eq 'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))</Input>
+  </TestCase>
+ -->
+   <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
     <Input>Categories?$expand=Products($apply=aggregate(Price with average as AveragePrice))</Input>
   </TestCase>
 </TestSuite>
