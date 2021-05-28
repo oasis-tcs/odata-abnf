@@ -129,7 +129,7 @@ customAggregate = odataIdentifier
                 
 pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" )
 pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
-                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
+                / navigationProperty [ "/" qualifiedEntityTypeName  ]
 
 groupingProperty = grpPropPathPrefix
                    ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
@@ -138,7 +138,7 @@ groupingProperty = grpPropPathPrefix
                    )
 grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
 grpPropPathSegment = ( complexProperty  ) [ "/" qualifiedComplexTypeName ]
-                 / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
+                   / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
                    
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
@@ -150,33 +150,33 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
 nestTrafo       = %s"nest" OPEN BWS
-                  ( ( nestPath BWS COMMA BWS nestApplyExpr )
-                    / nestApplyAliasdExpr )
+                  ( nestPath BWS COMMA BWS nestApplyExpr
+                  / nestApplyAliasdExpr
+                  )
                   BWS CLOSE
-nestPath        = nestComplexTypeInstancePath 
-                  / nestNavigationPropertyPath
-                  / nestComplexTypeInstancePath 
-                  / nestComplexTypeInstancePath "/" nestNavigationPropertyPath
+nestPath        = nestNavigationPropertyPath
+                / nestComplexTypeInstancePath [ "/" nestNavigationPropertyPath ]
 ; possible nest paths borrowed from expandPath expandPath, because nestPath accepts a subset of those paths accepted by the $expand query option
-nestComplexTypeInstancePath = 1*( ( complexProperty 
-                                    / complexColProperty 
-                                    / optionallyQualifiedComplexTypeName 
-                                    / complexAnnotationInQuery ) )
+nestComplexTypeInstancePath = 1*( complexProperty 
+                                / complexColProperty 
+                                / optionallyQualifiedComplexTypeName 
+                                / complexAnnotationInQuery
+                                ) 
 nestNavigationPropertyPath  = ( navigationProperty 
-                                / entityAnnotationInQuery ) 
+                              / entityAnnotationInQuery
+                              ) 
                               [ "/" optionallyQualifiedEntityTypeName ]
 nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias ) [ BWS COMMA BWS applyExpr ]
-                              / applyExpr [ asAlias ]
+                            / applyExpr
 nestApplyAliasdExpr         = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
-
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 joinProperty    = ( complexColProperty 
-                    / optionallyQualifiedComplexTypeName 
-                    / complexAnnotationInQuery ; must be collection-valued 
-                    / entityColNavigationProperty 
-                    / entityAnnotationInQuery  ; must be collection-valued
+                  / optionallyQualifiedComplexTypeName 
+                  / complexAnnotationInQuery ; must be collection-valued 
+                  / entityColNavigationProperty 
+                  / entityAnnotationInQuery  ; must be collection-valued
                   ) [ "/" optionallyQualifiedEntityTypeName ]
 
 ancestorsTrafo  = %s"ancestors" OPEN 
@@ -200,23 +200,18 @@ traverseTrafo   = %s"traverse" OPEN
 
 recHierQualifier = odataIdentifier
 
-
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
 searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement  = groupingProperty / rollupSpec / rollupallSpec
+groupbyElement  = groupingProperty / rollup / rollupAll
 
-rollupSpec      = %s"rollup" OPEN BWS 
-                  ( rollupUnnamedHier / rollupNamedHier ) 
-                  BWS CLOSE
-rollupallSpec   = %s"rollupall" OPEN BWS 
-                  ( rollupUnnamedHier / rollupNamedHier ) 
-                  BWS CLOSE
+rollup            = %s"rollup"    OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupAll         = %s"rollupall" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier = recHierQualifier
+rollupNamedHier   = recHierQualifier
 
 identityTrafo   = %s"identity"
 
@@ -228,7 +223,6 @@ topTrafo        = %s"top" OPEN BWS 1*DIGIT BWS CLOSE
 skipTrafo       = %s"skip" OPEN BWS 1*DIGIT BWS CLOSE
 
 orderbyTrafo    = %s"orderby" OPEN orderbyItem *( COMMA orderbyItem ) CLOSE
-
 
 customFunction  = namespace "." ( entityColFunction / complexColFunction / primitiveColFunction ) functionExprParameters
 
