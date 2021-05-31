@@ -172,6 +172,7 @@
     <Match>ProductGroup</Match>
     <Match>Sales_cj</Match>
     <Match>Time</Match>
+    <Match>TotalSales</Match>
   </Constraint>
   <Constraint Rule="entitySetName">
     <Match>Categories</Match>
@@ -357,11 +358,9 @@
   <TestCase Name="aggregate - groupby rollup leveled hierarchy" Rule="queryOptions">
     <Input>$apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount with sum as Total))</Input>
   </TestCase>
-<!-- 
   <TestCase Name="aggregate - groupby rollup recursive hierarchy" Rule="queryOptions">
-    <Input>$apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as SalesOrgCnt)</Input>
+    <Input>$apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as SalesOrgCount))</Input>
   </TestCase>
--->
   <TestCase Name="aggregate - filter" Rule="queryOptions">
     <Input>$apply=filter(Amount gt 3)</Input>
   </TestCase>
@@ -640,25 +639,19 @@
   <TestCase Name="transformation sequences - sorting" Rule="queryOptions">
     <Input>$apply=groupby((Product/Name),aggregate(Amount with sum as Total))/orderby(Total desc)</Input>
   </TestCase>
-<!-- 
   <TestCase Name="transformation sequences - joining related instances" Rule="queryOptions">
     <Input>$apply=join(Sales as TotalSales,aggregate(Amount with sum as Total))/groupby((Name,TotalSales/Total))</Input>
   </TestCase>
--->
-<!-- 
   <TestCase Name="transformation sequences - joining related instances keeping unrelated ones" Rule="queryOptions">
     <Input>$apply=outerjoin(Sales as TotalSales,aggregate(Amount with sum as Total))/groupby((Name,TotalSales/Total))</Input>
   </TestCase>
--->
   <TestCase Name="transformation sequences - sub-hierarchy selection" Rule="queryOptions">
     <Input>$apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),keep start)/ancestors(SalesOrgHierarchy,filter(contains(Name,'East')),keep start)/traverse(SalesOrgHierarchy,preorder)</Input>
   </TestCase>
-<!-- 
   <TestCase Name="transformation sequences - aggregation along hierarchy" Rule="queryOptions">
-    <Input>$apply=nest(Sales,filter(Product/Name eq 'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))</Input>
+    <Input>$apply=nest(Sales,filter(Product/Name eq 'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count with sum as PaperSalesCount))</Input>
   </TestCase>
- -->
-   <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
+  <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
     <Input>Categories?$expand=Products($apply=aggregate(Price with average as AveragePrice))</Input>
   </TestCase>
 </TestSuite>
