@@ -137,7 +137,7 @@ groupingProperty = grpPropPathPrefix
                    / complexProperty
                    )
 grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
-grpPropPathSegment = ( complexProperty  ) [ "/" qualifiedComplexTypeName ]
+grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName ]
                    / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
                    
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
@@ -173,11 +173,10 @@ nestApplyAliasdExpr         = applyExpr asAlias *( BWS COMMA BWS applyExpr asAli
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 joinProperty    = ( complexColProperty 
-                  / optionallyQualifiedComplexTypeName 
                   / complexAnnotationInQuery ; must be collection-valued 
-                  / entityColNavigationProperty 
+                  / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName ]
                   / entityAnnotationInQuery  ; must be collection-valued
-                  ) [ "/" optionallyQualifiedEntityTypeName ]
+                  )
 
 ancestorsTrafo  = %s"ancestors" OPEN 
                   BWS recHierQualifier BWS 
