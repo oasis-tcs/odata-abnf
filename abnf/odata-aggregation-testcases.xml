@@ -431,28 +431,28 @@
     <Input>$apply=groupby((Customer,Year),aggregate(Amount with sum as CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div aggregate(CustomerYearAmount with sum) as RevenueTrend))</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Amount with average) as RelativeOrderSize)</Input>
+    <Input>$apply=compute(Amount div $these/aggregate(l:Amount with average) as RelativeOrderSize)</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set with custom aggregate" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Budget) as RelativeAmount)</Input>
+    <Input>$apply=compute(Amount div $these/aggregate(l:Budget) as RelativeAmount)</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set with related custom aggregate" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Product/Budget) as RelativeAmount)</Input>
+    <Input>$apply=compute(Amount div $these/aggregate(l:Product/Budget) as RelativeAmount)</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set with from" Rule="queryOptions">
-    <Input>$apply=compute(Amount div aggregate(Amount with sum from Time with average) as RelativeAmount)</Input>
+    <Input>$apply=compute(Amount div $these/aggregate(l:Amount with sum from Time with average) as RelativeAmount)</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set with $count" Rule="queryOptions">
-    <Input>$apply=compute(aggregate($count) as SalesCount)</Input>
+    <Input>$apply=compute($these/aggregate(l:$count) as SalesCount)</Input>
   </TestCase>
   <TestCase Name="aggregate function - across input set with $count" Rule="queryOptions">
-    <Input>$apply=groupby((Customer),compute(aggregate($count) as SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as TotalAmount)</Input>
+    <Input>$apply=groupby((Customer),compute($these/aggregate(l:$count) as SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as TotalAmount)</Input>
   </TestCase>
   <TestCase Name="aggregate function - within a group - ..." Rule="queryOptions">
-    <Input>$apply=groupby((Region),compute(aggregate(SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
+    <Input>$apply=groupby((Region),compute($these/aggregate(l:SalesNumber with average) as RegionAmount))/filter(RegionAmount gt 150)/concat(groupby((Region),aggregate(SalesNumber with average as RegionAmount)),aggregate(SalesNumber with average as TotalAmount))</Input>
   </TestCase>
   <TestCase Name="aggregate function - within filter and lambda" Rule="queryOptions">
-    <Input>$filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)</Input>
+    <Input>$filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3</Input>
   </TestCase>
   <TestCase Name="aggregate - crossjoin" Rule="odataRelativeUri">
     <!-- entity set names suffixed with _cj to distinguish from identically named collection-valued navigation properties -->
