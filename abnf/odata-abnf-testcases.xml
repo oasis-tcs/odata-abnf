@@ -128,6 +128,9 @@
   <Constraint Rule="entityAnnotationInFragment">
     <Match>@Namespace.EntityTerm</Match>
   </Constraint>
+  <Constraint Rule="entityAnnotationInQuery">
+    <Match>@Namespace.EntityTerm</Match>
+  </Constraint>
   <Constraint Rule="entityColFunction">
     <Match>AllOrders</Match>
     <Match>ProductsByColor</Match>
@@ -866,9 +869,7 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function - no parens" Rule="odataRelativeUri">
@@ -1246,17 +1247,13 @@
   <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call" Rule="odataRelativeUri">
     <Input>Categories(1)/Model.ProductsByColor(color=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases" Rule="odataRelativeUri">
     <Input>Categories(1)/Model.ProductsByColor/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - function import with parameter" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases" Rule="odataRelativeUri">
     <Input>TheBestProduct/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - Cross Join" Rule="odataRelativeUri">
@@ -2057,9 +2054,7 @@
   <TestCase Name="5.1.7 Search - NOT is an operator here, search for items that do not match blue" Rule="queryOptions">
     <Input>$search=NOT (blue green)</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT"
-    Rule="queryOptions"
-  >
+  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT" Rule="queryOptions">
     <Input>$search=NOT NOT</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - AND and OR are words here, search for items that match both AND and OR" Rule="queryOptions">
@@ -2745,14 +2740,10 @@
   <TestCase Name="Preferences - include annotations - all in namespace with given qualifier" Rule="preference">
     <Input>odata.include-annotations="Namespace.*#quali"</Input>
   </TestCase>
-  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference"
-    FailAt="36"
-  >
+  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference" FailAt="36">
     <Input>odata.include-annotations="Namespace"</Input>
   </TestCase>
-  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference"
-    FailAt="37"
-  >
+  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference" FailAt="37">
     <Input>odata.include-annotations="Namespace."</Input>
   </TestCase>
   <TestCase Name="Preferences - include annotations - nothing from namespace" Rule="preference">
