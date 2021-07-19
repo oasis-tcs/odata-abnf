@@ -541,7 +541,7 @@ implicitVariableExpr = %s"$it"              ; the current instance of the resour
 lambdaVariableExpr   = odataIdentifier
 
 collectionNavigationExpr = collectionNavNoCastExpr
-                         / [ "/" optionallyQualifiedEntityTypeName ] collectionNavNoCastExpr
+                         / "/" optionallyQualifiedEntityTypeName collectionNavNoCastExpr
 
 collectionNavNoCastExpr = collectionPathExpr
                         / keyPredicate [ singleNavigationExpr ] 
