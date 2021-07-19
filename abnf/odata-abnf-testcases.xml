@@ -93,10 +93,6 @@
   <Constraint Rule="actionImport">
     <Match>Activation</Match>
   </Constraint>
-  <Constraint Rule="complexAnnotationInQuery">
-    <Match>@Core.Messages</Match>
-    <Match>@Namespace.SomeTerm</Match>
-  </Constraint>
   <Constraint Rule="complexColProperty">
     <Match>Addresses</Match>
     <Match>_at_Core_dot_Messages</Match>
@@ -197,9 +193,6 @@
     <Match>PreferredSupplier</Match>
     <Match>VipCustomer</Match>
   </Constraint>
-  <Constraint Rule="enumMemberValue">
-    <Match>32</Match>
-  </Constraint>
   <Constraint Rule="enumerationMember">
     <Match>Solid</Match>
     <Match>Yellow</Match>
@@ -216,13 +209,6 @@
     <Match>O%27Neil</Match>
     <Match>Smartphone%2FTablet</Match>
   </Constraint>
-  <Constraint Rule="keyPropertyAlias">
-    <Match>KeyAlias</Match>
-  </Constraint>
-  <Constraint Rule="lambdaVariableExpr">
-    <Match>lambda</Match>
-    <Match>m</Match>
-  </Constraint>
   <Constraint Rule="namespacePart">
     <Match>Core</Match>
     <Match>Measures</Match>
@@ -232,24 +218,6 @@
     <Match>SaM</Match>
     <Match>Sales</Match>
     <Match>Special</Match>
-  </Constraint>
-  <Constraint Rule="parameterAlias">
-    <Match>@a</Match>
-    <Match>@bar</Match>
-    <Match>@c</Match>
-    <Match>@cat</Match>
-    <Match>@categoryId</Match>
-    <Match>@color</Match>
-    <Match>@expression</Match>
-    <Match>@foo</Match>
-    <Match>@i</Match>
-    <Match>@key</Match>
-    <Match>@ManagerID</Match>
-    <Match>@m</Match>
-    <Match>@p1</Match>
-    <Match>@ref</Match>
-    <Match>@title</Match>
-    <Match>@word</Match>
   </Constraint>
   <Constraint Rule="parameterName">
     <Match>categoryId</Match>
@@ -272,9 +240,6 @@
   <Constraint Rule="primitiveAnnotationInQuery">
     <Match>@Measures.Currency</Match>
   </Constraint>
-  <Constraint Rule="primitiveColAnnotationInQuery">
-    <Match>@Core.MayImplement</Match>
-  </Constraint>
   <Constraint Rule="primitiveColFunction">
     <Match>MostPopularNames</Match>
   </Constraint>
@@ -292,9 +257,6 @@
     <Match>MostPopularName</Match>
     <Match>PhoneticallySimilar</Match>
     <Match>GeoLocation</Match>
-  </Constraint>
-  <Constraint Rule="primitiveFunctionImport">
-    <Match>TheMostPopularName</Match>
   </Constraint>
   <Constraint Rule="primitiveKeyProperty">
     <Match>Code</Match>
@@ -353,19 +315,7 @@
   <Constraint Rule="streamProperty">
     <Match>Thumbnail</Match>
   </Constraint>
-  <Constraint Rule="termName">
-    <Match>AnotherTerm</Match>
-    <Match>Currency</Match>
-    <Match>EntityTerm</Match>
-    <Match>id</Match>
-    <Match>MayImplement</Match>
-    <Match>Messages</Match>
-    <Match>SomeTerm</Match>
-    <Match>type</Match>
-  </Constraint>
-  <Constraint Rule="typeDefinitionName">
-    <Match>MonetaryAmount</Match>
-  </Constraint>
+
 
   <TestCase Name="Just to test the dummy start rule" Rule="dummyStartRule">
     <Input>http://services.odata.org/</Input>
