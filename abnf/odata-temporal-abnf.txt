@@ -82,8 +82,7 @@ toInclusive = "$toInclusive" EQ temporalExpr
 
 temporalExpr = "min" 
              / "max" 
-             / dateTimeOffsetValue 
-             / dateValue
+             / commonExpr ; evaluating to a dateValue or dateTimeOffsetValue 
 
 
 ;------------------------------------------------------------------------------

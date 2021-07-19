@@ -68,41 +68,52 @@
   <DisableTrace Rule="ALPHA" />
   <DisableTrace Rule="DIGIT" />
 
-  <Constraint Rule="entityColNavigationProperty">
-    <Match>Employees</Match>
-  </Constraint>
-  <Constraint Rule="entityNavigationProperty">
-    <Match>Department</Match>
-  </Constraint>
-  <Constraint Rule="entitySetName">
-    <Match>Departments</Match>
-    <Match>Employees</Match>
-  </Constraint>
-  <Constraint Rule="streamProperty" />
-
-
-  <TestCase Name="Temporal - at" Rule="odataRelativeUri">
-    <Input>Employees?$at=2019-01-30</Input>
+  <!-- specification examples -->
+  <TestCase Name="Temporal - at on root" Rule="odataRelativeUri">
+    <Input>Employees('E314')?$at=2012-01-01</Input>
+  </TestCase>
+  <TestCase Name="Temporal - at with filter" Rule="odataRelativeUri">
+    <Input>Employees?$filter=contains(Name,'i')&amp;$at=2012-01-01</Input>
   </TestCase>
   <TestCase Name="Temporal - at with expand" Rule="odataRelativeUri">
+    <Input>Employees('E314')?$at=2012-01-01&amp;$expand=Department</Input>
+  </TestCase>
+  <TestCase Name="Temporal - from and to with expand" Rule="odataRelativeUri">
+    <Input>Employees?$expand=history($select=Name,Jobtitle)&amp;$from=2012-01-01&amp;$to=2025-01-01</Input>
+  </TestCase>
+  <TestCase Name="Temporal - from and to nested within expand" Rule="odataRelativeUri">
+    <Input>Employees?$expand=history($select=Name,Jobtitle;$from=2012-01-01;$to=2025-01-01;$filter=contains(Jobtitle,'e'))</Input>
+  </TestCase>
+  <TestCase Name="Temporal - from and to with expand and filter" Rule="odataRelativeUri">
+    <Input>Employees?$expand=history($select=Name,Jobtitle)&amp;$from=2015-01-01&amp;$filter=history/any(h:startswith(h/Name,'N'))</Input>
+  </TestCase>
+
+  <!-- motivation examples -->
+  <TestCase Name="Where did she work back then" Rule="odataRelativeUri">
+    <Input>Employees/123?$expand=Department&amp;$at=2019-01-30</Input>
+  </TestCase>
+  <TestCase Name="the department name when she joined that department" Rule="odataRelativeUri">
+    <Input>Employees/123?$expand=history(@eh=$this;$expand=Department($expand=history;$at=@eh/From))</Input>
+  </TestCase>
+
+  <!-- other examples -->
+  <TestCase Name="Temporal - at nested within expand" Rule="odataRelativeUri">
     <Input>Employees?$expand=Department($at=2013-01-01)</Input>
   </TestCase>
-  <TestCase Name="Temporal - at with expand" Rule="odataRelativeUri">
-    <Input>Departments?$at=2019-01-30&amp;$expand=Employees($at=2013-01-01)</Input>
-  </TestCase>
-  <TestCase Name="Temporal - from and to" Rule="odataRelativeUri">
+  <TestCase Name="Temporal - from and to with special values" Rule="odataRelativeUri">
     <Input>Employees?$from=min&amp;$to=max</Input>
   </TestCase>
   <TestCase Name="Temporal - from and to with date" Rule="odataRelativeUri">
     <Input>Employees?$from=2012-07-26&amp;$to=2012-08-03</Input>
   </TestCase>
   <TestCase Name="Temporal - from and toInclusive with date" Rule="odataRelativeUri">
-    <Input>Employees?$from=2012-07-26&amp;$toInclusive=2012-07-26</Input>
+    <Input>Employees?$from=2012-07-26&amp;$toInclusive=2012-08-02</Input>
   </TestCase>
   <TestCase Name="Temporal - from and to with datetimestamp" Rule="odataRelativeUri">
-    <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$to=2012-07-26T11:00:00.00-08:00</Input>
+    <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$to=2012-07-26T11:00-08:00</Input>
   </TestCase>
   <TestCase Name="Temporal - from and toInclusive with datetimestamp" Rule="odataRelativeUri">
-    <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$toInclusive=2012-07-26T11:00:00.00-08:00</Input>
+    <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$toInclusive=2012-07-26T10:59:59.999999999999-08:00</Input>
   </TestCase>
+
 </TestSuite>

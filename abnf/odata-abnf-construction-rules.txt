@@ -287,12 +287,12 @@ expandItem        = "$value"
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = *( ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" )
                     ( STAR [ ref / OPEN levels CLOSE ]
-                    / streamProperty 
                     / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ] 
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
                       ]                    
+                    / streamProperty 
                     )
 expandCountOption = filter
                   / search
@@ -470,7 +470,6 @@ entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
 commonExpr = ( primitiveLiteral
              / arrayOrObject
              / rootExpr
-             / firstMemberExpr
              / functionExpr
              / negateExpr 
              / methodCallExpr 
@@ -478,6 +477,7 @@ commonExpr = ( primitiveLiteral
              / castExpr 
              / isofExpr
              / notExpr
+             / firstMemberExpr
              ) 
              [ addExpr 
              / subExpr 
@@ -540,11 +540,12 @@ implicitVariableExpr = %s"$it"              ; the current instance of the resour
                      / %s"$this"            ; the instance on which the query option is evaluated
 lambdaVariableExpr   = odataIdentifier
 
-collectionNavigationExpr = [ "/" optionallyQualifiedEntityTypeName ]
-                           ( collectionPathExpr
-                           / keyPredicate [ singleNavigationExpr ] 
-                           / filterExpr [ collectionNavigationExpr ]
-                           )
+collectionNavigationExpr = collectionNavNoCastExpr
+                         / [ "/" optionallyQualifiedEntityTypeName ] collectionNavNoCastExpr
+
+collectionNavNoCastExpr = collectionPathExpr
+                        / keyPredicate [ singleNavigationExpr ] 
+                        / filterExpr [ collectionNavigationExpr ]                     
 
 singleNavigationExpr = "/" memberExpr
 
