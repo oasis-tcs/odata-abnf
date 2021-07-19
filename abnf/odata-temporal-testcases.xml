@@ -68,12 +68,8 @@
   <DisableTrace Rule="ALPHA" />
   <DisableTrace Rule="DIGIT" />
 
-  <!-- specification examples -->
-  <TestCase Name="Temporal - at on root" Rule="odataRelativeUri">
-    <Input>Employees('E314')?$at=2012-01-01</Input>
-  </TestCase>
-  <TestCase Name="Temporal - at with filter" Rule="odataRelativeUri">
-    <Input>Employees?$filter=contains(Name,'i')&amp;$at=2012-01-01</Input>
+  <TestCase Name="Temporal - at" Rule="odataRelativeUri">
+    <Input>Employees?$at=2019-01-30</Input>
   </TestCase>
   <TestCase Name="Temporal - at with expand" Rule="odataRelativeUri">
     <Input>Employees('E314')?$at=2012-01-01&amp;$expand=Department</Input>
@@ -115,5 +111,4 @@
   <TestCase Name="Temporal - from and toInclusive with datetimestamp" Rule="odataRelativeUri">
     <Input>Employees?$from=2012-07-26T09:00:00.00-08:00&amp;$toInclusive=2012-07-26T10:59:59.999999999999-08:00</Input>
   </TestCase>
-
 </TestSuite>
