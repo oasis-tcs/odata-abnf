@@ -1,0 +1,29 @@
+{
+  "name": "odata-abnf",
+  "version": "0.0.0",
+  "description": "OASIS OData TC: ABNF for OData URLs, headers, and literal data values",
+  "scripts": {
+    "generate-grammar": "node node_modules/apg-js/bin/apg.sh -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
+    "run-testcases": "node lib/parse.js",
+    "test": "npm run generate-grammar && npm run run-testcases"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oasis-tcs/odata-abnf.git"
+  },
+  "keywords": [
+    "OData",
+    "ABNF"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oasis-tcs/odata-abnf/issues"
+  },
+  "homepage": "https://github.com/oasis-tcs/odata-abnf#readme",
+  "dependencies": {
+    "apg-js": "^4.1.1",
+    "colors": "^1.4.0",
+    "yaml": "^1.10.2"
+  }
+}
