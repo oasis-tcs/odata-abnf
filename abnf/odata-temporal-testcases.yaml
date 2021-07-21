@@ -49,11 +49,6 @@
 # and a description of the test case.
 # Negative test cases in addition state the character position at which the
 # invalid portion of input text starts, 0 meaning the whole input string.
-#
-# These test cases can be automatically executed with the ABNF test tool
-# available at https://github.com/SAP/abnf-test-tool.
-# This tool is neither required for interpreting the test cases, nor is it
-# part of the OData work product.
 
 TestCases:
   - Name: Temporal - at
