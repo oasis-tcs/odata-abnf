@@ -57,11 +57,11 @@ TestCases:
 
   - Name: Temporal - at with expand
     Rule: odataRelativeUri
-    Input: Employees?$at=2019-01-30&amp;$expand=Department($at=2013-01-01)
+    Input: Employees?$at=2019-01-30&$expand=Department($at=2013-01-01)
 
   - Name: Temporal - from and to
     Rule: odataRelativeUri
-    Input: Employees?$from=min&amp;$to=max
+    Input: Employees?$from=min&$to=max
 
   - Name: Temporal - systemat
     Rule: odataRelativeUri
@@ -69,7 +69,7 @@ TestCases:
 
   - Name: Temporal - systemfrom and systemto
     Rule: odataRelativeUri
-    Input: Employees?$systemfrom=min&amp;$systemto=max
+    Input: Employees?$systemfrom=min&$systemto=max
 
   - Name: Temporal - from with date
     Rule: odataRelativeUri
