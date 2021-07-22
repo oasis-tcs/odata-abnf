@@ -5,7 +5,8 @@
   "scripts": {
     "generate-grammar": "node node_modules/apg-js/bin/apg.sh -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
     "run-testcases": "node lib/parse.js",
-    "test": "npm run generate-grammar && npm run run-testcases"
+    "test": "pwsh lib/check-abnf.ps1",
+    "watch": "pwsh lib/check-abnf.ps1 -watch"
   },
   "repository": {
     "type": "git",
