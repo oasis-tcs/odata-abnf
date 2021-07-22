@@ -93,10 +93,6 @@
   <Constraint Rule="actionImport">
     <Match>Activation</Match>
   </Constraint>
-  <Constraint Rule="complexAnnotationInQuery">
-    <Match>@Core.Messages</Match>
-    <Match>@Namespace.SomeTerm</Match>
-  </Constraint>
   <Constraint Rule="complexColProperty">
     <Match>Addresses</Match>
     <Match>_at_Core_dot_Messages</Match>
@@ -126,6 +122,9 @@
     <Match>find</Match>
   </Constraint>
   <Constraint Rule="entityAnnotationInFragment">
+    <Match>@Namespace.EntityTerm</Match>
+  </Constraint>
+  <Constraint Rule="entityAnnotationInQuery">
     <Match>@Namespace.EntityTerm</Match>
   </Constraint>
   <Constraint Rule="entityColFunction">
@@ -194,9 +193,6 @@
     <Match>PreferredSupplier</Match>
     <Match>VipCustomer</Match>
   </Constraint>
-  <Constraint Rule="enumMemberValue">
-    <Match>32</Match>
-  </Constraint>
   <Constraint Rule="enumerationMember">
     <Match>Solid</Match>
     <Match>Yellow</Match>
@@ -213,13 +209,6 @@
     <Match>O%27Neil</Match>
     <Match>Smartphone%2FTablet</Match>
   </Constraint>
-  <Constraint Rule="keyPropertyAlias">
-    <Match>KeyAlias</Match>
-  </Constraint>
-  <Constraint Rule="lambdaVariableExpr">
-    <Match>lambda</Match>
-    <Match>m</Match>
-  </Constraint>
   <Constraint Rule="namespacePart">
     <Match>Core</Match>
     <Match>Measures</Match>
@@ -229,24 +218,6 @@
     <Match>SaM</Match>
     <Match>Sales</Match>
     <Match>Special</Match>
-  </Constraint>
-  <Constraint Rule="parameterAlias">
-    <Match>@a</Match>
-    <Match>@bar</Match>
-    <Match>@c</Match>
-    <Match>@cat</Match>
-    <Match>@categoryId</Match>
-    <Match>@color</Match>
-    <Match>@expression</Match>
-    <Match>@foo</Match>
-    <Match>@i</Match>
-    <Match>@key</Match>
-    <Match>@ManagerID</Match>
-    <Match>@m</Match>
-    <Match>@p1</Match>
-    <Match>@ref</Match>
-    <Match>@title</Match>
-    <Match>@word</Match>
   </Constraint>
   <Constraint Rule="parameterName">
     <Match>categoryId</Match>
@@ -269,9 +240,6 @@
   <Constraint Rule="primitiveAnnotationInQuery">
     <Match>@Measures.Currency</Match>
   </Constraint>
-  <Constraint Rule="primitiveColAnnotationInQuery">
-    <Match>@Core.MayImplement</Match>
-  </Constraint>
   <Constraint Rule="primitiveColFunction">
     <Match>MostPopularNames</Match>
   </Constraint>
@@ -289,9 +257,6 @@
     <Match>MostPopularName</Match>
     <Match>PhoneticallySimilar</Match>
     <Match>GeoLocation</Match>
-  </Constraint>
-  <Constraint Rule="primitiveFunctionImport">
-    <Match>TheMostPopularName</Match>
   </Constraint>
   <Constraint Rule="primitiveKeyProperty">
     <Match>Code</Match>
@@ -350,19 +315,7 @@
   <Constraint Rule="streamProperty">
     <Match>Thumbnail</Match>
   </Constraint>
-  <Constraint Rule="termName">
-    <Match>AnotherTerm</Match>
-    <Match>Currency</Match>
-    <Match>EntityTerm</Match>
-    <Match>id</Match>
-    <Match>MayImplement</Match>
-    <Match>Messages</Match>
-    <Match>SomeTerm</Match>
-    <Match>type</Match>
-  </Constraint>
-  <Constraint Rule="typeDefinitionName">
-    <Match>MonetaryAmount</Match>
-  </Constraint>
+
 
   <TestCase Name="Just to test the dummy start rule" Rule="dummyStartRule">
     <Input>http://services.odata.org/</Input>
@@ -866,9 +819,7 @@
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()</Input>
   </TestCase>
-  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.3 Addressing entities - follow navigation property and call function, then count results" Rule="odataRelativeUri">
     <Input>Categories(1)/Products/Model.AllOrders()/$count</Input>
   </TestCase>
   <TestCase Name="4.3 Addressing entities - follow navigation property and call function - no parens" Rule="odataRelativeUri">
@@ -1246,17 +1197,13 @@
   <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call" Rule="odataRelativeUri">
     <Input>Categories(1)/Model.ProductsByColor(color=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.17 Passing Query Options in the Request Body - bound function call with implicit parameter aliases" Rule="odataRelativeUri">
     <Input>Categories(1)/Model.ProductsByColor/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - function import with parameter" Rule="odataRelativeUri">
     <Input>ProductsByComplex(complex=@c)/$query</Input>
   </TestCase>
-  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases"
-    Rule="odataRelativeUri"
-  >
+  <TestCase Name="4.17 Passing Query Options in the Request Body - function import - implicit parameter aliases" Rule="odataRelativeUri">
     <Input>TheBestProduct/$query</Input>
   </TestCase>
   <TestCase Name="4.17 Passing Query Options in the Request Body - Cross Join" Rule="odataRelativeUri">
@@ -2057,9 +2004,7 @@
   <TestCase Name="5.1.7 Search - NOT is an operator here, search for items that do not match blue" Rule="queryOptions">
     <Input>$search=NOT (blue green)</Input>
   </TestCase>
-  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT"
-    Rule="queryOptions"
-  >
+  <TestCase Name="5.1.7 Search - the first NOT is an operator, the second a word, search for items that do not match NOT" Rule="queryOptions">
     <Input>$search=NOT NOT</Input>
   </TestCase>
   <TestCase Name="5.1.7 Search - AND and OR are words here, search for items that match both AND and OR" Rule="queryOptions">
@@ -2745,14 +2690,10 @@
   <TestCase Name="Preferences - include annotations - all in namespace with given qualifier" Rule="preference">
     <Input>odata.include-annotations="Namespace.*#quali"</Input>
   </TestCase>
-  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference"
-    FailAt="36"
-  >
+  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference" FailAt="36">
     <Input>odata.include-annotations="Namespace"</Input>
   </TestCase>
-  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference"
-    FailAt="37"
-  >
+  <TestCase Name="Preferences - include annotations - namespace must be suffixed with .*" Rule="includeAnnotationsPreference" FailAt="37">
     <Input>odata.include-annotations="Namespace."</Input>
   </TestCase>
   <TestCase Name="Preferences - include annotations - nothing from namespace" Rule="preference">
