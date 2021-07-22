@@ -2,7 +2,7 @@
 ; OData Temporal ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
 ;  Working Draft 01
-;  31 January 2019
+;  19 July 2021
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -23,7 +23,7 @@
 ;   This grammar is one component of a Work Product which consists of:
 ;   - OData Extension for Temporal Data Version 4.0
 ;   - OData Temporal ABNF Construction Rules Version 4.0
-;   - OData Temporal ABNF Test Cases
+;   - OData Temporal ABNF Test Cases Version 4.0
 ;   - OData Temporal Vocabulary
 ;
 ; Related work:
@@ -34,6 +34,8 @@
 ;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
 ;   - OData JSON Format Version 4.01
 ;   - OData ABNF Construction Rules Version 4.01
+;   - OData Core Vocabulary
+;
 ;   This specification replaces or supersedes:
 ;   - None
 ;
@@ -47,7 +49,7 @@
 ; Overview:
 ;   This grammar uses the ABNF defined in RFC5234 and RFC7405. 
 ;
-;   It extends the OData ABNF Construction Rules Version 4.0
+;   It extends the OData ABNF Construction Rules Version 4.01
 ;
 ; Contents:
 ;   1. New alternatives for OData ABNF Construction Rules
@@ -66,26 +68,21 @@ expandOption =/ temporalOption
 temporalOption = at-option
                / from 
                / to 
-               / systemat
-               / systemfrom 
-               / systemto
+               / toInclusive
 
 
 ;------------------------------------------------------------------------------
 ; 2. Temporal System Query Options
 ;------------------------------------------------------------------------------
 
-at-option  = "$at"         EQ temporalExpr
-from       = "$from"       EQ temporalExpr
-to         = "$to"         EQ temporalExpr
-systemat   = "$systemat"   EQ temporalExpr
-systemfrom = "$systemfrom" EQ temporalExpr
-systemto   = "$systemto"   EQ temporalExpr
+at-option   = "$at"          EQ temporalExpr
+from        = "$from"        EQ temporalExpr
+to          = "$to"          EQ temporalExpr
+toInclusive = "$toInclusive" EQ temporalExpr
 
 temporalExpr = "min" 
              / "max" 
-             / dateTimeOffsetValue 
-             / dateValue
+             / commonExpr ; evaluating to a dateValue or dateTimeOffsetValue 
 
 
 ;------------------------------------------------------------------------------
