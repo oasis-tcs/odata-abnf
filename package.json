@@ -6,7 +6,8 @@
     "generate-grammar": "node node_modules/apg-js/bin/apg.sh -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
     "run-testcases": "node lib/parse.js",
     "test": "pwsh lib/check-abnf.ps1",
-    "watch": "pwsh lib/check-abnf.ps1 -watch"
+    "watch": "pwsh lib/check-abnf.ps1 -watch",
+    "tool-test": "c8 mocha"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,9 @@
     "colors": "^1.4.0",
     "sax": "^1.2.4",
     "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "c8": "^7.7.3",
+    "mocha": "^9.0.2"
   }
 }
