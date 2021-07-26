@@ -10,6 +10,8 @@ trace:
     - month
     - odataIdentifier
     - oneToNine
+    - pchar-no-SQUOTE
     - second
+    - unreserved
     - year
     - zeroToFiftyNine
