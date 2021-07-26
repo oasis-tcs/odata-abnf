@@ -1,8 +1,8 @@
-const { readXml } = require("../lib/convertTestcases");
 const assert = require("assert");
+const { readXml } = require("../lib/convertTestsuite");
 
-describe("read XML", () => {
-  it("typical test suite", () => {
+describe("convert test suite", () => {
+  it("read typical XML test suite", () => {
     assert.deepStrictEqual(
       readXml(
         `<!-- header comment -->    

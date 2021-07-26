@@ -34,7 +34,7 @@ function CompileAndCheck {
     }
 
     # run tests	
-    node lib/parse.js
+    node lib/checkAbnf.js
 }
 
 CompileAndCheck
