@@ -74,19 +74,19 @@ describe("convert XML test suite to JSON", () => {
   it("read test suite with header comment", () => {
     assert.deepStrictEqual(
       readXml(
-        `<!--
-
-  first line
-  second line
-
-  third line
-
--->    
-<TestSuite attributesAreIgnored="true">
-  <!-- to be ignored -->
-  <TestCase Name="test" Rule="foo">
-    <Input>Foo1</Input>
-  </TestCase>
+        `<!--\r
+\r
+  first line\r
+  second line\r
+\r
+  third line\r
+\r
+-->\r
+<TestSuite attributesAreIgnored="true">\r
+  <!-- to be ignored -->\r
+  <TestCase Name="test" Rule="foo">\r
+    <Input>Foo1</Input>\r
+  </TestCase>\r
 </TestSuite>`,
         true
       ),
