@@ -115,16 +115,24 @@ describe("run test suite", () => {
   it("invalid test cases", () => {
     const suite = {
       TestCases: [
-        { Name: "non-existing rule", Input: "MyEntitySet", Rule: "not there" },
         {},
+        { Name: "no rule" },
+        { Name: "no input", Rule: "foo" },
+        { Name: "non-existing rule", Rule: "not there", Input: "MyEntitySet" },
       ],
     };
-    // assert.deepStrictEqual(
-    //   runTestSuite(suite),
-    //   [
-    //     //TODO
-    //   ],
-    //   "run result"
-    // );
+    assert.deepStrictEqual(
+      runTestSuite(suite),
+      [
+        colors.red("undefined: invalid or missing start rule"),
+        colors.red("no rule: invalid or missing start rule"),
+        colors.red("no input: invalid or missing input string"),
+        colors.red("non-existing rule: unknown start rule 'not there'"),
+        "",
+        colors.red("4 test cases failed"),
+        "",
+      ],
+      "run result"
+    );
   });
 });
