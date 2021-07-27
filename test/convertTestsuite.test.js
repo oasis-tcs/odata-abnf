@@ -1,11 +1,23 @@
 const assert = require("assert");
-const { readXml } = require("../lib/convertTestsuite");
+const { readXml, json2yaml } = require("../lib/convertTestsuite");
 
-describe("convert test suite", () => {
-  it("read typical XML test suite", () => {
+describe("convert XML test suite to JSON", () => {
+  it("read empty test suite", () => {
+    assert.deepStrictEqual(
+      readXml(""),
+      { Constraints: {}, TestCases: [] },
+      "test suite as JSON"
+    );
+  });
+
+  it("read typical test suite", () => {
     assert.deepStrictEqual(
       readXml(
-        `<!-- header comment -->    
+        `<!--
+
+           header comment 
+
+         -->    
          <TestSuite attributesAreIgnored="true">
            <Constraint Rule="foo">
              <Match>Foo1</Match>
@@ -35,6 +47,7 @@ describe("convert test suite", () => {
           </TestSuite>`
       ),
       {
+        //TODO: $comment: " header comment"
         Constraints: { foo: ["Foo1", "Foo2", "Foo3"], bar: ["Bar1"], baz: [] },
         TestCases: [
           {
@@ -54,7 +67,84 @@ describe("convert test suite", () => {
             Input: "third input",
           },
         ],
-      }
+      },
+      "test suite aa JSON"
+    );
+  });
+});
+
+describe("convert JSON test suite to YAML", () => {
+  it("convert empty test suite", () => {
+    assert.deepStrictEqual(
+      json2yaml({ Constraints: {}, TestCases: [] }),
+      "TestCases: []\n",
+      "test suite as JSON"
+    );
+  });
+
+  it("convert test suite without constraints", () => {
+    assert.deepStrictEqual(
+      json2yaml({ $comment: "before", Constraints: {}, TestCases: [] }),
+      "#before\n\nTestCases: []\n",
+      "test suite as JSON"
+    );
+  });
+
+  it("convert typical test suite", () => {
+    assert.deepStrictEqual(
+      json2yaml({
+        $comment: "This\n goes\n  first",
+        Constraints: { foo: ["Foo1", "Foo2", "Foo3"], bar: ["Bar1"], baz: [] },
+        TestCases: [
+          {
+            Name: "first test case",
+            Rule: "first-rule",
+            Input: "first input",
+          },
+          {
+            Name: "second test case",
+            Rule: "second-rule",
+            Input: "second input",
+            FailAt: 42,
+          },
+          {
+            Name: "third test case",
+            Rule: "first-rule",
+            Input: "third input",
+          },
+        ],
+      }).split("\n"),
+      [
+        "#This",
+        "# goes",
+        "#  first",
+        "",
+        "Constraints:",
+        "  foo:",
+        "    - Foo1",
+        "    - Foo2",
+        "    - Foo3",
+        "  bar:",
+        "    - Bar1",
+        "  baz: []",
+        "",
+        "TestCases:",
+        "  ",
+        "  - Name: first test case",
+        "    Rule: first-rule",
+        "    Input: first input",
+        "",
+        "  - Name: second test case",
+        "    Rule: second-rule",
+        "    Input: second input",
+        "    FailAt: 42",
+        "",
+        "  - Name: third test case",
+        "    Rule: first-rule",
+        "    Input: third input",
+        "",
+      ],
+      "YAML"
     );
   });
 });
