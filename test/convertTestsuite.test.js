@@ -47,7 +47,6 @@ describe("convert XML test suite to JSON", () => {
           </TestSuite>`
       ),
       {
-        //TODO: $comment: " header comment"
         Constraints: { foo: ["Foo1", "Foo2", "Foo3"], bar: ["Bar1"], baz: [] },
         TestCases: [
           {
@@ -67,6 +66,34 @@ describe("convert XML test suite to JSON", () => {
             Input: "third input",
           },
         ],
+      },
+      "test suite as JSON"
+    );
+  });
+
+  it("read test suite with header comment", () => {
+    assert.deepStrictEqual(
+      readXml(
+        `<!--
+
+  first line
+  second line
+
+  third line
+
+-->    
+<TestSuite attributesAreIgnored="true">
+  <!-- to be ignored -->
+  <TestCase Name="test" Rule="foo">
+    <Input>Foo1</Input>
+  </TestCase>
+</TestSuite>`,
+        true
+      ),
+      {
+        $comment: "\n\n  first line\n  second line\n\n  third line\n\n",
+        Constraints: {},
+        TestCases: [{ Name: "test", Rule: "foo", Input: "Foo1" }],
       },
       "test suite aa JSON"
     );
@@ -145,6 +172,48 @@ describe("convert JSON test suite to YAML", () => {
         "",
       ],
       "YAML"
+    );
+  });
+
+  it("convert test suite with header comment", () => {
+    assert.deepStrictEqual(
+      json2yaml(
+        readXml(
+          `<!--
+
+  first line
+  second line
+
+  third line
+
+-->    
+<TestSuite attributesAreIgnored="true">
+  <!-- to be ignored -->
+  <TestCase Name="test" Rule="foo">
+    <Input>Foo1</Input>
+  </TestCase>
+</TestSuite>`,
+          true
+        )
+      ).split("\n"),
+      [
+        "#",
+        "#",
+        "#  first line",
+        "#  second line",
+        "#",
+        "#  third line",
+        "#",
+        "#",
+        "",
+        "TestCases:",
+        "  ",
+        "  - Name: test",
+        "    Rule: foo",
+        "    Input: Foo1",
+        "",
+      ],
+      "test suite as YAML"
     );
   });
 });
