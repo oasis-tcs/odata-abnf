@@ -41,8 +41,8 @@ describe("convert XML test suite to JSON", () => {
            <TestCase Name="second test case" Rule="second-rule" FailAt="42">
              <Input>second input</Input>
            </TestCase>
-           <TestCase Name="third test case" Rule="first-rule" allOtherAttributesAreIgnored="true">
-             <Input>third input</Input>
+           <TestCase Name="empty input" Rule="first-rule" allOtherAttributesAreIgnored="true">
+             <Input></Input>
            </TestCase>
           </TestSuite>`
       ),
@@ -61,9 +61,9 @@ describe("convert XML test suite to JSON", () => {
             FailAt: 42,
           },
           {
-            Name: "third test case",
+            Name: "empty input",
             Rule: "first-rule",
-            Input: "third input",
+            Input: "",
           },
         ],
       },
