@@ -2444,7 +2444,7 @@
   <TestCase Name="right operand is not a list, it's a complicated way of writing FirstName" Rule="commonExpr">
     <Input>FirstName in (FirstName)</Input>
   </TestCase>
-  <TestCase Name="empty common expression" Rule="commonExpr" FailAt="0">
+  <TestCase Name="common expression cannot be empty" Rule="commonExpr" FailAt="0">
     <Input></Input>
   </TestCase>
   <TestCase Name="lists only allowed right of in operator" Rule="commonExpr" FailAt="27">
