@@ -91,7 +91,7 @@ describe("convert XML test suite to JSON", () => {
         true
       ),
       {
-        $comment: "\n\n  first line\n  second line\n\n  third line\n\n",
+        $comment: "  first line\n  second line\n\n  third line",
         Constraints: {},
         TestCases: [{ Name: "test", Rule: "foo", Input: "Foo1" }],
       },
@@ -197,14 +197,10 @@ describe("convert JSON test suite to YAML", () => {
         )
       ).split("\n"),
       [
-        "#",
-        "#",
         "#  first line",
         "#  second line",
         "#",
         "#  third line",
-        "#",
-        "#",
         "",
         "TestCases:",
         "  ",
