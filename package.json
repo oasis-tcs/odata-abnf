@@ -5,7 +5,7 @@
   "scripts": {
     "generate-grammar": "node node_modules/apg-js/bin/apg.sh -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
     "run-testcases": "node lib/checkAbnf.js",
-    "test": "pwsh lib/check-abnf.ps1",
+    "test": "npm run generate-grammar && node lib/checkAbnf.js",
     "watch": "pwsh lib/check-abnf.ps1 -watch",
     "tool-test": "c8 mocha"
   },
