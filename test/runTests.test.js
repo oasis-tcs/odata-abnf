@@ -19,6 +19,7 @@ describe("run test suite", () => {
       colors.green("All 0 test cases passed"),
       "",
     ]);
+    assert.strictEqual(undefined, process.exitCode, "process exit code");
 
     const coverage = printRuleCoverage().split("\n");
     assert.match(coverage[0], /Touched 0 of [0-9]+ rules, untouched rules:/);
@@ -83,6 +84,7 @@ describe("run test suite", () => {
       ],
       "run result"
     );
+    assert.strictEqual(1, process.exitCode, "process exit code");
   });
 
   it("test suite with constraints", () => {
