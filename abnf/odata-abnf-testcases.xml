@@ -2774,7 +2774,7 @@
   <TestCase Name="Schema Version - latest" Rule="systemQueryOption">
     <Input>$schemaversion=*</Input>
   </TestCase>
-  <TestCase Name="ODATA-633 hex pair bug" Rule="stringInUrl" FailAt="3">
+  <TestCase Name="ODATA-633 hex pair bug" Rule="stringInUrl">
     <Input>"b%75g"</Input>
   </TestCase>
 </TestSuite>
