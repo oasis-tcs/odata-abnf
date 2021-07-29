@@ -79,7 +79,7 @@ dummyStartRule = odataUri / header / primitiveValue ; just to please the test pa
 ;------------------------------------------------------------------------------
 
 
-odata-Uri = serviceRoot [ odataRelativeUri ]  
+odataUri = serviceRoot [ odataRelativeUri ]  
 
 serviceRoot = ( "https" / "http" )                    ; Note: case-insensitive 
               "://" host [ ":" port ]
