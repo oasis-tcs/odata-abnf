@@ -57,3 +57,5 @@ if ($watch) {
         }
     }
 }
+
+exit $LASTEXITCODE

@@ -36,11 +36,17 @@ describe("run test suite", () => {
           Rule: "odataRelativeUri",
           FailAt: 8,
         },
+        {
+          Name: "empty input",
+          Input: "",
+          Rule: "odataRelativeUri",
+          FailAt: 0,
+        },
       ],
     };
     assert.deepStrictEqual(
       runTestSuite(suite),
-      [colors.green("All 2 test cases passed"), ""],
+      [colors.green("All 3 test cases passed"), ""],
       "run result"
     );
   });
@@ -56,6 +62,12 @@ describe("run test suite", () => {
         {
           Name: "fail at wrong position",
           Input: "MyEntity-Set",
+          Rule: "odataRelativeUri",
+          FailAt: 7,
+        },
+        {
+          Name: "fail to fail",
+          Input: "MyEntitySet",
           Rule: "odataRelativeUri",
           FailAt: 7,
         },
@@ -78,8 +90,14 @@ describe("run test suite", () => {
         ".resourcePath: MyEntity",
         "..entitySetName: MyEntity",
 
+        colors.red("fail to fail succeeds instead of failing at 7:") +
+          " MyEntitySet",
+        "odataRelativeUri: MyEntitySet",
+        ".resourcePath: MyEntitySet",
+        "..entitySetName: MyEntitySet",
+
         "",
-        colors.red("2 test cases failed"),
+        colors.red("3 test cases failed"),
         "",
       ],
       "run result"
@@ -89,12 +107,12 @@ describe("run test suite", () => {
 
   it("test suite with constraints", () => {
     const suite = {
-      Constraints: { resourcePath: ["MyEntitySet"] },
+      Constraints: { entitySetName: ["MyEntitySet"] },
       TestCases: [
-        { Name: "success", Input: "MyEntitySet", Rule: "odataRelativeUri" },
+        { Name: "success", Input: "MyEntitySet(1)", Rule: "odataRelativeUri" },
         {
           Name: "fail due to constraint",
-          Input: "notMyEntitySet",
+          Input: "notMyEntitySet(1)",
           Rule: "odataRelativeUri",
         },
       ],
@@ -102,9 +120,13 @@ describe("run test suite", () => {
     assert.deepStrictEqual(
       runTestSuite(suite),
       [
-        colors.red("fail due to constraint fails at 14:") + " notMyEntitySet",
-        "odataRelativeUri: ",
-        colors.yellow("notMyEntitySet is no resourcePath"),
+        colors.red("fail due to constraint fails at 14:") +
+          " notMyEntitySet" +
+          colors.yellow("(1)"),
+        "odataRelativeUri: notMyEntitySet",
+        ".resourcePath: notMyEntitySet",
+        "..singletonEntity: notMyEntitySet",
+        colors.yellow("notMyEntitySet is no entitySetName"),
 
         "",
         colors.red("1 test case failed"),
