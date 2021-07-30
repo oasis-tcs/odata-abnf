@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "OASIS OData TC: ABNF for OData URLs, headers, and literal data values",
   "scripts": {
+    "convert-all-testsuites": "node lib/convertAllTestsuites.js",
     "generate-grammar": "node node_modules/apg-js/bin/apg.sh -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
     "run-testcases": "node lib/checkAbnf.js",
     "test": "npm run generate-grammar && node lib/checkAbnf.js",

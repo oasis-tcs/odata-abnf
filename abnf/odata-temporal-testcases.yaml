@@ -1,0 +1,112 @@
+#  OData Temporal ABNF Test Cases Version 4.0
+# 
+#  Working Draft 01
+#  19 July 2021
+#
+#  Technical Committee:
+#  OASIS Open Data Protocol (OData) TC
+#  https://www.oasis-open.org/committees/odata
+#
+#  Chairs:
+#  - Barbara Hartel (barbara.hartel@sap.com), SAP AG
+#  - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
+#
+#  Editors:
+#  - Ralf Handl (ralf.handl@sap.com), SAP SE
+#  - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
+#  - Michael Pizzo (mikep@microsoft.com), Microsoft
+#  - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
+#  
+#  Additional artifacts:
+#  This test case document is one component of a Work Product which consists of:
+#  - OData Extension for Temporal Data Version 4.0
+#  - OData Temporal ABNF Construction Rules Version 4.0
+#  - OData Temporal ABNF Test Cases Version 4.0
+#  - OData Temporal Vocabulary
+#
+#  Related work:
+#  This specification is related to:
+#  - OData Version 4.01 Part 1: Protocol
+#  - OData Version 4.01 Part 2: URL Conventions
+#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01 
+#  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
+#  - OData JSON Format Version 4.01
+#  - OData ABNF Construction Rules Version 4.01
+#  - OData Core Vocabulary
+#
+#  This specification replaces or supersedes:
+#  - None
+#
+#  Declared XML namespaces:
+#  - None
+#
+#  Abstract:
+#  This specification defines how to represent and interact with temporal data
+#  using the Open Data Protocol (OData).
+#
+#  Overview:
+#  This document contains positive and negative test cases for the
+#  OData Temporal ABNF Construction Rules Version 4.0.
+#  Positive test cases consist of the rule to test, the input string to parse,
+#  and a description of the test case.
+#  Negative test cases in addition state the character position at which the
+#  invalid portion of input text starts, 0 meaning the whole input string.
+#
+#  These test cases can be automatically executed with the ABNF test tool
+#  available at https://github.com/oasis-tcs/odata-abnf/tree/main/lib.
+#  This tool is neither required for interpreting the test cases, nor is it
+#  part of the OData work product.
+
+TestCases:
+  
+  - Name: Temporal - at
+    Rule: odataRelativeUri
+    Input: Employees?$at=2019-01-30
+
+  - Name: Temporal - at with expand
+    Rule: odataRelativeUri
+    Input: Employees('E314')?$at=2012-01-01&$expand=Department
+
+  - Name: Temporal - from and to with expand
+    Rule: odataRelativeUri
+    Input: Employees?$expand=history($select=Name,Jobtitle)&$from=2012-01-01&$to=2025-01-01
+
+  - Name: Temporal - from and to nested within expand
+    Rule: odataRelativeUri
+    Input: Employees?$expand=history($select=Name,Jobtitle;$from=2012-01-01;$to=2025-01-01;$filter=contains(Jobtitle,'e'))
+
+  - Name: Temporal - from and to with expand and filter
+    Rule: odataRelativeUri
+    Input: Employees?$expand=history($select=Name,Jobtitle)&$from=2015-01-01&$filter=history/any(h:startswith(h/Name,'N'))
+
+  - Name: Where did she work back then
+    Rule: odataRelativeUri
+    Input: Employees/123?$expand=Department&$at=2019-01-30
+
+  - Name: the department name when she joined that department
+    Rule: odataRelativeUri
+    Input: Employees/123?$expand=history(@eh=$this;$expand=Department($expand=history;$at=@eh/From))
+
+  - Name: Temporal - at nested within expand
+    Rule: odataRelativeUri
+    Input: Employees?$expand=Department($at=2013-01-01)
+
+  - Name: Temporal - from and to with special values
+    Rule: odataRelativeUri
+    Input: Employees?$from=min&$to=max
+
+  - Name: Temporal - from and to with date
+    Rule: odataRelativeUri
+    Input: Employees?$from=2012-07-26&$to=2012-08-03
+
+  - Name: Temporal - from and toInclusive with date
+    Rule: odataRelativeUri
+    Input: Employees?$from=2012-07-26&$toInclusive=2012-08-02
+
+  - Name: Temporal - from and to with datetimestamp
+    Rule: odataRelativeUri
+    Input: Employees?$from=2012-07-26T09:00:00.00-08:00&$to=2012-07-26T11:00-08:00
+
+  - Name: Temporal - from and toInclusive with datetimestamp
+    Rule: odataRelativeUri
+    Input: Employees?$from=2012-07-26T09:00:00.00-08:00&$toInclusive=2012-07-26T10:59:59.999999999999-08:00
