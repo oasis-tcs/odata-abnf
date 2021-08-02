@@ -9,6 +9,5 @@
   "files.trimFinalNewlines": true,
   "files.associations": {
     "*.txt": "abnf"
-  },
-  "xml.catalogs": ["./.vscode/catalog.xml"]
+  }
 }
