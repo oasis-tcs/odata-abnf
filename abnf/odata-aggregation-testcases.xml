@@ -75,10 +75,8 @@
   <DisableTrace Rule="A-to-F" />
   <DisableTrace Rule="oneToNine" />
 
-  <Constraint Rule="action">
-  </Constraint>
-  <Constraint Rule="actionImport">
-  </Constraint>
+  <Constraint Rule="action"></Constraint>
+  <Constraint Rule="actionImport"></Constraint>
   <Constraint Rule="expressionAlias">
     <Match>Actual</Match>
     <Match>AverageAmount</Match>
@@ -104,19 +102,14 @@
   <Constraint Rule="complexColProperty">
     <Match>Details</Match>
   </Constraint>
-  <Constraint Rule="complexColFunction">
-  </Constraint>
-  <Constraint Rule="complexColFunctionImport">
-  </Constraint>
-  <Constraint Rule="complexFunction">
-  </Constraint>
-  <Constraint Rule="complexFunctionImport">
-  </Constraint>
+  <Constraint Rule="complexColFunction"></Constraint>
+  <Constraint Rule="complexColFunctionImport"></Constraint>
+  <Constraint Rule="complexFunction"></Constraint>
+  <Constraint Rule="complexFunctionImport"></Constraint>
   <Constraint Rule="complexProperty">
     <Match>ShipTo</Match>
   </Constraint>
-  <Constraint Rule="complexTypeName">
-  </Constraint>
+  <Constraint Rule="complexTypeName"></Constraint>
   <Constraint Rule="customAggregate">
     <Match>Budget</Match>
     <Match>Forecast</Match>
@@ -124,8 +117,7 @@
   <Constraint Rule="entityColFunction">
     <Match>TopCountAndBalance</Match>
   </Constraint>
-  <Constraint Rule="entityColFunctionImport">
-  </Constraint>
+  <Constraint Rule="entityColFunctionImport"></Constraint>
   <Constraint Rule="entityColNavigationProperty">
     <Match>Items</Match>
     <Match>Orders</Match>
@@ -134,14 +126,10 @@
     <Match>SalesPlan</Match>
     <Match>Suppliers</Match>
   </Constraint>
-  <Constraint Rule="entityColFunction">
-  </Constraint>
-  <Constraint Rule="entityColFunctionImport">
-  </Constraint>
-  <Constraint Rule="entityFunction">
-  </Constraint>
-  <Constraint Rule="entityFunctionImport">
-  </Constraint>
+  <Constraint Rule="entityColFunction"></Constraint>
+  <Constraint Rule="entityColFunctionImport"></Constraint>
+  <Constraint Rule="entityFunction"></Constraint>
+  <Constraint Rule="entityFunctionImport"></Constraint>
   <Constraint Rule="entityNavigationProperty">
     <Match>Category</Match>
     <Match>Continent</Match>
@@ -164,29 +152,20 @@
     <Match>SalesOrganizations</Match>
     <Match>Time</Match>
   </Constraint>
-  <Constraint Rule="entityTypeName">
-  </Constraint>
-  <Constraint Rule="enumerationMember">
-  </Constraint>
-  <Constraint Rule="enumerationTypeName">
-  </Constraint>
-  <Constraint Rule="keyPathLiteral">
-  </Constraint>
-  <Constraint Rule="keyPropertyAlias">
-  </Constraint>
-  <Constraint Rule="lambdaVariableExpr">
-  </Constraint>
+  <Constraint Rule="entityTypeName"></Constraint>
+  <Constraint Rule="enumerationMember"></Constraint>
+  <Constraint Rule="enumerationTypeName"></Constraint>
+  <Constraint Rule="keyPathLiteral"></Constraint>
+  <Constraint Rule="keyPropertyAlias"></Constraint>
+  <Constraint Rule="lambdaVariableExpr"></Constraint>
   <Constraint Rule="namespacePart">
     <Match>Aggregation</Match>
     <Match>Custom</Match>
     <Match>Self</Match>
   </Constraint>
-  <Constraint Rule="primitiveColFunction">
-  </Constraint>
-  <Constraint Rule="primitiveColFunctionImport">
-  </Constraint>
-  <Constraint Rule="primitiveColProperty">
-  </Constraint>
+  <Constraint Rule="primitiveColFunction"></Constraint>
+  <Constraint Rule="primitiveColFunctionImport"></Constraint>
+  <Constraint Rule="primitiveColProperty"></Constraint>
   <Constraint Rule="primitiveFunction">
     <Match>isroot</Match>
     <Match>isleaf</Match>
@@ -194,8 +173,7 @@
     <Match>issibling</Match>
     <Match>isdescendant</Match>
   </Constraint>
-  <Constraint Rule="primitiveFunctionImport">
-  </Constraint>
+  <Constraint Rule="primitiveFunctionImport"></Constraint>
   <Constraint Rule="primitiveKeyProperty">
     <Match>Code</Match>
     <Match>Date</Match>
@@ -221,8 +199,7 @@
     <Match>TaxRate</Match>
     <Match>Year</Match>
   </Constraint>
-  <Constraint Rule="streamProperty">
-  </Constraint>
+  <Constraint Rule="streamProperty"></Constraint>
 
   <TestCase Name="aggregate - no parameters" Rule="queryOptions" FailAt="17">
     <Input>$apply=aggregate()</Input>
