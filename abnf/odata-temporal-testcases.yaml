@@ -1,5 +1,5 @@
 #  OData Temporal ABNF Test Cases Version 4.0
-# 
+#
 #  Working Draft 01
 #  19 July 2021
 #
@@ -8,15 +8,15 @@
 #  https://www.oasis-open.org/committees/odata
 #
 #  Chairs:
-#  - Barbara Hartel (barbara.hartel@sap.com), SAP AG
-#  - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
+#  - Ralf Handl (ralf.handl@sap.com), SAP SE
+#  - Michael Pizzo (mikep@microsoft.com), Microsoft
 #
 #  Editors:
 #  - Ralf Handl (ralf.handl@sap.com), SAP SE
 #  - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
 #  - Michael Pizzo (mikep@microsoft.com), Microsoft
 #  - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
-#  
+#
 #  Additional artifacts:
 #  This test case document is one component of a Work Product which consists of:
 #  - OData Extension for Temporal Data Version 4.0
@@ -28,7 +28,7 @@
 #  This specification is related to:
 #  - OData Version 4.01 Part 1: Protocol
 #  - OData Version 4.01 Part 2: URL Conventions
-#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01 
+#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
 #  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
 #  - OData JSON Format Version 4.01
 #  - OData ABNF Construction Rules Version 4.01
@@ -58,7 +58,6 @@
 #  part of the OData work product.
 
 TestCases:
-  
   - Name: Temporal - at
     Rule: odataRelativeUri
     Input: Employees?$at=2019-01-30
