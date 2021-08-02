@@ -11,8 +11,8 @@
   https://www.oasis-open.org/committees/odata
 
   Chairs:
-  - Barbara Hartel (barbara.hartel@sap.com), SAP AG
-  - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
+  - Ralf Handl (ralf.handl@sap.com), SAP SE
+  - Michael Pizzo (mikep@microsoft.com), Microsoft
 
   Editors:
   - Ralf Handl (ralf.handl@sap.com), SAP SE
@@ -56,7 +56,7 @@
   invalid portion of input text starts, 0 meaning the whole input string.
 
   These test cases can be automatically executed with the ABNF test tool
-  available at https://github.com/SAP/abnf-test-tool.
+  available at https://github.com/oasis-tcs/odata-abnf/tree/main/lib.
   This tool is neither required for interpreting the test cases, nor is it
   part of the OData work product.
 
