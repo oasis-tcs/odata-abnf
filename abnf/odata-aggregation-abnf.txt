@@ -232,8 +232,8 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
-aggregateMethodCallExpr = 'aggregate' OPEN BWS aggregateFunctionExpr BWS CLOSE
-aggregateFunctionExpr   = '$count'
+aggregateMethodCallExpr = %s"aggregate" OPEN BWS aggregateFunctionExpr BWS CLOSE
+aggregateFunctionExpr   = %s"$count"
                           / commonExpr aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] pathPrefix customAggregate [ customFrom ]
