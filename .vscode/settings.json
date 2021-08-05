@@ -10,5 +10,7 @@
   "files.associations": {
     "*.txt": "abnf"
   },
-  "xml.catalogs": ["./.vscode/catalog.xml"]
+  "yaml.schemas": {
+    "./lib/testsuite.schema.json": "abnf/*.yaml"
+  }
 }
