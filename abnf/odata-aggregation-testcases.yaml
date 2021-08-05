@@ -12,11 +12,11 @@
 #  - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
 #
 #  Editors:
-#  - Ralf Handl (ralf.handl@sap.com), SAP AG
+#  - Ralf Handl (ralf.handl@sap.com), SAP SE
 #  - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
-#  - Gerald Krause (gerald.krause@sap.com), SAP AG
+#  - Gerald Krause (gerald.krause@sap.com), SAP SE
 #  - Michael Pizzo (mikep@microsoft.com), Microsoft
-#  - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP AG
+#  - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
 #
 #  Additional artifacts:
 #  This test case document is one component of a Work Product which consists of:
@@ -68,20 +68,39 @@ Constraints:
     - AveragePrice
     - AvgAmt
     - CountryPopulation
+    - CustomerAmount
     - CustomerCountryAverage
+    - CustomerYearAmount
+    - CustomerIDs
     - DailyAverage
+    - Detail
     - DistinctProducts
+    - FilteredSales
+    - FirstLetter
     - ItemAmount
     - MaxAmount
     - MinAmount
     - MonthlyAverage
     - ProductNames
+    - ProductIDs
     - Profit
+    - RelativeAmount
+    - RelativeOrderSize
+    - RegionAmount
+    - RevenueContribution
+    - RevenueTrend
+    - Sale
     - SalesCount
+    - SomeCustomers
+    - Stuff
+    - PaperSalesCount
+    - SalesOrgCount
     - Tax
     - Total
+    - TotalAmount
     - TotalPlannedRevenue
     - TotalPopulation
+    - TotalSales
     - WeekDay
   complexColProperty:
     - Details
@@ -89,7 +108,8 @@ Constraints:
   complexColFunctionImport: []
   complexFunction: []
   complexFunctionImport: []
-  complexProperty: []
+  complexProperty:
+    - ShipTo
   complexTypeName: []
   customAggregate:
     - Budget
@@ -117,6 +137,7 @@ Constraints:
     - ProductGroup
     - Sales_cj
     - Time
+    - TotalSales
   entitySetName:
     - Categories
     - Customers
@@ -131,7 +152,8 @@ Constraints:
   enumerationTypeName: []
   keyPathLiteral: []
   keyPropertyAlias: []
-  lambdaVariableExpr: []
+  lambdaVariableExpr:
+    - p
   namespacePart:
     - Aggregation
     - Custom
@@ -155,6 +177,7 @@ Constraints:
     - City
     - Cost
     - CountryCode
+    - Region
     - Month
     - Name
     - PlannedRevenue
@@ -164,6 +187,7 @@ Constraints:
     - Quantity
     - Revenue
     - SalesArea
+    - SalesNumber
     - Shipped
     - Status
     - Street
@@ -257,6 +281,10 @@ TestCases:
     FailAt: 24
     Input: $apply=aggregate(Amount from Time with average as DailyAverage)
 
+  - Name: aggregate - custom aggregate reached via path
+    Rule: queryOptions
+    Input: $apply=aggregate(Sales/Forecast)
+
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
@@ -320,43 +348,104 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
 
-  - Name: aggregate - groupby rollup
+  - Name: aggregate - groupby with custom aggregates calculated from aggregated
+      instances
+    Rule: queryOptions
+    Input: $apply=groupby((Country),aggregate(Budget))/filter(Budget gt
+      1000)/aggregate(Budget)
+
+  - Name: aggregate - groupby rollup leveled hierarchy
     Rule: queryOptions
     Input: $apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
       with sum as Total))
+
+  - Name: aggregate - groupby rollup recursive hierarchy
+    Rule: queryOptions
+    Input: $apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as
+      SalesOrgCount))
 
   - Name: aggregate - filter
     Rule: queryOptions
     Input: $apply=filter(Amount gt 3)
 
-  - Name: aggregate - expand
+  - Name: aggregate - filter on $root
     Rule: queryOptions
-    Input: $apply=expand(Sales,filter(Amount gt 3))
-
-  - Name: aggregate - multi-level expand
-    Rule: queryOptions
-    Input: $apply=expand(Products,expand(Sales,filter(Amount gt 3)))
-
-  - Name: aggregate - multi-level expand with branches
-    Rule: queryOptions
-    Input: $apply=expand(Products,expand(Sales,filter(Amount gt
-      3)),expand(Suppliers,expand(Products,filter(true))))
-
-  - Name: aggregate - multi-level expand with branches
-    Rule: queryOptions
-    FailAt: 102
-    Input: $apply=expand(Products,expand(Sales,filter(Amount gt
-      3)),expand(Suppliers,filter(true),expand(Products)))
-
-  - Name: aggregate - multi-level expand with branches
-    Rule: queryOptions
-    FailAt: 89
-    Input: $apply=expand(Products,expand(Sales,filter(Amount gt
-      3)),expand(Suppliers,expand(Products)))
+    Input: $apply=filter(Name eq $root/Products('P2')/Name)
 
   - Name: aggregate - search
     Rule: queryOptions
     Input: $apply=search(coffee)
+
+  - Name: aggregate - nest
+    Rule: queryOptions
+    Input: $apply=nest(Sales,filter(Amount gt 3))
+
+  - Name: aggregate - nest with alias
+    Rule: queryOptions
+    Input: $apply=nest(Sales,filter(Amount gt 3) as FilteredSales)
+
+  - Name: aggregate - nesting complex property
+    Rule: queryOptions
+    Input: $apply=nest(ShipTo,identity)
+
+  - Name: aggregate - nesting collection-valued complex property
+    Rule: queryOptions
+    Input: $apply=nest(Details,filter(Cost gt 1000))
+
+  - Name: aggregate - multi-level nest
+    Rule: queryOptions
+    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)))
+
+  - Name: aggregate - multi-level nest with branches
+    Rule: queryOptions
+    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)) as
+      FilteredSales,nest(Suppliers,nest(Products,filter(true))))
+
+  - Name: aggregate - multi-level nest with branches
+    Rule: queryOptions
+    FailAt: 52
+    Input: $apply=nest(Products,nest(Sales,filter(Amount gt
+      3)),nest(Suppliers,filter(true),nest(Products)))
+
+  - Name: aggregate - multi-level nest with branches
+    Rule: queryOptions
+    FailAt: 98
+    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)) as
+      FilteredSales,nest(Suppliers,nest(Products)))
+
+  - Name: aggregate - nest with filter on $this
+    Rule: queryOptions
+    Input: $apply=nest(Sales,filter($this/Customer/City eq ShipTo/City))
+
+  - Name: aggregate - nest without path
+    Rule: queryOptions
+    Input: $apply=nest(groupby((Customer/ID)) as CustomerIDs,groupby((Product/ID))
+      as ProductIDs)
+
+  - Name: aggregate - join
+    Rule: queryOptions
+    Input: $apply=join(Sales as Sale)
+
+  - Name: aggregate - join
+    Rule: queryOptions
+    Input: $apply=join(Sales as Sale,filter(Customer/Country eq 'US'))
+
+  - Name: aggregate - join with collection-valued complex property
+    Rule: queryOptions
+    Input: $apply=join(Details as Detail,filter(Cost gt 1000))
+
+  - Name: aggregate - join with single-valued complex property
+    Rule: queryOptions
+    FailAt: 18
+    Input: $apply=join(ShipTo as Detail,identity)
+
+  - Name: aggregate - join
+    Rule: queryOptions
+    Input: $apply=outerjoin(Sales as Sale)
+
+  - Name: aggregate - join
+    Rule: queryOptions
+    Input: $apply=outerjoin(Sales as Sale,filter(Customer/Country eq 'FR'))
 
   - Name: aggregate - isdefined
     Rule: queryOptions
@@ -366,6 +455,57 @@ TestCases:
   - Name: "aggregate - isdefined: get totals last"
     Rule: queryOptions
     Input: $orderby=isdefined(Product) desc,Product asc
+
+  - Name: aggregate function - after grouping
+    Rule: queryOptions
+    Input: $apply=groupby((Customer),aggregate(Amount with sum as
+      CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with
+      sum) as RevenueContribution)
+
+  - Name: aggregate function - within a group
+    Rule: queryOptions
+    Input: $apply=groupby((Customer,Year),aggregate(Amount with sum as
+      CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div
+      aggregate(CustomerYearAmount with sum) as RevenueTrend))
+
+  - Name: aggregate function - across input set
+    Rule: queryOptions
+    Input: $apply=compute(Amount div aggregate(Amount with average) as
+      RelativeOrderSize)
+
+  - Name: aggregate function - across input set with custom aggregate
+    Rule: queryOptions
+    Input: $apply=compute(Amount div aggregate(Budget) as RelativeAmount)
+
+  - Name: aggregate function - across input set with related custom aggregate
+    Rule: queryOptions
+    Input: $apply=compute(Amount div aggregate(Product/Budget) as RelativeAmount)
+
+  - Name: aggregate function - across input set with from
+    Rule: queryOptions
+    Input: $apply=compute(Amount div aggregate(Amount with sum from Time with
+      average) as RelativeAmount)
+
+  - Name: aggregate function - across input set with $count
+    Rule: queryOptions
+    Input: $apply=compute(aggregate($count) as SalesCount)
+
+  - Name: aggregate function - across input set with $count
+    Rule: queryOptions
+    Input: $apply=groupby((Customer),compute(aggregate($count) as
+      SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as
+      TotalAmount)
+
+  - Name: aggregate function - within a group - ...
+    Rule: queryOptions
+    Input: $apply=groupby((Region),compute(aggregate(SalesNumber with average) as
+      RegionAmount))/filter(RegionAmount gt
+      150)/concat(groupby((Region),aggregate(SalesNumber with average as
+      RegionAmount)),aggregate(SalesNumber with average as TotalAmount))
+
+  - Name: aggregate function - within filter and lambda
+    Rule: queryOptions
+    Input: $filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri
@@ -417,6 +557,42 @@ TestCases:
     Rule: odataRelativeUri
     Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
+  - Name: hierarchy transformations - ancestors
+    Rule: queryOptions
+    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
+      contains(Name,'Central')))
+
+  - Name: hierarchy transformations - ancestors
+    Rule: queryOptions
+    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
+      contains(Name,'Central')), 2)
+
+  - Name: hierarchy transformations - ancestors
+    Rule: queryOptions
+    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
+      contains(Name,'Central')), keep start)
+
+  - Name: hierarchy transformations - ancestors
+    Rule: queryOptions
+    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
+      contains(Name,'Central')), 2, keep start)
+
+  - Name: hierarchy transformations - descendants
+    Rule: queryOptions
+    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'))
+
+  - Name: hierarchy transformations - descendants
+    Rule: queryOptions
+    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'), 3)
+
+  - Name: hierarchy transformations - descendants
+    Rule: queryOptions
+    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),3,keep start)
+
+  - Name: hierarchy transformations - traverse
+    Rule: queryOptions
+    Input: $apply=traverse(SalesOrgHierarchy,preorder)
+
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
     Input: Customers?$apply=groupby((Name))
@@ -439,12 +615,16 @@ TestCases:
 
   - Name: aggregation methods - multiple grouping
     Rule: queryOptions
-    Input: $apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum
-      as Total)))
+    Input: $apply=groupby((Country,Name),aggregate(Sales(Amount with sum as Total)))
 
   - Name: aggregation methods - multiple grouping - distinct
     Rule: queryOptions
-    Input: $apply=groupby((Country,Sales/Product/Name))
+    Input: $apply=groupby((Customer,Product/Name))
+
+  - Name: aggregation methods - collection-valued navigation property
+    Rule: queryOptions
+    FailAt: 21
+    Input: $apply=groupby((Sales/Product/Name))
 
   - Name: aggregation methods - average
     Rule: queryOptions
@@ -516,6 +696,18 @@ TestCases:
     Input: $apply=compute(Amount mul Product/TaxRate as Tax, day(Time/Date) as
       WeekDay)
 
+  - Name: top
+    Rule: queryOptions
+    Input: $apply=top(5)
+
+  - Name: skip
+    Rule: queryOptions
+    Input: $apply=skip(5)
+
+  - Name: orderby
+    Rule: queryOptions
+    Input: $apply=orderby(Country asc,Name desc)
+
   - Name: model functions as set transformations
     Rule: queryOptions
     Input: $apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum
@@ -535,7 +727,7 @@ TestCases:
 
   - Name: controlling aggregation - rollup and from
     Rule: queryOptions
-    Input: $apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
+    Input: $apply=groupby((rollupall(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
       with sum from Customer/ID with average from Customer/Country with average
       as CustomerCountryAverage))
 
@@ -552,6 +744,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Time),aggregate(Amount with sum as
       Total))/aggregate(Total with average as DailyAverage)
+
+  - Name: transformation sequences - compute, groupby, and nest
+    Rule: queryOptions
+    Input: $apply=compute(substring(Name,0,1) as
+      FirstLetter)/groupby((FirstLetter),nest(identity as SomeCustomers))
 
   - Name: transformation sequences - simple
     Rule: queryOptions
@@ -585,11 +782,43 @@ TestCases:
       10000000),groupby((Continent/Name),aggregate(CountryPopulation with sum as
       TotalPopulation)))
 
-  - Name: transformation sequences - filter and expand
+  - Name: transformation sequences - filter and nest
     Rule: queryOptions
-    Input: $apply=filter(Status eq 'incomplete')/expand(Items,filter(not
+    Input: $apply=filter(Status eq 'incomplete')/nest(Items,filter(not
       Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as
       ItemAmount)))
+
+  - Name: transformation sequences - paging with skip and top
+    Rule: queryOptions
+    Input: $apply=groupby((Customer/City),aggregate(Amount with sum as
+      Total))/skip(10)/top(5)
+
+  - Name: transformation sequences - sorting
+    Rule: queryOptions
+    Input: $apply=groupby((Product/Name),aggregate(Amount with sum as
+      Total))/orderby(Total desc)
+
+  - Name: transformation sequences - joining related instances
+    Rule: queryOptions
+    Input: $apply=join(Sales as TotalSales,aggregate(Amount with sum as
+      Total))/groupby((Name,TotalSales/Total))
+
+  - Name: transformation sequences - joining related instances keeping unrelated ones
+    Rule: queryOptions
+    Input: $apply=outerjoin(Sales as TotalSales,aggregate(Amount with sum as
+      Total))/groupby((Name,TotalSales/Total))
+
+  - Name: transformation sequences - sub-hierarchy selection
+    Rule: queryOptions
+    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),keep
+      start)/ancestors(SalesOrgHierarchy,filter(contains(Name,'East')),keep
+      start)/traverse(SalesOrgHierarchy,preorder)
+
+  - Name: transformation sequences - aggregation along hierarchy
+    Rule: queryOptions
+    Input: $apply=nest(Sales,filter(Product/Name eq
+      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count with
+      sum as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
