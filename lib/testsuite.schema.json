@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Test cases for OData ABNF",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Constraints": {
+      "type": "object",
+      "description": "Constraints on matches for rules",
+      "patternProperties": {
+        "^[a-zA-Z][a-zA-Z0-9\\-]*$": {
+          "type": "array",
+          "description": "Allowed matches for a rule",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "TestCases": {
+      "type": "array",
+      "description": "List of Test Cases",
+      "items": {
+        "type": "object",
+        "description": "Test Case",
+        "additionalProperties": false,
+        "required": ["Name", "Rule", "Input"],
+        "properties": {
+          "Name": {
+            "type": "string",
+            "description": "Short description of test case"
+          },
+          "Rule": {
+            "type": "string",
+            "description": "Rule to test",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9\\-]*$"
+          },
+          "Input": {
+            "type": "string",
+            "description": "Text to match against rule"
+          },
+          "FailAt": {
+            "type": "integer",
+            "description": "Position where match is expected to fail",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

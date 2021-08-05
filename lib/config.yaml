@@ -1,0 +1,17 @@
+trace:
+  # Rules not to trace
+  omit:
+    - A-to-F
+    - day
+    - hour
+    - identifierLeadingCharacter
+    - identifierCharacter
+    - minute
+    - month
+    - odataIdentifier
+    - oneToNine
+    - pchar-no-SQUOTE
+    - second
+    - unreserved
+    - year
+    - zeroToFiftyNine
