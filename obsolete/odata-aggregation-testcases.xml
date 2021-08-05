@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  OData Aggregation ABNF Test Cases Version 4.0
+
+  Working Draft 04
+  04 November 2015
+
+  Technical Committee:
+  OASIS Open Data Protocol (OData) TC
+  https://www.oasis-open.org/committees/odata
+
+  Chairs:
+  - Barbara Hartel (barbara.hartel@sap.com), SAP AG
+  - Ram Jeyaraman (Ram.Jeyaraman@microsoft.com), Microsoft
+
+  Editors:
+  - Ralf Handl (ralf.handl@sap.com), SAP AG
+  - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
+  - Gerald Krause (gerald.krause@sap.com), SAP AG
+  - Michael Pizzo (mikep@microsoft.com), Microsoft
+  - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP AG
+
+  Additional artifacts:
+  This test case document is one component of a Work Product which consists of:
+  - OData Extension for Data Aggregation Version 4.0
+  - OData Aggregation ABNF Construction Rules Version 4.0
+  - OData Aggregation ABNF Test Cases
+  - OData Aggregation Vocabulary
+
+  Related work:
+  This specification is related to:
+  - OData Version 4.0 Part 1: Protocol
+  - OData Version 4.0 Part 2: URL Conventions
+  - OData Version 4.0 Part 3: CSDL
+  - OData ABNF Construction Rules Version 4.0
+  - OData Core Vocabulary
+  - OData Measures Vocabulary
+  - OData JSON Format Version 4.0
+  This specification replaces or supersedes:
+  - None
+
+  Declared XML namespaces:
+  - None
+
+  Abstract:
+  This specification adds basic grouping and aggregation functionality (e.g.
+  sum, min, and max) to the Open Data Protocol (OData) without changing any
+  of the base principles of OData.
+
+  
+  Overview:
+  This document contains positive and negative test cases for the
+  OData Aggregation ABNF Construction Rules Version 4.0.
+  Positive test cases consist of the rule to test, the input string to parse,
+  and a description of the test case.
+  Negative test cases in addition state the character position at which the
+  invalid portion of input text starts, 0 meaning the whole input string.
+
+  These test cases can be automatically executed with the ABNF test tool
+  available at https://github.com/oasis-tcs/odata-abnf/tree/main/lib.
+  This tool is neither required for interpreting the test cases, nor is it
+  part of the OData work product.
+
+-->
+<TestSuite xmlns="http://docs.oasis-open.org/odata/ns/testcases">
+  <!--
+
+    This document contains positive and negative test cases for the
+    OData Aggregation ABNF Construction Rules Version 4.0.
+    Positive test cases consist of the rule to test, the input string to parse,
+    and a description of the test case.
+    Negative test cases in addition state the character position at which the
+    invalid portion of input text starts, 0 meaning the whole input string.
+
+    These test cases can be automatically executed with the ABNF test tool
+    available at https://github.com/oasis-tcs/odata-abnf/tree/main/lib.
+    This tool is neither required for interpreting the test cases, nor is it
+    part of the OData work product.
+
+  -->
+
+  <DisableTrace Rule="odataIdentifier" />
+  <DisableTrace Rule="identifierLeadingCharacter" />
+  <DisableTrace Rule="identifierCharacter" />
+  <DisableTrace Rule="ALPHA" />
+  <DisableTrace Rule="DIGIT" />
+  <DisableTrace Rule="HEXDIG" />
+  <DisableTrace Rule="A-to-F" />
+  <DisableTrace Rule="oneToNine" />
+
+  <Constraint Rule="action"></Constraint>
+  <Constraint Rule="actionImport"></Constraint>
+  <Constraint Rule="expressionAlias">
+    <Match>Actual</Match>
+    <Match>AverageAmount</Match>
+    <Match>AveragePrice</Match>
+    <Match>AvgAmt</Match>
+    <Match>CountryPopulation</Match>
+    <Match>CustomerCountryAverage</Match>
+    <Match>DailyAverage</Match>
+    <Match>DistinctProducts</Match>
+    <Match>ItemAmount</Match>
+    <Match>MaxAmount</Match>
+    <Match>MinAmount</Match>
+    <Match>MonthlyAverage</Match>
+    <Match>ProductNames</Match>
+    <Match>Profit</Match>
+    <Match>SalesCount</Match>
+    <Match>Tax</Match>
+    <Match>Total</Match>
+    <Match>TotalPlannedRevenue</Match>
+    <Match>TotalPopulation</Match>
+    <Match>WeekDay</Match>
+  </Constraint>
+  <Constraint Rule="complexColProperty">
+    <Match>Details</Match>
+  </Constraint>
+  <Constraint Rule="complexColFunction"></Constraint>
+  <Constraint Rule="complexColFunctionImport"></Constraint>
+  <Constraint Rule="complexFunction"></Constraint>
+  <Constraint Rule="complexFunctionImport"></Constraint>
+  <Constraint Rule="complexProperty"></Constraint>
+  <Constraint Rule="complexTypeName"></Constraint>
+  <Constraint Rule="customAggregate">
+    <Match>Budget</Match>
+    <Match>Forecast</Match>
+  </Constraint>
+  <Constraint Rule="entityColFunction">
+    <Match>TopCountAndBalance</Match>
+  </Constraint>
+  <Constraint Rule="entityColFunctionImport"></Constraint>
+  <Constraint Rule="entityColNavigationProperty">
+    <Match>Items</Match>
+    <Match>Orders</Match>
+    <Match>Products</Match>
+    <Match>Sales</Match>
+    <Match>SalesPlan</Match>
+    <Match>Suppliers</Match>
+  </Constraint>
+  <Constraint Rule="entityColFunction"></Constraint>
+  <Constraint Rule="entityColFunctionImport"></Constraint>
+  <Constraint Rule="entityFunction"></Constraint>
+  <Constraint Rule="entityFunctionImport"></Constraint>
+  <Constraint Rule="entityNavigationProperty">
+    <Match>Category</Match>
+    <Match>Continent</Match>
+    <Match>Country</Match>
+    <Match>Currency</Match>
+    <Match>Customer</Match>
+    <Match>Product</Match>
+    <Match>Products_cj</Match>
+    <Match>ProductGroup</Match>
+    <Match>Sales_cj</Match>
+    <Match>Time</Match>
+  </Constraint>
+  <Constraint Rule="entitySetName">
+    <Match>Categories</Match>
+    <Match>Customers</Match>
+    <Match>Products</Match>
+    <Match>Products_cj</Match>
+    <Match>Sales</Match>
+    <Match>Sales_cj</Match>
+    <Match>SalesOrganizations</Match>
+    <Match>Time</Match>
+  </Constraint>
+  <Constraint Rule="entityTypeName"></Constraint>
+  <Constraint Rule="enumerationMember"></Constraint>
+  <Constraint Rule="enumerationTypeName"></Constraint>
+  <Constraint Rule="keyPathLiteral"></Constraint>
+  <Constraint Rule="keyPropertyAlias"></Constraint>
+  <Constraint Rule="lambdaVariableExpr"></Constraint>
+  <Constraint Rule="namespacePart">
+    <Match>Aggregation</Match>
+    <Match>Custom</Match>
+    <Match>Self</Match>
+  </Constraint>
+  <Constraint Rule="primitiveColFunction"></Constraint>
+  <Constraint Rule="primitiveColFunctionImport"></Constraint>
+  <Constraint Rule="primitiveColProperty"></Constraint>
+  <Constraint Rule="primitiveFunction">
+    <Match>isroot</Match>
+    <Match>isleaf</Match>
+    <Match>isancestor</Match>
+    <Match>issibling</Match>
+    <Match>isdescendant</Match>
+  </Constraint>
+  <Constraint Rule="primitiveFunctionImport"></Constraint>
+  <Constraint Rule="primitiveKeyProperty">
+    <Match>Code</Match>
+    <Match>Date</Match>
+    <Match>ID</Match>
+  </Constraint>
+  <Constraint Rule="primitiveNonKeyProperty">
+    <Match>Amount</Match>
+    <Match>City</Match>
+    <Match>Cost</Match>
+    <Match>CountryCode</Match>
+    <Match>Month</Match>
+    <Match>Name</Match>
+    <Match>PlannedRevenue</Match>
+    <Match>Population</Match>
+    <Match>Price</Match>
+    <Match>ProductID</Match>
+    <Match>Quantity</Match>
+    <Match>Revenue</Match>
+    <Match>SalesArea</Match>
+    <Match>Shipped</Match>
+    <Match>Status</Match>
+    <Match>Street</Match>
+    <Match>TaxRate</Match>
+    <Match>Year</Match>
+  </Constraint>
+  <Constraint Rule="streamProperty"></Constraint>
+
+  <TestCase Name="aggregate - no parameters" Rule="queryOptions" FailAt="17">
+    <Input>$apply=aggregate()</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property with method as alias" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with sum as Total)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - alias - context URL" Rule="odataRelativeUri">
+    <Input>$metadata#Sales(Total)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property requires alias" Rule="queryOptions" FailAt="32">
+    <Input>$apply=aggregate(Amount with sum)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property requires method" Rule="queryOptions" FailAt="24">
+    <Input>$apply=aggregate(Amount as Total)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property requires alias" Rule="queryOptions" FailAt="32">
+    <Input>$apply=aggregate(Amount with sum)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property requires method and alias" Rule="queryOptions" FailAt="23">
+    <Input>$apply=aggregate(Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - expression" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount mul Product/TaxRate with sum as Tax)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - expression after path" Rule="queryOptions">
+    <Input>$apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - alias - context URL" Rule="odataRelativeUri">
+    <Input>$metadata#Products(Sales(Tax))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - min" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with max as MaxAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - max" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with max as MaxAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - average" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with average as AverageAmount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - custom aggregation method" Rule="queryOptions">
+    <Input>$apply=aggregate(Product/Name with Custom.concat as ProductNames)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - countdistinct" Rule="queryOptions">
+    <Input>$apply=aggregate(Product with countdistinct as DistinctProducts)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - from" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with sum from Time with average as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - from twice" Rule="queryOptions">
+    <Input>$apply=aggregate(Amount with sum from Time with average from Product/Name with max as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - from requires as" Rule="queryOptions" FailAt="55">
+    <Input>$apply=aggregate(Amount with sum from Time with average)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - property from requires with" Rule="queryOptions" FailAt="24">
+    <Input>$apply=aggregate(Amount from Time with average as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - custom aggregate and from" Rule="queryOptions">
+    <Input>$apply=aggregate(Forecast from Time with average as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - path with key segment" Rule="queryOptions">
+    <Input>$apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as TotalPlannedRevenue)</Input>
+  </TestCase>
+  <TestCase Name="Aggregation - collection of complex type" Rule="queryOptions">
+    <Input>$apply=groupby((Product),aggregate(Details(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - $count" Rule="queryOptions">
+    <Input>$apply=aggregate($count as SalesCount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - $count does not allow with" Rule="queryOptions" FailAt="24">
+    <Input>$apply=aggregate($count with sum as SalesCount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - topcount" Rule="queryOptions">
+    <Input>$apply=topcount(2,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - topsum" Rule="queryOptions">
+    <Input>$apply=topsum(15,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - toppercent" Rule="queryOptions">
+    <Input>$apply=toppercent(50,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - bottomcount" Rule="queryOptions">
+    <Input>$apply=bottomcount(2,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - bottomsum" Rule="queryOptions">
+    <Input>$apply=bottomsum(15,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - bottompercent" Rule="queryOptions">
+    <Input>$apply=bottompercent(50,Amount)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - identity" Rule="queryOptions">
+    <Input>$apply=identity</Input>
+  </TestCase>
+  <TestCase Name="aggregate - concat" Rule="queryOptions">
+    <Input>$apply=concat(topcount(2,Amount),bottomcount(2,Amount))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - groupby" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - groupby distinct" Rule="queryOptions">
+    <Input>$apply=groupby((Product/Name,Amount))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - groupby rollup" Rule="queryOptions">
+    <Input>$apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - filter" Rule="queryOptions">
+    <Input>$apply=filter(Amount gt 3)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - expand" Rule="queryOptions">
+    <Input>$apply=expand(Sales,filter(Amount gt 3))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level expand" Rule="queryOptions">
+    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions">
+    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,expand(Products,filter(true))))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions" FailAt="102">
+    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,filter(true),expand(Products)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - multi-level expand with branches" Rule="queryOptions" FailAt="89">
+    <Input>$apply=expand(Products,expand(Sales,filter(Amount gt 3)),expand(Suppliers,expand(Products)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - search" Rule="queryOptions">
+    <Input>$apply=search(coffee)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - isdefined" Rule="queryOptions">
+    <Input>$filter=isdefined(Product) and isdefined(Customer/Name) and isdefined(Forecast)</Input>
+  </TestCase>
+  <TestCase Name="aggregate - isdefined: get totals last" Rule="queryOptions">
+    <Input>$orderby=isdefined(Product) desc,Product asc</Input>
+  </TestCase>
+  <TestCase Name="aggregate - crossjoin" Rule="odataRelativeUri">
+    <!-- entity set names suffixed with _cj to distinguish from identically named collection-valued navigation properties -->
+    <Input>$crossjoin(Products_cj,Sales_cj)?$apply=filter(Products_cj/ID eq Sales_cj/ProductID)/groupby((Products_cj/Name),aggregate(Sales_cj/Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - crossjoin" Rule="odataRelativeUri">
+    <!-- entity set names suffixed with _cj to distinguish from identically named collection-valued navigation properties -->
+    <Input>$crossjoin(Products_cj,Time,Sales_cj)?$apply=groupby((Products_cj/Name,Time/Date),aggregate(Budget))</Input>
+  </TestCase>
+  <TestCase Name="aggregate - custom aggregate with path on crossjoin" Rule="odataRelativeUri">
+    <Input>$crossjoin(Products_cj,Time,Sales_cj)?$apply=groupby((Products_cj/Name,Time/Date),aggregate(Sales_cj/Forecast))</Input>
+  </TestCase>
+  <TestCase Name="custom aggregates - entity set" Rule="odataRelativeUri">
+    <Input>Sales?$apply=groupby((Time/Month),aggregate(Forecast))</Input>
+  </TestCase>
+  <TestCase Name="custom aggregates - crossjoin" Rule="odataRelativeUri">
+    <Input>$crossjoin(Time)?$apply=groupby((Time/Year),aggregate(Budget))</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isroot" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isroot(Hierarchy='SalesOrgHierarchy')</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isdescendant" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA')</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isdescendant" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isancestor" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA')</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isancestor" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - issibling" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.issibling(Hierarchy='SalesOrgHierarchy',Node='EMEA')</Input>
+  </TestCase>
+  <TestCase Name="hierarchy functions - isleaf" Rule="odataRelativeUri">
+    <Input>SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')</Input>
+  </TestCase>
+  <TestCase Name="distinct values - no aggregate" Rule="odataRelativeUri">
+    <Input>Customers?$apply=groupby((Name))</Input>
+  </TestCase>
+  <TestCase Name="distinct values - navigation" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Name))</Input>
+  </TestCase>
+  <TestCase Name="distinct values - two grouping properties" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Name,Customer/ID))</Input>
+  </TestCase>
+  <TestCase Name="distinct values - three grouping properties" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Name,Customer/ID,Product/Name))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - multiple grouping" Rule="queryOptions">
+    <Input>$apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - multiple grouping - distinct" Rule="queryOptions">
+    <Input>$apply=groupby((Country,Sales/Product/Name))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - average" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country),aggregate(Amount with average as AverageAmount))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - $count segment" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - $count segment and sum" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount,Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="aggregation methods - $count only allowed on top level, not nested within path" Rule="queryOptions" FailAt="38">
+    <Input>$apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="collection-valued path" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales/Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="custom aggregate" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country),aggregate(Amount with sum as Actual,Forecast))</Input>
+  </TestCase>
+  <TestCase Name="custom aggregate - with path" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales(Amount with sum as Actual),Sales/Forecast))</Input>
+  </TestCase>
+  <TestCase Name="aliasing - aggregate with two parameters" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country),aggregate(Amount with sum as Total,Amount with average as AvgAmt))</Input>
+  </TestCase>
+  <TestCase Name="aliasing - two parameters with path" Rule="queryOptions">
+    <Input>$apply=groupby((Name),aggregate(Sales(Amount with sum as Total),Sales(Amount with average as AvgAmt)))</Input>
+  </TestCase>
+  <TestCase Name="aliasing - group by and aggregate same property" Rule="queryOptions">
+    <Input>$apply=groupby((Amount),aggregate(Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="combining transformations - concat" Rule="queryOptions">
+    <Input>$apply=concat(groupby((Customer/Country,Product/Name,Currency/Code),aggregate(Amount with sum as Total))/groupby((Customer/Country,Currency/Code),topcount(1,Total)),groupby((Customer/Country,Currency/Code),aggregate(Amount with sum as Total)))</Input>
+  </TestCase>
+  <TestCase Name="combining transformations - within groupby" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount with sum as Total))</Input>
+  </TestCase>
+  <TestCase Name="compute" Rule="queryOptions">
+    <Input>$apply=compute(Amount mul Product/TaxRate as Tax)</Input>
+  </TestCase>
+  <TestCase Name="compute" Rule="queryOptions">
+    <Input>$apply=compute(Amount mul Product/TaxRate as Tax, day(Time/Date) as WeekDay)</Input>
+  </TestCase>
+  <TestCase Name="model functions as set transformations" Rule="queryOptions">
+    <Input>$apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum as Total))/groupby((Customer/Country),Self.TopCountAndBalance(Count=1,Property='Total'))</Input>
+  </TestCase>
+  <TestCase Name="controlling aggregation - on foot" Rule="queryOptions">
+    <Input>$apply=groupby((Product/ID,Product/Name,Time/Month),aggregate(Amount with sum as Total))/groupby((Product/ID,Product/Name),aggregate(Total with average as AverageAmount))</Input>
+  </TestCase>
+  <TestCase Name="controlling aggregation - from" Rule="queryOptions">
+    <Input>$apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum from Time/Month with average as MonthlyAverage))</Input>
+  </TestCase>
+  <TestCase Name="controlling aggregation - rollup and from" Rule="queryOptions">
+    <Input>$apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount with sum from Customer/ID with average from Customer/Country with average as CustomerCountryAverage))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - filter and aggregate" Rule="queryOptions">
+    <Input>$apply=filter(Amount le 1)/aggregate(Amount with sum as Total)</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - pre- and post-filter" Rule="queryOptions">
+    <Input>$apply=filter(Amount le 2)/groupby((Product/Name),aggregate(Forecast))&amp;$filter=Total ge 4</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - post-aggregate" Rule="queryOptions">
+    <Input>$apply=groupby((Time),aggregate(Amount with sum as Total))/aggregate(Total with average as DailyAverage)</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - simple" Rule="queryOptions">
+    <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as TotalPopulation))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - Population 1" Rule="queryOptions">
+    <Input>$apply=filter(Population ge 10000000)/groupby((Continent/Name,Country/Name),aggregate(Population with sum as TotalPopulation))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - Population 2" Rule="queryOptions">
+    <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as CountryPopulation))/filter(CountryPopulation ge 10000000)/concat(identity,groupby((Continent/Name),aggregate(CountryPopulation with sum as TotalPopulation)))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - Population 3" Rule="queryOptions">
+    <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as CountryPopulation))/filter(CountryPopulation ge 10000000)/groupby((rollup(Continent/Name,Country/Name)),aggregate(CountryPopulation with sum as TotalPopulation))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - Population 4" Rule="queryOptions">
+    <Input>$apply=groupby((Continent/Name,Country/Name),aggregate(Population with sum as CountryPopulation))/concat(filter(CountryPopulation ge 10000000),groupby((Continent/Name),aggregate(CountryPopulation with sum as TotalPopulation)))</Input>
+  </TestCase>
+  <TestCase Name="transformation sequences - filter and expand" Rule="queryOptions">
+    <Input>$apply=filter(Status eq 'incomplete')/expand(Items,filter(not Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as ItemAmount)))</Input>
+  </TestCase>
+  <TestCase Name="aggregate in $expand" Rule="odataRelativeUri">
+    <Input>Categories?$expand=Products($apply=aggregate(Price with average as AveragePrice))</Input>
+  </TestCase>
+</TestSuite>
