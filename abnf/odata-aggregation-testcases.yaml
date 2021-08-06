@@ -462,48 +462,60 @@ TestCases:
   - Name: aggregate function - after grouping
     Rule: queryOptions
     Input: $apply=groupby((Customer),aggregate(Amount with sum as
-      CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with
+      CustomerAmount))/compute(CustomerAmount div $these/aggregate(p:CustomerAmount with
       sum) as RevenueContribution)
 
   - Name: aggregate function - within a group
     Rule: queryOptions
     Input: $apply=groupby((Customer,Year),aggregate(Amount with sum as
       CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div
-      aggregate(CustomerYearAmount with sum) as RevenueTrend))
+      $these/aggregate(p:CustomerYearAmount with sum) as RevenueTrend))
+
+  - Name: aggregate function - missing $these
+    Rule: queryOptions
+    FailAt: 35
+    Input: $apply=compute(Amount div aggregate(p:Amount with average) as
+      RelativeOrderSize)
+
+  - Name: aggregate function - missing lambda variable
+    Rule: queryOptions
+    FailAt: 49
+    Input: $apply=compute(Amount div $these/aggregate(Amount with average) as
+      RelativeOrderSize)
 
   - Name: aggregate function - across input set
     Rule: queryOptions
-    Input: $apply=compute(Amount div $these/aggregate(l:Amount with average) as
+    Input: $apply=compute(Amount div $these/aggregate(p:Amount with average) as
       RelativeOrderSize)
 
   - Name: aggregate function - across input set with custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div $these/aggregate(l:Budget) as RelativeAmount)
+    Input: $apply=compute(Amount div $these/aggregate(p:Budget) as RelativeAmount)
 
   - Name: aggregate function - across input set with related custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div $these/aggregate(l:Product/Budget) as
+    Input: $apply=compute(Amount div $these/aggregate(p:Product/Budget) as
       RelativeAmount)
 
   - Name: aggregate function - across input set with from
     Rule: queryOptions
     Input:
-      $apply=compute(Amount div $these/aggregate(l:Amount with sum from Time
+      $apply=compute(Amount div $these/aggregate(p:Amount with sum from Time
       with average) as RelativeAmount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
-    Input: $apply=compute($these/aggregate(l:$count) as SalesCount)
+    Input: $apply=compute($these/aggregate(p:$count) as SalesCount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
-    Input: $apply=groupby((Customer),compute($these/aggregate(l:$count) as
+    Input: $apply=groupby((Customer),compute($these/aggregate(p:$count) as
       SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as
       TotalAmount)
 
   - Name: aggregate function - within a group - ...
     Rule: queryOptions
-    Input: $apply=groupby((Region),compute($these/aggregate(l:SalesNumber with
+    Input: $apply=groupby((Region),compute($these/aggregate(p:SalesNumber with
       average) as RegionAmount))/filter(RegionAmount gt
       150)/concat(groupby((Region),aggregate(SalesNumber with average as
       RegionAmount)),aggregate(SalesNumber with average as TotalAmount))
