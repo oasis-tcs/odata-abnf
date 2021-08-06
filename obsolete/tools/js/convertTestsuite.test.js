@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { readXml, json2yaml } = require("../lib/convertTestsuite");
+const { readXml, json2yaml } = require("./convertTestsuite");
 
 describe("convert XML test suite to JSON", () => {
   it("read empty test suite", () => {
