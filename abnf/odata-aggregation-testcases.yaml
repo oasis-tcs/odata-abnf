@@ -45,7 +45,7 @@
 #  sum, min, and max) to the Open Data Protocol (OData) without changing any
 #  of the base principles of OData.
 #
-#  
+#
 #  Overview:
 #  This document contains positive and negative test cases for the
 #  OData Aggregation ABNF Construction Rules Version 4.0.
@@ -172,7 +172,6 @@ Constraints:
   streamProperty: []
 
 TestCases:
-  
   - Name: aggregate - no parameters
     Rule: queryOptions
     FailAt: 17
@@ -244,7 +243,8 @@ TestCases:
 
   - Name: aggregate - from twice
     Rule: queryOptions
-    Input: $apply=aggregate(Amount with sum from Time with average from Product/Name
+    Input:
+      $apply=aggregate(Amount with sum from Time with average from Product/Name
       with max as DailyAverage)
 
   - Name: aggregate - from requires as
@@ -313,7 +313,8 @@ TestCases:
 
   - Name: aggregate - groupby
     Rule: queryOptions
-    Input: $apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum
+    Input:
+      $apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum
       as Total))
 
   - Name: aggregate - groupby distinct
@@ -322,7 +323,8 @@ TestCases:
 
   - Name: aggregate - groupby rollup
     Rule: queryOptions
-    Input: $apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
+    Input:
+      $apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
       with sum as Total))
 
   - Name: aggregate - filter
@@ -439,7 +441,8 @@ TestCases:
 
   - Name: aggregation methods - multiple grouping
     Rule: queryOptions
-    Input: $apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum
+    Input:
+      $apply=groupby((Name,Sales/Currency/Code),aggregate(Sales(Amount with sum
       as Total)))
 
   - Name: aggregation methods - multiple grouping - distinct
@@ -460,11 +463,13 @@ TestCases:
     Input: $apply=groupby((Name),aggregate(Sales/$count with sum as
       SalesCount,Sales(Amount with sum as Total)))
 
-  - Name: aggregation methods - $count only allowed on top level, not nested within
+  - Name:
+      aggregation methods - $count only allowed on top level, not nested within
       path
     Rule: queryOptions
     FailAt: 38
-    Input: $apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount
+    Input:
+      $apply=groupby((Name),aggregate(Sales($count as SalesCount),Sales(Amount
       with sum as Total)))
 
   - Name: collection-valued path
@@ -497,14 +502,16 @@ TestCases:
 
   - Name: combining transformations - concat
     Rule: queryOptions
-    Input: $apply=concat(groupby((Customer/Country,Product/Name,Currency/Code),aggregate(Amount
+    Input:
+      $apply=concat(groupby((Customer/Country,Product/Name,Currency/Code),aggregate(Amount
       with sum as
       Total))/groupby((Customer/Country,Currency/Code),topcount(1,Total)),groupby((Customer/Country,Currency/Code),aggregate(Amount
       with sum as Total)))
 
   - Name: combining transformations - within groupby
     Rule: queryOptions
-    Input: $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
+    Input:
+      $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
       with sum as Total))
 
   - Name: compute
@@ -518,24 +525,28 @@ TestCases:
 
   - Name: model functions as set transformations
     Rule: queryOptions
-    Input: $apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum
+    Input:
+      $apply=groupby((Customer/Country,Product/Name),aggregate(Amount with sum
       as
       Total))/groupby((Customer/Country),Self.TopCountAndBalance(Count=1,Property='Total'))
 
   - Name: controlling aggregation - on foot
     Rule: queryOptions
-    Input: $apply=groupby((Product/ID,Product/Name,Time/Month),aggregate(Amount with
+    Input:
+      $apply=groupby((Product/ID,Product/Name,Time/Month),aggregate(Amount with
       sum as Total))/groupby((Product/ID,Product/Name),aggregate(Total with
       average as AverageAmount))
 
   - Name: controlling aggregation - from
     Rule: queryOptions
-    Input: $apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum from
+    Input:
+      $apply=groupby((Product/ID,Product/Name),aggregate(Amount with sum from
       Time/Month with average as MonthlyAverage))
 
   - Name: controlling aggregation - rollup and from
     Rule: queryOptions
-    Input: $apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
+    Input:
+      $apply=groupby((rollup($all,Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
       with sum from Customer/ID with average from Customer/Country with average
       as CustomerCountryAverage))
 
@@ -555,7 +566,8 @@ TestCases:
 
   - Name: transformation sequences - simple
     Rule: queryOptions
-    Input: $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
+    Input:
+      $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
       sum as TotalPopulation))
 
   - Name: transformation sequences - Population 1
@@ -566,21 +578,24 @@ TestCases:
 
   - Name: transformation sequences - Population 2
     Rule: queryOptions
-    Input: $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
+    Input:
+      $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
       sum as CountryPopulation))/filter(CountryPopulation ge
       10000000)/concat(identity,groupby((Continent/Name),aggregate(CountryPopulation
       with sum as TotalPopulation)))
 
   - Name: transformation sequences - Population 3
     Rule: queryOptions
-    Input: $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
+    Input:
+      $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
       sum as CountryPopulation))/filter(CountryPopulation ge
       10000000)/groupby((rollup(Continent/Name,Country/Name)),aggregate(CountryPopulation
       with sum as TotalPopulation))
 
   - Name: transformation sequences - Population 4
     Rule: queryOptions
-    Input: $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
+    Input:
+      $apply=groupby((Continent/Name,Country/Name),aggregate(Population with
       sum as CountryPopulation))/concat(filter(CountryPopulation ge
       10000000),groupby((Continent/Name),aggregate(CountryPopulation with sum as
       TotalPopulation)))
