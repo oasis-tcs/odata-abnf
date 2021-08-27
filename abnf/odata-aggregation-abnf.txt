@@ -149,26 +149,22 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo       = %s"nest" OPEN BWS
-                  ( nestPath BWS COMMA BWS nestApplyExpr
-                  / nestApplyAliasdExpr
-                  )
-                  BWS CLOSE
+nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
+                / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
+                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
 nestPath        = nestNavigationPropertyPath
                 / nestComplexTypeInstancePath [ "/" nestNavigationPropertyPath ]
-; possible nest paths borrowed from expandPath expandPath, because nestPath accepts a subset of those paths accepted by the $expand query option
-nestComplexTypeInstancePath = 1*( complexProperty 
-                                / complexColProperty 
-                                / optionallyQualifiedComplexTypeName 
-                                / complexAnnotationInQuery
-                                ) 
+; possible nest paths borrowed from expandPath, because nestPath accepts a subset of those paths accepted by the $expand query option
+nestComplexTypeInstancePath = ( complexProperty 
+                              / complexColProperty 
+                              / optionallyQualifiedComplexTypeName 
+                              / complexAnnotationInQuery
+                              ) [ "/" nestComplexTypeInstancePath ] 
 nestNavigationPropertyPath  = ( navigationProperty 
                               / entityAnnotationInQuery
                               ) 
                               [ "/" optionallyQualifiedEntityTypeName ]
-nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias ) [ BWS COMMA BWS applyExpr ]
-                            / applyExpr
-nestApplyAliasdExpr         = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE

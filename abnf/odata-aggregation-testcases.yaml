@@ -76,6 +76,7 @@ Constraints:
     - Detail
     - DistinctProducts
     - FilteredSales
+    - FilteredSuppliers
     - FirstLetter
     - ItemAmount
     - MaxAmount
@@ -378,46 +379,57 @@ TestCases:
     Rule: queryOptions
     Input: $apply=search(coffee)
 
-  - Name: aggregate - nest
+  - Name: aggregate - transformnested
     Rule: queryOptions
-    Input: $apply=nest(Sales,filter(Amount gt 3))
+    Input: $apply=transformnested(Sales,filter(Amount gt 3))
 
-  - Name: aggregate - nest with alias
+  - Name: aggregate - transformnested with alias
     Rule: queryOptions
-    Input: $apply=nest(Sales,filter(Amount gt 3) as FilteredSales)
+    FailAt: 49
+    Input: $apply=transformnested(Sales,filter(Amount gt 3) as FilteredSales)
+
+  - Name: aggregate - transformnested multiple
+    Rule: queryOptions
+    FailAt: 48
+    Input: $apply=transformnested(Sales,filter(Amount gt 3),filter(Amount lt 3))
+
+  - Name: aggregate - addnested
+    Rule: queryOptions
+    Input: $apply=addnested(Sales,filter(Amount gt 3) as FilteredSales)
 
   - Name: aggregate - nesting complex property
     Rule: queryOptions
-    Input: $apply=nest(ShipTo,identity)
+    Input: $apply=transformnested(ShipTo,identity)
 
   - Name: aggregate - nesting collection-valued complex property
     Rule: queryOptions
-    Input: $apply=nest(Details,filter(Cost gt 1000))
+    Input: $apply=transformnested(Details,filter(Cost gt 1000))
 
   - Name: aggregate - multi-level nest
     Rule: queryOptions
-    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)))
+    Input: $apply=transformnested(Products,transformnested(Sales,filter(Amount gt 3)))
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
-    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)) as
-      FilteredSales,nest(Suppliers,nest(Products,filter(true))))
+    Input: $apply=addnested(Products,transformnested(Sales,filter(Amount gt 3)) as
+      FilteredSales,transformnested(Suppliers,transformnested(Products,filter(true))) as
+      FilteredSuppliers)
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
-    FailAt: 52
-    Input: $apply=nest(Products,nest(Sales,filter(Amount gt
-      3)),nest(Suppliers,filter(true),nest(Products)))
+    FailAt: 68
+    Input: $apply=addnested(Products,transformnested(Sales,filter(Amount gt
+      3)),transformnested(Suppliers,filter(true),nest(Products)))
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
-    FailAt: 98
-    Input: $apply=nest(Products,nest(Sales,filter(Amount gt 3)) as
-      FilteredSales,nest(Suppliers,nest(Products)))
+    FailAt: 125
+    Input: $apply=addnested(Products,transformnested(Sales,filter(Amount gt 3)) as
+      FilteredSales,transformnested(Suppliers,nest(Products)))
 
   - Name: aggregate - nest with filter on $this
     Rule: queryOptions
-    Input: $apply=nest(Sales,filter($this/Customer/City eq ShipTo/City))
+    Input: $apply=transformnested(Sales,filter($this/Customer/City eq ShipTo/City))
 
   - Name: aggregate - nest without path
     Rule: queryOptions
@@ -800,7 +812,7 @@ TestCases:
 
   - Name: transformation sequences - filter and nest
     Rule: queryOptions
-    Input: $apply=filter(Status eq 'incomplete')/nest(Items,filter(not
+    Input: $apply=filter(Status eq 'incomplete')/transformnested(Items,filter(not
       Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as
       ItemAmount)))
 
@@ -832,7 +844,7 @@ TestCases:
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
-    Input: $apply=nest(Sales,filter(Product/Name eq
+    Input: $apply=transformnested(Sales,filter(Product/Name eq
       'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count with
       sum as PaperSalesCount))
 
