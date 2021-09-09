@@ -716,6 +716,12 @@ TestCases:
       Total))/groupby((Customer/Country,Currency/Code),topcount(1,Total)),groupby((Customer/Country,Currency/Code),aggregate(Amount
       with sum as Total)))
 
+  - Name: combining transformations - within groupby
+    Rule: queryOptions
+    Input:
+      $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
+      with sum as Total))
+
   - Name: combining transformations - number of leaves
     Rule: queryOptions
     Input:
@@ -723,12 +729,6 @@ TestCases:
         groupby((Customer))/aggregate($count as NumberOfLeaves),
         aggregate(Budget,Forecast)
       )/Custom.condense())/orderby(Budget desc)/top(4)
-
-  - Name: combining transformations - within groupby
-    Rule: queryOptions
-    Input:
-      $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
-      with sum as Total))
 
   - Name: combining transformations - number of leaves
     Rule: queryOptions
