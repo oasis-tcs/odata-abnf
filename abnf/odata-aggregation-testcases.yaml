@@ -82,6 +82,7 @@ Constraints:
     - MaxAmount
     - MinAmount
     - MonthlyAverage
+    - NumberOfLeaves
     - ProductNames
     - ProductIDs
     - Profit
@@ -105,7 +106,8 @@ Constraints:
     - WeekDay
   complexColProperty:
     - Details
-  complexColFunction: []
+  complexColFunction:
+    - condense
   complexColFunctionImport: []
   complexFunction: []
   complexFunctionImport: []
@@ -706,6 +708,14 @@ TestCases:
     Input:
       $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
       with sum as Total))
+
+  - Name: combining transformations - number of leaves
+    Rule: queryOptions
+    Input:
+      $apply=groupby((CountryCode),concat(
+        groupby((Customer))/aggregate($count as NumberOfLeaves),
+        aggregate(Budget,Forecast)
+      )/Custom.condense())/orderby(Budget desc)/top(4)
 
   - Name: compute
     Rule: queryOptions
