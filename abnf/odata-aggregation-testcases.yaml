@@ -534,6 +534,14 @@ TestCases:
       150)/concat(groupby((Region),aggregate(SalesNumber with average as
       RegionAmount)),aggregate(SalesNumber with average as TotalAmount))
 
+  - Name: aggregate function - in $compute option
+    Rule: queryOptions
+    Input: $compute=Amount div $these/aggregate(p:Amount with sum) as RelativeAmount
+
+  - Name: aggregate function - in $compute option with custom aggregate
+    Rule: queryOptions
+    Input: $compute=Amount div $these/aggregate(p:Budget) as RelativeAmount
+
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
     Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
