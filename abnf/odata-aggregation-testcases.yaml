@@ -476,54 +476,75 @@ TestCases:
   - Name: aggregate function - after grouping
     Rule: queryOptions
     Input: $apply=groupby((Customer),aggregate(Amount with sum as
-      CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with
+      CustomerAmount))/compute(CustomerAmount div $these/aggregate(p:CustomerAmount with
       sum) as RevenueContribution)
 
   - Name: aggregate function - within a group
     Rule: queryOptions
     Input: $apply=groupby((Customer,Year),aggregate(Amount with sum as
       CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div
-      aggregate(CustomerYearAmount with sum) as RevenueTrend))
+      $these/aggregate(p:CustomerYearAmount with sum) as RevenueTrend))
+
+  - Name: aggregate function - missing $these
+    Rule: queryOptions
+    FailAt: 35
+    Input: $apply=compute(Amount div aggregate(p:Amount with average) as
+      RelativeOrderSize)
+
+  - Name: aggregate function - missing lambda variable
+    Rule: queryOptions
+    FailAt: 49
+    Input: $apply=compute(Amount div $these/aggregate(Amount with average) as
+      RelativeOrderSize)
 
   - Name: aggregate function - across input set
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Amount with average) as
+    Input: $apply=compute(Amount div $these/aggregate(p:Amount with average) as
       RelativeOrderSize)
 
   - Name: aggregate function - across input set with custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Budget) as RelativeAmount)
+    Input: $apply=compute(Amount div $these/aggregate(p:Budget) as RelativeAmount)
 
   - Name: aggregate function - across input set with related custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Product/Budget) as RelativeAmount)
+    Input: $apply=compute(Amount div $these/aggregate(p:Product/Budget) as
+      RelativeAmount)
 
   - Name: aggregate function - across input set with from
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Amount with sum from Time with
-      average) as RelativeAmount)
+    Input:
+      $apply=compute(Amount div $these/aggregate(p:Amount with sum from Time
+      with average) as RelativeAmount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
-    Input: $apply=compute(aggregate($count) as SalesCount)
+    Input: $apply=compute($these/aggregate(p:$count) as SalesCount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
-    Input: $apply=groupby((Customer),compute(aggregate($count) as
+    Input: $apply=groupby((Customer),compute($these/aggregate(p:$count) as
       SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as
       TotalAmount)
 
   - Name: aggregate function - within a group - ...
     Rule: queryOptions
-    Input:
-      $apply=groupby((Region),compute(aggregate(SalesNumber with average) as
-      RegionAmount))/filter(RegionAmount gt
+    Input: $apply=groupby((Region),compute($these/aggregate(p:SalesNumber with
+      average) as RegionAmount))/filter(RegionAmount gt
       150)/concat(groupby((Region),aggregate(SalesNumber with average as
       RegionAmount)),aggregate(SalesNumber with average as TotalAmount))
 
+  - Name: aggregate function - in $compute option
+    Rule: queryOptions
+    Input: $compute=Amount div $these/aggregate(p:Amount with sum) as RelativeAmount
+
+  - Name: aggregate function - in $compute option with custom aggregate
+    Rule: queryOptions
+    Input: $compute=Amount div $these/aggregate(p:Budget) as RelativeAmount
+
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
-    Input: $filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 3)
+    Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri
@@ -708,6 +729,14 @@ TestCases:
     Input:
       $apply=groupby((Customer/Country,Product/Name,Currency/Code),topcount(2,Amount)/aggregate(Amount
       with sum as Total))
+
+  - Name: combining transformations - number of leaves
+    Rule: queryOptions
+    Input:
+      $apply=groupby((CountryCode),concat(
+        groupby((Customer))/aggregate($count as NumberOfLeaves),
+        aggregate(Budget,Forecast)
+      )/Custom.condense())/orderby(Budget desc)/top(4)
 
   - Name: combining transformations - number of leaves
     Rule: queryOptions
