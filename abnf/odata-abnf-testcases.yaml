@@ -2156,7 +2156,11 @@ TestCases:
     Rule: odataRelativeUri
     Input: Employees?$filter=LastName eq $root/Employees('A1245')/LastName
 
-  - Name: 5.1.1.14.5 $root
+  - Name: 5.1.1.14.5 $root with function import
+    Rule: odataRelativeUri
+    Input: Employees?$filter=City eq $root/TheMostPopularAddress()/City
+
+  - Name: 5.1.1.14.5 $root in array expression
     Rule: odataRelativeUri
     Input: ProductsOrderedBy(Customers=@c)?@c=[$root/Customers('ALFKI'),$root/Customers('BLAUS')]
 
