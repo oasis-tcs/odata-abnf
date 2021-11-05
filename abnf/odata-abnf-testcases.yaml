@@ -3199,6 +3199,10 @@ TestCases:
     Rule: commonExpr
     Input: FirstName in (FirstName)
 
+  - Name: in operator with empty literal list
+    Rule: commonExpr
+    Input: FirstName in ()
+
   - Name: common expression cannot be empty
     Rule: commonExpr
     FailAt: 0

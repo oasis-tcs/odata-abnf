@@ -665,7 +665,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
+listExpr  = OPEN BWS [ primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) ] CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
