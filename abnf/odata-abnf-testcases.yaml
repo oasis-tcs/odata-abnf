@@ -1811,6 +1811,10 @@ TestCases:
     Rule: boolCommonExpr
     Input: endswith(["Fred","George","Ron"],["George","Ron"])
 
+  - Name: 5.1.1.5.3 indexof
+    Rule: boolCommonExpr
+    Input: indexof(CompanyName,'lfreds')
+
   - Name: 5.1.1.5.4 indexof
     Rule: boolCommonExpr
     Input: indexof(["Fred","George","Ron"],["George","Ron"]) eq 1
