@@ -1820,11 +1820,11 @@ TestCases:
     Input: indexof(["Fred","George","Ron"],["George","Ron"]) eq 1
 
   - Name: 5.1.1.5.5 length
-    Rule: commonExpr
+    Rule: boolCommonExpr
     Input: length(CompanyName) eq 19
 
   - Name: 5.1.1.5.5 length
-    Rule: commonExpr
+    Rule: boolCommonExpr
     Input: length(["Fred","George","Ron"]) eq 3
 
   - Name: 5.1.1.5.6 startswith
