@@ -254,10 +254,6 @@ Constraints:
     - Thumbnail
 
 TestCases:
-  - Name: Just to test the dummy start rule
-    Rule: dummyStartRule
-    Input: http://services.odata.org/
-
   - Name: URI with IPv4 address, path and trailing slash
     Rule: odataUri
     Input: http://127.0.0.1:8080/MyService/
@@ -1811,8 +1807,12 @@ TestCases:
     Rule: boolCommonExpr
     Input: endswith(["Fred","George","Ron"],["George","Ron"])
 
+  - Name: 5.1.1.5.3 indexof
+    Rule: commonExpr
+    Input: indexof(CompanyName,'lfreds')
+
   - Name: 5.1.1.5.4 indexof
-    Rule: boolCommonExpr
+    Rule: commonExpr
     Input: indexof(["Fred","George","Ron"],["George","Ron"]) eq 1
 
   - Name: 5.1.1.5.5 length
@@ -2156,7 +2156,11 @@ TestCases:
     Rule: odataRelativeUri
     Input: Employees?$filter=LastName eq $root/Employees('A1245')/LastName
 
-  - Name: 5.1.1.14.5 $root
+  - Name: 5.1.1.14.5 $root with function import
+    Rule: odataRelativeUri
+    Input: Employees?$filter=City eq $root/TheMostPopularAddress()/City
+
+  - Name: 5.1.1.14.5 $root in array expression
     Rule: odataRelativeUri
     Input: ProductsOrderedBy(Customers=@c)?@c=[$root/Customers('ALFKI'),$root/Customers('BLAUS')]
 
@@ -3198,6 +3202,10 @@ TestCases:
   - Name: right operand is not a list, it's a complicated way of writing FirstName
     Rule: commonExpr
     Input: FirstName in (FirstName)
+
+  - Name: in operator with empty literal list
+    Rule: commonExpr
+    Input: FirstName in ()
 
   - Name: common expression cannot be empty
     Rule: commonExpr
