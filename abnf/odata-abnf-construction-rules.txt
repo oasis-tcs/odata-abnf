@@ -75,9 +75,6 @@
 ;   C. ABNF core definitions [RFC5234]
 ;
 ;------------------------------------------------------------------------------
-dummyStartRule = odataUri / header / primitiveValue ; just to please the test parser
-;------------------------------------------------------------------------------
-
 
 odataUri = serviceRoot [ odataRelativeUri ]  
 
