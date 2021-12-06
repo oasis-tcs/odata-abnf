@@ -75,9 +75,6 @@
 ;   C. ABNF core definitions [RFC5234]
 ;
 ;------------------------------------------------------------------------------
-dummyStartRule = odataUri / header / primitiveValue ; just to please the test parser
-;------------------------------------------------------------------------------
-
 
 odataUri = serviceRoot [ odataRelativeUri ]  
 
@@ -501,7 +498,14 @@ commonExpr = ( primitiveLiteral
 
 boolCommonExpr = commonExpr ; resulting in a Boolean
 
-rootExpr = %s"$root/" ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
+rootExpr = %s"$root/" ( ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
+                      / entityColFunctionImportCall    [ collectionNavigation ]
+                      / entityFunctionImportCall       [ singleNavigation ]
+                      / complexColFunctionImportCall   [ complexColPath ]
+                      / complexFunctionImportCall      [ complexPath ]
+                      / primitiveColFunctionImportCall [ collectionPath ]
+                      / primitiveFunctionImportCall    [ primitivePath ]
+                      )
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
@@ -665,7 +669,7 @@ caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
-listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) CLOSE
+listExpr  = OPEN BWS [ primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) ] CLOSE
 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
