@@ -995,7 +995,7 @@ enumMemberValue = int64Value
 
 geographyCollection   = geographyPrefix SQUOTE fullCollectionLiteral SQUOTE
 fullCollectionLiteral = sridLiteral collectionLiteral
-collectionLiteral     = "Collection(" geoLiteral *( COMMA geoLiteral ) CLOSE
+collectionLiteral     = "GeometryCollection(" geoLiteral *( COMMA geoLiteral ) CLOSE
 geoLiteral            = collectionLiteral
                       / lineStringLiteral
                       / multiPointLiteral
