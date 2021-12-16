@@ -113,7 +113,6 @@ aggregateItem   = %s"$count" asAlias
 aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
                 / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
                 / pathPrefix customAggregate [ customFrom asAlias ]
-                / pathPrefix pathSegment OPEN aggregateExpr CLOSE 
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
 customFrom      = RWS %s"from" RWS groupingProperty [ aggregateWith ] [ customFrom ]

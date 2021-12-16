@@ -222,11 +222,6 @@ TestCases:
     FailAt: 24
     Input: $apply=aggregate(Amount as Total)
 
-  - Name: aggregate - property requires alias
-    Rule: queryOptions
-    FailAt: 32
-    Input: $apply=aggregate(Amount with sum)
-
   - Name: aggregate - property requires method and alias
     Rule: queryOptions
     FailAt: 23
@@ -236,8 +231,9 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Amount mul Product/TaxRate with sum as Tax)
 
-  - Name: aggregate - expression after path
+  - Name: aggregate - no expression after path
     Rule: queryOptions
+    FailAt: 29
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
 
   - Name: aggregate - alias - context URL
@@ -296,10 +292,6 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as
       TotalPlannedRevenue)
-
-  - Name: Aggregation - collection of complex type
-    Rule: queryOptions
-    Input: $apply=groupby((Product),aggregate(Details(Amount with sum as Total)))
 
   - Name: aggregate - $count
     Rule: queryOptions
@@ -650,11 +642,11 @@ TestCases:
 
   - Name: aggregation methods
     Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales(Amount with sum as Total)))
+    Input: $apply=groupby((Name),aggregate(Amount with sum as Total))
 
   - Name: aggregation methods - multiple grouping
     Rule: queryOptions
-    Input: $apply=groupby((Country,Name),aggregate(Sales(Amount with sum as Total)))
+    Input: $apply=groupby((Country,Name),aggregate(Amount with sum as Total))
 
   - Name: aggregation methods - multiple grouping - distinct
     Rule: queryOptions
@@ -677,7 +669,7 @@ TestCases:
   - Name: aggregation methods - $count segment and sum
     Rule: queryOptions
     Input: $apply=groupby((Name),aggregate(Sales/$count with sum as
-      SalesCount,Sales(Amount with sum as Total)))
+      SalesCount,Sales/Amount with sum as Total))
 
   - Name:
       aggregation methods - $count only allowed on top level, not nested within
@@ -697,8 +689,9 @@ TestCases:
     Input: $apply=groupby((Customer/Country),aggregate(Amount with sum as
       Actual,Forecast))
 
-  - Name: custom aggregate - with path
+  - Name: custom aggregate - not with path
     Rule: queryOptions
+    FailAt: 44
     Input: $apply=groupby((Name),aggregate(Sales(Amount with sum as
       Actual),Sales/Forecast))
 
@@ -706,11 +699,6 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Customer/Country),aggregate(Amount with sum as
       Total,Amount with average as AvgAmt))
-
-  - Name: aliasing - two parameters with path
-    Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales(Amount with sum as
-      Total),Sales(Amount with average as AvgAmt)))
 
   - Name: aliasing - group by and aggregate same property
     Rule: queryOptions
@@ -852,8 +840,8 @@ TestCases:
   - Name: transformation sequences - filter and nest
     Rule: queryOptions
     Input: $apply=filter(Status eq 'incomplete')/transformnested(Items,filter(not
-      Shipped))/groupby((Customer/Country),aggregate(Items(Amount with sum as
-      ItemAmount)))
+      Shipped))/groupby((Customer/Country),aggregate(Amount with sum as
+      ItemAmount))
 
   - Name: transformation sequences - paging with skip and top
     Rule: queryOptions
