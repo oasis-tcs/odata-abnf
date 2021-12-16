@@ -82,30 +82,28 @@ collectionPathExpr =/ "/" aggregateMethodCallExpr
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / topcountTrafo
-           / topsumTrafo
-           / toppercentTrafo
+           / ancestorsTrafo
            / bottomcountTrafo
-           / bottomsumTrafo
            / bottompercentTrafo
-           / identityTrafo
+           / bottomsumTrafo
+           / computeTrafo
            / concatTrafo
-           / groupbyTrafo
+           / customFunction
+           / descendantsTrafo
            / filterTrafo
-           / nestTrafo
+           / groupbyTrafo
+           / identityTrafo
            / joinTrafo
+           / nestTrafo
+           / orderbyTrafo
            / outerjoinTrafo
            / searchTrafo
-           / computeTrafo
-           / orderbyTrafo
-           / topTrafo
            / skipTrafo
-           / ancestorsTrafo
-           / descendantsTrafo
+           / topcountTrafo
+           / toppercentTrafo
+           / topsumTrafo
+           / topTrafo
            / traverseTrafo
-           / customFunction
-           
-
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
