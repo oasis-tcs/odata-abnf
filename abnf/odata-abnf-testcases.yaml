@@ -2953,7 +2953,7 @@ TestCases:
 
   - Name: GeographyCollection
     Rule: geographyCollection
-    Input: geography'SRID=0;Collection(LineString(142.1 64.1,3.14 2.78))'
+    Input: geography'SRID=0;GeometryCollection(LineString(142.1 64.1,3.14 2.78))'
 
   - Name: GeographyLineString
     Rule: geographyLineString
@@ -2995,7 +2995,7 @@ TestCases:
 
   - Name: GeometryCollection
     Rule: geometryCollection
-    Input: geometry'SRID=0;Collection(LineString(142.1 64.1,3.14 2.78))'
+    Input: geometry'SRID=0;GeometryCollection(LineString(142.1 64.1,3.14 2.78))'
 
   - Name: GeometryLineString
     Rule: geometryLineString
