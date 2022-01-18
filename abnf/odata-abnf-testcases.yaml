@@ -405,12 +405,12 @@ TestCases:
     FailAt: 12
     Input: 2012-09-03T24:00-03:00
 
-  - Name: "DateTimeOffset: negative infinitiy"
+  - Name: "DateTimeOffset: negative infinity"
     Rule: dateTimeOffsetValue
     FailAt: 1
     Input: -INF
 
-  - Name: "DateTimeOffset: positive infinitiy"
+  - Name: "DateTimeOffset: positive infinity"
     Rule: dateTimeOffsetValue
     FailAt: 0
     Input: INF
@@ -441,11 +441,11 @@ TestCases:
     Rule: decimalValue
     Input: "1e-101"
 
-  - Name: Decimal - negative infinitiy
+  - Name: Decimal - negative infinity
     Rule: decimalValue
     Input: -INF
 
-  - Name: Decimal - positive infinitiy
+  - Name: Decimal - positive infinity
     Rule: decimalValue
     Input: INF
 
