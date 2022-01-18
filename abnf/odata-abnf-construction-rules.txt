@@ -315,7 +315,7 @@ orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]
 skip = ( "$skip" / "skip" ) EQ 1*DIGIT
 top  = ( "$top"  / "top"  ) EQ 1*DIGIT
 
-index  = ( "$index" / "index" ) EQ [ "-" ] 1*DIGIT
+index  = ( "$index" / "index" ) EQ indexExpr
 
 format = ( "$format" / "format" ) EQ
          ( "atom"
@@ -564,11 +564,14 @@ collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) 
                    / "/" allExpr
                    / "/" boundFunctionExpr
                    / "/" annotationExpr
+                   / "/" indexExpr
  
 complexPathExpr = "/" directMemberExpr
                 / "/" optionallyQualifiedComplexTypeName [ "/" directMemberExpr ]
 
 primitivePathExpr = "/" [ annotationExpr / boundFunctionExpr ]
+
+indexExpr = [ "-" ] 1*DIGIT
 
 boundFunctionExpr = functionExpr ; boundFunction segments can only be composed if the type of the    
                                  ; previous segment matches the type of the first function parameter

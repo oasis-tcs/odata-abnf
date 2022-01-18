@@ -1289,6 +1289,10 @@ TestCases:
     Rule: odataRelativeUri
     Input: Suppliers(1)/EmailAddresses/1
 
+  - Name: 4.10 Addressing a Member of an Ordered Primitive Collection - in $orderby
+    Rule: orderby
+    Input: $orderby=EmailAddresses/0
+
   - Name: 4.10 Addressing a Member of an Ordered Complex Collection
     Rule: odataRelativeUri
     Input: MainSupplier/Addresses/0
