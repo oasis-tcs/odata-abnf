@@ -564,7 +564,7 @@ collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) 
                    / "/" allExpr
                    / "/" boundFunctionExpr
                    / "/" annotationExpr
-                   / "/" indexExpr
+                   / "/" indexExpr [ complexPathExpr ] 
  
 complexPathExpr = "/" directMemberExpr
                 / "/" optionallyQualifiedComplexTypeName [ "/" directMemberExpr ]

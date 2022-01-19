@@ -1293,6 +1293,14 @@ TestCases:
     Rule: orderby
     Input: $orderby=EmailAddresses/0
 
+  - Name: 4.10 Addressing a Member of an Ordered Primitive Collection - in $orderby with complex collection
+    Rule: orderby
+    Input: $orderby=Addresses/0/Name
+
+  - Name: 4.10 Addressing a Member of an Ordered Primitive Collection - in $orderby with type-cast
+    Rule: orderby
+    Input: $orderby=Addresses/Model.AddressWithLocation/-1/Location
+
   - Name: 4.10 Addressing a Member of an Ordered Complex Collection
     Rule: odataRelativeUri
     Input: MainSupplier/Addresses/0
