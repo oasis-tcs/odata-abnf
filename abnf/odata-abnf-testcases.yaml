@@ -1297,6 +1297,18 @@ TestCases:
     Rule: odataRelativeUri
     Input: Suppliers(1)/Addresses/Model.AddressWithLocation/-1
 
+  - Name: 4.10 Addressing a Member of an Ordered Primitive Collection - in $orderby
+    Rule: orderby
+    Input: $orderby=EmailAddresses($index=1;$orderby=$this)
+
+  - Name: 4.10 Addressing a Member of an Ordered Complex Collection - in $orderby
+    Rule: orderby
+    Input: $orderby=Addresses($index=0;$orderby=Name)/Name
+
+  - Name: 4.10 Addressing a Member of an Ordered Complex Collection with type-cast - in $orderby
+    Rule: orderby
+    Input: $orderby=Addresses/Model.AddressWithLocation($index=-1;$orderby=Name)/Location
+
   - Name: 4.11 Inheritance - set of subtypes
     Rule: odataRelativeUri
     Input: Products/Model.BestSellingProduct

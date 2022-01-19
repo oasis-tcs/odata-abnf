@@ -560,11 +560,14 @@ complexColPathExpr = collectionPathExpr
  
 collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                    / filterExpr [ collectionPathExpr ]
+                   / OPEN collectionOption *( SEMI collectionOption ) CLOSE [ complexPathExpr ] 
                    / "/" anyExpr
                    / "/" allExpr
                    / "/" boundFunctionExpr
                    / "/" annotationExpr
- 
+
+collectionOption = orderby / index
+
 complexPathExpr = "/" directMemberExpr
                 / "/" optionallyQualifiedComplexTypeName [ "/" directMemberExpr ]
 
