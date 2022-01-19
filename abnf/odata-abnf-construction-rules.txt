@@ -549,7 +549,7 @@ collectionNavigationExpr = collectionNavNoCastExpr
 
 collectionNavNoCastExpr = collectionPathExpr
                         / keyPredicate [ singleNavigationExpr ] 
-                        / filterExpr [ collectionNavigationExpr ]                     
+                      ;  / filterExpr [ collectionNavigationExpr ]                     
 
 singleNavigationExpr = "/" memberExpr
 
