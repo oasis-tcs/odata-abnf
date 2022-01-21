@@ -86,6 +86,7 @@ Constraints:
     - ItemAmount
     - MaxAmount
     - MinAmount
+    - MinCurrency
     - MonthlyAverage
     - NumberOfLeaves
     - ProductNames
@@ -351,6 +352,10 @@ TestCases:
   - Name: aggregate - groupby distinct
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
+
+  - Name: aggregate annotations
+    Rule: queryOptions
+    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
 
   - Name: aggregate - groupby annotations
     Rule: queryOptions
