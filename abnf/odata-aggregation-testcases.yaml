@@ -165,6 +165,7 @@ Constraints:
     - p
   namespacePart:
     - Aggregation
+    - Core
     - Custom
     - Measures
     - Self
@@ -206,6 +207,7 @@ Constraints:
   streamProperty: []
   termName:
     - ISOCurrency
+    - MediaType
 
 TestCases:
   - Name: aggregate - no parameters
@@ -360,6 +362,10 @@ TestCases:
   - Name: aggregate - groupby annotations
     Rule: queryOptions
     Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
+
+  - Name: aggregate - groupby annotations 2
+    Rule: queryOptions
+    Input: $apply=groupby((Product/@Core.MediaType))
 
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances
