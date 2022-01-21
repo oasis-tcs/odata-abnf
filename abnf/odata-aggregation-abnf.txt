@@ -135,13 +135,12 @@ groupingProperty = grpPropPathPrefix
                    / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName ]
                    / primitiveProperty        [ "/" grpPropAnnoSegment ]
                    / complexProperty
-                   / complexAnnotationInQuery
                    / grpPropAnnoSegment
                    )
 grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
 grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName ]
                    / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
-                   / primitiveProperty          "/" grpPropAnnoSegment
+                   / primitiveProperty        "/" grpPropAnnoSegment
                    / grpPropAnnoSegment
 grpPropAnnoSegment = complexAnnotationInQuery [ "/" qualifiedComplexTypeName ]
                    / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName  ]
