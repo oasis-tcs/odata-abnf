@@ -132,13 +132,17 @@ pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComple
 
 groupingProperty = grpPropPathPrefix
                    ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
-                   / primitiveProperty 
+                   / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName ]
+                   / primitiveProperty        [ "/" primitiveAnnotationInQuery ]
                    / complexProperty
+                   / complexAnnotationInQuery
                    )
 grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
 grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName ]
+                   / complexAnnotationInQuery [ "/" qualifiedComplexTypeName ]
                    / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
-                   
+                   / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName  ]
+
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
                            

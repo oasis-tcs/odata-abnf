@@ -165,6 +165,7 @@ Constraints:
   namespacePart:
     - Aggregation
     - Custom
+    - Measures
     - Self
   primitiveColFunction: []
   primitiveColFunctionImport: []
@@ -202,6 +203,8 @@ Constraints:
     - TaxRate
     - Year
   streamProperty: []
+  termName:
+    - ISOCurrency
 
 TestCases:
   - Name: aggregate - no parameters
@@ -348,6 +351,10 @@ TestCases:
   - Name: aggregate - groupby distinct
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
+
+  - Name: aggregate - groupby annotations
+    Rule: queryOptions
+    Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
 
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances
