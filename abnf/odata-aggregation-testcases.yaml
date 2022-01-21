@@ -247,6 +247,10 @@ TestCases:
     FailAt: 29
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
 
+  - Name: aggregate - aggregate annotations
+    Rule: queryOptions
+    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
+
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
     Input: $metadata#Products(Sales(Tax))
@@ -354,10 +358,6 @@ TestCases:
   - Name: aggregate - groupby distinct
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
-
-  - Name: aggregate annotations
-    Rule: queryOptions
-    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
 
   - Name: aggregate - groupby annotations
     Rule: queryOptions
