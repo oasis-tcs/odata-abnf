@@ -499,6 +499,7 @@ commonExpr = ( primitiveLiteral
 boolCommonExpr = commonExpr ; resulting in a Boolean
 
 rootExpr = %s"$root/" ( ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
+                      / entitySetName                  [ collectionNavigation ]
                       / entityColFunctionImportCall    [ collectionNavigation ]
                       / entityFunctionImportCall       [ singleNavigation ]
                       / complexColFunctionImportCall   [ complexColPath ]
