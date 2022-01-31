@@ -156,7 +156,8 @@ Constraints:
     - Sales_cj
     - SalesOrganizations
     - Time
-  entityTypeName: []
+  entityTypeName:
+    - DigitalProduct
   enumerationMember: []
   enumerationTypeName: []
   keyPathLiteral: []
@@ -362,6 +363,15 @@ TestCases:
   - Name: aggregate - groupby annotations
     Rule: queryOptions
     Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
+
+  - Name: aggregate - groupby with type cast
+    Rule: queryOptions
+    Input: $apply=groupby((Product/Self.DigitalProduct/Region))
+
+  - Name: aggregate - groupby no final type cast
+    Rule: queryOptions
+    FailAt: 43
+    Input: $apply=groupby((Product/Self.DigitalProduct))
 
   - Name: aggregate - groupby annotations 2
     Rule: queryOptions
