@@ -174,24 +174,32 @@ joinProperty    = ( complexColProperty
                   )
 
 ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS recHierQualifier BWS 
-                  COMMA BWS filterTrafo BWS
+                  recHierReference
+                  COMMA BWS boolCommonExpr BWS
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
-                 BWS recHierQualifier BWS 
-                 COMMA BWS filterTrafo BWS
+                 recHierReference
+                 COMMA BWS boolCommonExpr BWS
                  [ COMMA BWS 1*DIGIT BWS ]
                  [ COMMA BWS %s"keep start" BWS]
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierQualifier BWS 
+                  recHierReference
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
+recHierReference = BWS ( %s"$these" BWS COMMA
+                       / entitySetName BWS COMMA
+                       / ( entitySetName keyPredicate / singletonEntity )
+                         *( "/" entityNavigationProperty [ "/" optionallyQualifiedEntityTypeName ] )
+                         "/" entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName ] BWS COMMA
+                       )
+                   BWS recHierQualifier BWS COMMA
+                   BWS propertyPath BWS
 recHierQualifier = odataIdentifier
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
