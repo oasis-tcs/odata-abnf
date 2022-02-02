@@ -6,8 +6,10 @@ entitySetName = odataIdentifier
 keyPredicate = "('DEFAULT')"
 entityColNavigationProperty = odataIdentifier
 
-recHierReference = ( entitySetName
-                   / entitySetName keyPredicate "/" entityColNavigationProperty ) COMMA
+recHierReference = ( entitySetName keyPredicate "/" entityColNavigationProperty
+                   / entitySetName 
+                   ) COMMA
 
-recHierReference2 = ( entitySetName COMMA
-                    / entitySetName keyPredicate "/" entityColNavigationProperty COMMA )
+recHierReference2 = ( entitySetName keyPredicate "/" entityColNavigationProperty COMMA
+                    / entitySetName COMMA 
+                    )
