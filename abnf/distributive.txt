@@ -10,6 +10,6 @@ recHierReference = ( entitySetName keyPredicate "/" entityColNavigationProperty
                    / entitySetName 
                    ) COMMA
 
-recHierReference2 = ( entitySetName keyPredicate "/" entityColNavigationProperty COMMA
-                    / entitySetName COMMA 
+recHierReference2 = ( entitySetName COMMA
+                    / entitySetName keyPredicate "/" entityColNavigationProperty COMMA 
                     )
