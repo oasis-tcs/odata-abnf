@@ -1,0 +1,13 @@
+Constraints:
+  entityColNavigationProperty:
+    - Nodes
+  entitySetName:
+    - SalesOrgHierarchies
+
+TestCases:
+  - Name: pre-distributive
+    Rule: recHierReference
+    Input: SalesOrgHierarchies('DEFAULT')/Nodes,
+  - Name: post-distributive
+    Rule: recHierReference2
+    Input: SalesOrgHierarchies('DEFAULT')/Nodes,
