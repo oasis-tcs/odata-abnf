@@ -134,12 +134,16 @@ groupingProperty = grpPropPathPrefix
                    ( complexProperty          / complexAnnotationInQuery
                    / entityNavigationProperty / entityAnnotationInQuery
                    / ( primitiveProperty      / primitiveAnnotationInQuery )
-                     [ "/" ( primitiveAnnotationInQuery / complexAnnotationInQuery / entityAnnotationInQuery ) ]
+                     [ "/" ( complexAnnotationInQuery / entityAnnotationInQuery / primitiveAnnotationInQuery ) ]
                    )
-grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( grpPropPathSegment "/" )
-grpPropPathSegment = ( complexProperty          / complexAnnotationInQuery ) [ "/" qualifiedComplexTypeName ]
-                   / ( entityNavigationProperty / entityAnnotationInQuery  ) [ "/" qualifiedEntityTypeName  ]
-                   / ( primitiveProperty        / primitiveAnnotationInQuery ) "/" grpPropPathSegment
+grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
+                     *( ( grpPropPathSegment / grpPropAnnoSegment ) "/" )
+grpPropPathSegment = complexProperty            [ "/" qualifiedComplexTypeName ]
+                   / entityNavigationProperty   [ "/" qualifiedEntityTypeName  ]
+                   / primitiveProperty            "/" grpPropAnnoSegment
+grpPropAnnoSegment = complexAnnotationInQuery   [ "/" qualifiedComplexTypeName ]
+                   / entityAnnotationInQuery    [ "/" qualifiedEntityTypeName  ]
+                   / primitiveAnnotationInQuery   "/" grpPropAnnoSegment
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             

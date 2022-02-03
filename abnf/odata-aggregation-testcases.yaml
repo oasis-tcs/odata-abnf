@@ -364,6 +364,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
 
+  - Name: aggregate - groupby no two consecutive primitive properties
+    Rule: queryOptions
+    FailAt: 30
+    Input: $apply=groupby((Product/Price/Quantity))
+
   - Name: aggregate - groupby with type cast
     Rule: queryOptions
     Input: $apply=groupby((Product/Self.DigitalProduct/Region))
