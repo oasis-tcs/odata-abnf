@@ -146,6 +146,63 @@ describe("run test suite", () => {
     );
   });
 
+  it("test case with correct expectation", () => {
+    const suite = {
+      TestCases: [
+        {
+          Name: "correct expectation",
+          Input: "MyEntitySet(1)/MyProperty",
+          Rule: "odataRelativeUri",
+          Expect: [
+            "entitySetName:MyEntitySet",
+            "keyPredicate:(1)",
+            "entityColNavigationProperty:MyProperty",
+          ],
+        },
+      ],
+    };
+    assert.deepStrictEqual(
+      runTestSuite(suite),
+      [colors.green("All 1 test cases passed"), ""],
+      "run result"
+    );
+  });
+
+  it("test case with wrong expectation", () => {
+    const suite = {
+      TestCases: [
+        {
+          Name: "wrong expectation",
+          Input: "MyEntitySet(1)/MyProperty",
+          Rule: "odataRelativeUri",
+          Expect: [
+            "entitySetName:MyEntitySet",
+            "keyPredicate:(1)",
+            "primitiveProperty:MyProperty",
+          ],
+        },
+      ],
+    };
+    const log = runTestSuite(suite);
+    assert.equal(log[2], colors.red("1 test case failed"), "run result");
+    assert.deepStrictEqual(
+      // eslint-disable-next-line no-control-regex
+      log[0].replace(/\u001b\[\d+m/g, "").split("\n"),
+      [
+        "wrong expectation parses into unexpected tokens:",
+        "+ actual - expected",
+        "",
+        "  [",
+        "    'entitySetName:MyEntitySet',",
+        "    'keyPredicate:(1)',",
+        "+   'entityColNavigationProperty:MyProperty'",
+        "-   'primitiveProperty:MyProperty'",
+        "  ]",
+      ],
+      "tokens"
+    );
+  });
+
   it("invalid test cases", () => {
     const suite = {
       TestCases: [

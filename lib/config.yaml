@@ -15,3 +15,14 @@ trace:
     - unreserved
     - year
     - zeroToFiftyNine
+
+expect:
+  matchTokens:
+    - action
+    - customAggregate
+    - enumerationMember
+    - expressionAlias
+    - keyPredicate
+    - keyPropertyAlias
+    - parameterAlias
+    - singletonEntity
