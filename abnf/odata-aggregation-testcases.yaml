@@ -123,6 +123,8 @@ Constraints:
     - Budget
     - Forecast
   entityColFunction:
+    - ancestors
+    - descendants
     - TopCountAndBalance
   entityColFunctionImport: []
   entityColNavigationProperty:
@@ -175,6 +177,8 @@ Constraints:
     - isancestor
     - issibling
     - isdescendant
+    - preorder
+    - postorder
   primitiveFunctionImport: []
   primitiveKeyProperty:
     - Code
@@ -595,41 +599,21 @@ TestCases:
     Rule: odataRelativeUri
     Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
-  - Name: hierarchy transformations - ancestors
+  - Name: hierarchy transformations - example 40
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')))
-
-  - Name: hierarchy transformations - ancestors
-    Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), 2)
-
-  - Name: hierarchy transformations - ancestors
-    Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), keep start)
-
-  - Name: hierarchy transformations - ancestors
-    Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), 2, keep start)
-
-  - Name: hierarchy transformations - descendants
-    Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'))
-
-  - Name: hierarchy transformations - descendants
-    Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'), 3)
-
-  - Name: hierarchy transformations - descendants
-    Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),3,keep start)
-
-  - Name: hierarchy transformations - traverse
-    Rule: queryOptions
-    Input: $apply=traverse(SalesOrgHierarchy,preorder)
+    Input: $apply=filter(ID in $these/$filter(Name eq 'US')/Aggregation.descendants(
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy',
+      NodePropertyPath='ID',
+      IncludeSelf=true))/filter(ID in $these/$filter(contains(Name,'East'))/Aggregation.ancestors(
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy',
+      NodePropertyPath='ID',
+      IncludeSelf=true))/orderby($these/Aggregation.preorder(
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy'
+      NodePropertyPath='ID',
+      Node=ID))&@nodes=$root/SalesOrganizations
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri

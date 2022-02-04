@@ -220,7 +220,7 @@ functionImportCallNoParens     = entityFunctionImport
                                / primitiveFunctionImport
                                / primitiveColFunctionImport
 
-functionParameters = OPEN [ functionParameter *( COMMA functionParameter ) ] CLOSE
+functionParameters = OPEN BWS [ functionParameter *( COMMA BWS functionParameter ) ] BWS CLOSE
 functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )
 parameterName      = odataIdentifier
 parameterAlias     = AT odataIdentifier 

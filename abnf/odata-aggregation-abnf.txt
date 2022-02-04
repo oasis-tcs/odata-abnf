@@ -75,6 +75,9 @@ propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is r
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
+; We cannot add theseExpr after rootExpr without modifying the core ABNF, therefore we extend rootExpr.
+rootExpr =/ %s"$these" [ collectionNavigation / complexColPath / collectionPath ]
+
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
 ;------------------------------------------------------------------------------
@@ -82,14 +85,12 @@ collectionPathExpr =/ "/" aggregateMethodCallExpr
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / ancestorsTrafo
            / bottomcountTrafo
            / bottompercentTrafo
            / bottomsumTrafo
            / computeTrafo
            / concatTrafo
            / customFunction
-           / descendantsTrafo
            / filterTrafo
            / groupbyTrafo
            / identityTrafo
@@ -103,7 +104,6 @@ applyTrafo = aggregateTrafo
            / toppercentTrafo
            / topsumTrafo
            / topTrafo
-           / traverseTrafo
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
@@ -172,25 +172,6 @@ joinProperty    = ( complexColProperty
                   / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName ]
                   / entityAnnotationInQuery  ; must be collection-valued
                   )
-
-ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS recHierQualifier BWS 
-                  COMMA BWS filterTrafo BWS
-                  [ COMMA BWS 1*DIGIT BWS ]
-                  [ COMMA BWS %s"keep start" BWS]
-                  CLOSE
-
-descendantsTrafo = %s"descendants" OPEN 
-                 BWS recHierQualifier BWS 
-                 COMMA BWS filterTrafo BWS
-                 [ COMMA BWS 1*DIGIT BWS ]
-                 [ COMMA BWS %s"keep start" BWS]
-                 CLOSE
-
-traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierQualifier BWS 
-                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
-                  CLOSE 
 
 recHierQualifier = odataIdentifier
 
