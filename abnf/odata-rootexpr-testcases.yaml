@@ -1,9 +1,0 @@
-Constraints:
-  entitySetName:
-    - SalesOrganizations
-  singletonEntity: []
-
-TestCases:
-  - Name: collection path expression with $root
-    Rule: commonExpr
-    Input: $root/SalesOrganizations

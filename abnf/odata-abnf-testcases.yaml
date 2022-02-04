@@ -2164,6 +2164,10 @@ TestCases:
     Rule: odataRelativeUri
     Input: ProductsOrderedBy(Customers=@c)?@c=[$root/Customers('ALFKI'),$root/Customers('BLAUS')]
 
+  - Name: 5.1.1.14.5 $root with entity set
+    Rule: commonExpr
+    Input: $root/SalesOrganizations
+
   - Name: 5.1.1.14.6 $this
     Rule: boolCommonExpr
     Input: $this eq 'Hugo'
