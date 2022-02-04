@@ -130,6 +130,8 @@ pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
 pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
 
+; grpPropPathPrefix cannot end with a primitive property or annotation
+; after grpPropPathPrefix comes one final non-primitive segment or a primitive segment plus an optional annotation
 groupingProperty = grpPropPathPrefix
                    ( complexProperty          / complexAnnotationInQuery
                    / entityNavigationProperty / entityAnnotationInQuery
