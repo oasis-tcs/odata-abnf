@@ -1,0 +1,15 @@
+Constraints:
+  entityNavigationProperty:
+    - Product
+  entityTypeName:
+    - DigitalProduct
+  namespacePart:
+    - self
+  primitiveNonKeyProperty:
+    - DigitalProduct
+  odataIdentifier: []
+
+TestCases:
+  - Name: ambiguity type cast/property name
+    Rule: groupingProperty
+    Input: Product/self.DigitalProduct/DigitalProduct
