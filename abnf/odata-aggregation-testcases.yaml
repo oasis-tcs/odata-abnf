@@ -599,22 +599,6 @@ TestCases:
     Rule: odataRelativeUri
     Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
-  - Name: hierarchy transformations - example 40
-    Rule: queryOptions
-    Input: $apply=filter(ID in $these/$filter(Name eq 'US')/Aggregation.descendants(
-      HierarchyNodes=@nodes,
-      HierarchyQualifier='SalesOrgHierarchy',
-      NodePropertyPath='ID',
-      IncludeSelf=true))/filter(ID in $these/$filter(contains(Name,'East'))/Aggregation.ancestors(
-      HierarchyNodes=@nodes,
-      HierarchyQualifier='SalesOrgHierarchy',
-      NodePropertyPath='ID',
-      IncludeSelf=true))/orderby($these/Aggregation.preorder(
-      HierarchyNodes=@nodes,
-      HierarchyQualifier='SalesOrgHierarchy'
-      NodePropertyPath='ID',
-      Node=ID))&@nodes=$root/SalesOrganizations
-
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
     Input: Customers?$apply=groupby((Name))
@@ -849,11 +833,21 @@ TestCases:
     Input: $apply=outerjoin(Sales as TotalSales,aggregate(Amount with sum as
       Total))/groupby((Name,TotalSales/Total))
 
-  - Name: transformation sequences - sub-hierarchy selection
+  - Name: transformation sequences - sub-hierarchy selection (example 40)
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),keep
-      start)/ancestors(SalesOrgHierarchy,filter(contains(Name,'East')),keep
-      start)/traverse(SalesOrgHierarchy,preorder)
+    Input: $apply=filter(ID in $these/$filter(Name eq 'US')/Aggregation.descendants(
+      NodePropertyPath='ID',
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy',
+      IncludeSelf=true))/filter(ID in $these/$filter(contains(Name,'East'))/Aggregation.ancestors(
+      NodePropertyPath='ID',
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy',
+      IncludeSelf=true))/orderby($these/Aggregation.preorder(
+      NodePropertyPath='ID',
+      HierarchyNodes=@nodes,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=@id))&@nodes=$root/SalesOrganizations&@id=ID
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions

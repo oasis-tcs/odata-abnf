@@ -75,8 +75,8 @@ propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is r
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
-; We cannot add theseExpr after rootExpr without modifying the core ABNF, therefore we extend rootExpr.
-rootExpr =/ %s"$these" [ collectionNavigation / complexColPath / collectionPath ]
+; We cannot add theseExpr after firstMemberExpr without modifying the core ABNF, therefore we extend firstMemberExpr.
+firstMemberExpr =/ %s"$these" [ collectionNavigation / complexColPath / collectionPath ]
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
