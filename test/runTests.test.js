@@ -3,8 +3,6 @@ const colors = require("colors/safe");
 const { runTestSuite, printRuleCoverage } = require("../lib/runTests");
 const Grammar = require("../lib/grammar");
 
-// const grammar = new Grammar();
-
 it("grammar.toString - just to get full coverage", () => {
   const grammar = new Grammar();
   const text = grammar.toString();
@@ -12,8 +10,20 @@ it("grammar.toString - just to get full coverage", () => {
 });
 
 describe("run test suite", () => {
-  before;
-  it("empty test suite", () => {
+  it("no test cases", () => {
+    const suite = {};
+    assert.deepStrictEqual(runTestSuite(suite), [
+      colors.yellow("No test cases found"),
+      "",
+    ]);
+    assert.strictEqual(undefined, process.exitCode, "process exit code");
+
+    const coverage = printRuleCoverage().split("\n");
+    assert.match(coverage[0], /Touched 0 of \d+ rules, untouched rules:/);
+    assert.strictEqual(coverage[1], colors.yellow(" - odataUri"));
+  });
+
+  it("empty test case list", () => {
     const suite = { TestCases: [] };
     assert.deepStrictEqual(runTestSuite(suite), [
       colors.green("All 0 test cases passed"),
@@ -22,8 +32,8 @@ describe("run test suite", () => {
     assert.strictEqual(undefined, process.exitCode, "process exit code");
 
     const coverage = printRuleCoverage().split("\n");
-    assert.match(coverage[0], /Touched 0 of [0-9]+ rules, untouched rules:/);
-    assert.strictEqual(coverage[1], colors.yellow(" - dummyStartRule"));
+    assert.match(coverage[0], /Touched 0 of \d+ rules, untouched rules:/);
+    assert.strictEqual(coverage[1], colors.yellow(" - odataUri"));
   });
 
   it("successful test suite", () => {

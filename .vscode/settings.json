@@ -12,5 +12,6 @@
   },
   "yaml.schemas": {
     "./lib/testsuite.schema.json": "abnf/*.yaml"
-  }
+  },
+  "cSpell.words": ["odata"]
 }
