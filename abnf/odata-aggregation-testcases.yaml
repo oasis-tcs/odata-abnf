@@ -835,14 +835,16 @@ TestCases:
 
   - Name: transformation sequences - sub-hierarchy selection (example 40)
     Rule: queryOptions
-    Input: $apply=filter(ID in $these/$filter(Name eq 'US')/Aggregation.descendants(
+    Input: $apply=filter($these/$filter(Name eq 'US')/Aggregation.isdescendant(
       NodePropertyPath='ID',
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
-      IncludeSelf=true))/filter(ID in $these/$filter(contains(Name,'East'))/Aggregation.ancestors(
+      Node=@id,
+      IncludeSelf=true))/filter($these/$filter(contains(Name,'East'))/Aggregation.isancestor(
       NodePropertyPath='ID',
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
+      Node=@id,
       IncludeSelf=true))/orderby($these/Aggregation.preorder(
       NodePropertyPath='ID',
       HierarchyNodes=@nodes,
