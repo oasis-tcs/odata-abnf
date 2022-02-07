@@ -195,11 +195,33 @@ describe("run test suite", () => {
         "  [",
         "    'entitySetName:MyEntitySet',",
         "    'keyPredicate:(1)',",
-        "+   'entityColNavigationProperty:MyProperty'",
         "-   'primitiveProperty:MyProperty'",
         "  ]",
       ],
       "tokens"
+    );
+  });
+
+  it("test case with wrong rule name in expectation", () => {
+    const suite = {
+      TestCases: [
+        {
+          Name: "wrong expectation",
+          Input: "MyEntitySet(1)/MyProperty",
+          Rule: "odataRelativeUri",
+          Expect: ["no-rule:foo"],
+        },
+      ],
+    };
+    assert.deepStrictEqual(
+      runTestSuite(suite),
+      [
+        colors.red("wrong expectation: unknown Expect token rule 'no-rule'"),
+        "",
+        colors.red("1 test case failed"),
+        "",
+      ],
+      "run result"
     );
   });
 
