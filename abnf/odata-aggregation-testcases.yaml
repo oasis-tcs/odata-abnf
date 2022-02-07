@@ -840,16 +840,19 @@ TestCases:
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
       Node=@id,
-      IncludeSelf=true))/filter($these/$filter(contains(Name,'East'))/Aggregation.isancestor(
+      IncludeSelf=true
+     ))/filter($these/$filter(contains(Name,'East'))/Aggregation.isancestor(
       NodePropertyPath='ID',
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
       Node=@id,
-      IncludeSelf=true))/orderby($these/Aggregation.preorder(
+      IncludeSelf=true
+     ))/orderby($these/Aggregation.preorder(
       NodePropertyPath='ID',
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
-      Node=@id))&@nodes=$root/SalesOrganizations&@id=ID
+      Node=@id
+     ))&@nodes=$root/SalesOrganizations&@id=ID
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
