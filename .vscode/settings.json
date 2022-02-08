@@ -14,5 +14,5 @@
     "./lib/testsuite.schema.json": "abnf/*.yaml"
   },
   "cSpell.words": ["ABNF", "odata"],
-  "cSpell.enableFiletypes": ["!yaml"]
+  "cSpell.enableFiletypes": ["!json", "!yaml"]
 }
