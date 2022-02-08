@@ -46,7 +46,7 @@
           },
           "Expect": {
             "type": "array",
-            "description": "List of parsed tokens",
+            "description": "List of parsed tokens in format ruleName:matchedText",
             "items": { "type": "string" }
           }
         }
