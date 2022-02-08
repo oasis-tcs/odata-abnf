@@ -833,7 +833,7 @@ TestCases:
     Input: $apply=outerjoin(Sales as TotalSales,aggregate(Amount with sum as
       Total))/groupby((Name,TotalSales/Total))
 
-  - Name: transformation sequences - sub-hierarchy selection (example 40)
+  - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
     Input: $apply=filter($these/$filter(Name eq 'US')/Aggregation.isdescendant(
       NodePropertyPath='ID',
