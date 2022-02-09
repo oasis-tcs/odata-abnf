@@ -117,12 +117,16 @@ describe("run test suite", () => {
 
   it("test suite with constraints", () => {
     const suite = {
-      Constraints: { entitySetName: ["MyEntitySet"] },
+      Constraints: {
+        entitySetName: ["MyEntitySet"],
+        singletonEntity: [],
+        actionImport: [],
+      },
       TestCases: [
-        { Name: "success", Input: "MyEntitySet(1)", Rule: "odataRelativeUri" },
+        { Name: "success", Input: "MyEntitySet/1", Rule: "odataRelativeUri" },
         {
           Name: "fail due to constraint",
-          Input: "notMyEntitySet(1)",
+          Input: "notMyEntitySet/1",
           Rule: "odataRelativeUri",
         },
       ],
@@ -132,12 +136,26 @@ describe("run test suite", () => {
       [
         colors.red("fail due to constraint fails at 14:") +
           " notMyEntitySet" +
-          colors.yellow("(1)"),
+          colors.yellow("/1"),
         colors.green("odataRelativeUri: notMyEntitySet"),
         colors.green(".resourcePath: notMyEntitySet"),
-        colors.green("..singletonEntity: notMyEntitySet"),
+        "..entityColFunctionImportCall: ",
+        colors.green("...entityColFunctionImport: notMyEntitySet"),
+        "..entityFunctionImportCall: ",
+        colors.green("...entityFunctionImport: notMyEntitySet"),
+        "..complexColFunctionImportCall: ",
+        colors.green("...complexColFunctionImport: notMyEntitySet"),
+        "..complexFunctionImportCall: ",
+        colors.green("...complexFunctionImport: notMyEntitySet"),
+        "..primitiveColFunctionImportCall: ",
+        colors.green("...primitiveColFunctionImport: notMyEntitySet"),
+        "..primitiveFunctionImportCall: ",
+        colors.green("...primitiveFunctionImport: notMyEntitySet"),
+        colors.green("..functionImportCallNoParens: notMyEntitySet"),
+        colors.green("...entityFunctionImport: notMyEntitySet"),
         colors.yellow("notMyEntitySet is no entitySetName"),
-
+        colors.yellow("notMyEntitySet is no singletonEntity"),
+        colors.yellow("notMyEntitySet is no actionImport"),
         "",
         colors.red("1 test case failed"),
         "",
