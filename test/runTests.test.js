@@ -22,7 +22,7 @@ describe("run test suite", () => {
     assert.strictEqual(undefined, process.exitCode, "process exit code");
 
     const coverage = printRuleCoverage().split("\n");
-    assert.match(coverage[0], /Touched 0 of [0-9]+ rules, untouched rules:/);
+    assert.match(coverage[0], /Touched 0 of \d+ rules, untouched rules:/);
     assert.strictEqual(coverage[1], colors.yellow(" - odataUri"));
   });
 
