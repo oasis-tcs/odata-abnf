@@ -3678,4 +3678,4 @@ TestCases:
 
   - Name: dynamic property as function parameter
     Rule: queryOptions
-    Input: $compute=concat(Date,'-05-01') as MayDay&$filter=Special.IsSunday(Date=MayDay)
+    Input: $compute=concat(year(Date),'-05-01') as MayDay&$filter=Special.IsSunday(Date=MayDay)
