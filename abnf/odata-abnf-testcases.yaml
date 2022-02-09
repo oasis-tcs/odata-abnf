@@ -230,6 +230,7 @@ Constraints:
     - Line
     - Location
     - message
+    - MayDay
     - Month
     - Name
     - Population
