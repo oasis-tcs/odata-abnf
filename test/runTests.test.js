@@ -23,7 +23,7 @@ describe("run test suite", () => {
 
     const coverage = printRuleCoverage().split("\n");
     assert.match(coverage[0], /Touched 0 of [0-9]+ rules, untouched rules:/);
-    assert.strictEqual(coverage[1], colors.yellow(" - dummyStartRule"));
+    assert.strictEqual(coverage[1], colors.yellow(" - odataUri"));
   });
 
   it("successful test suite", () => {
@@ -79,22 +79,22 @@ describe("run test suite", () => {
         colors.red("fail instead of succeed fails at 8:") +
           " MyEntity" +
           colors.yellow("-Set"),
-        "odataRelativeUri: MyEntity",
-        ".resourcePath: MyEntity",
-        "..entitySetName: MyEntity",
+        colors.green("odataRelativeUri: MyEntity"),
+        colors.green(".resourcePath: MyEntity"),
+        colors.green("..entitySetName: MyEntity"),
 
         colors.red("fail at wrong position fails at 8 instead of 7:") +
           " MyEntity" +
           colors.yellow("-Set"),
-        "odataRelativeUri: MyEntity",
-        ".resourcePath: MyEntity",
-        "..entitySetName: MyEntity",
+        colors.green("odataRelativeUri: MyEntity"),
+        colors.green(".resourcePath: MyEntity"),
+        colors.green("..entitySetName: MyEntity"),
 
         colors.red("fail to fail succeeds instead of failing at 7:") +
           " MyEntitySet",
-        "odataRelativeUri: MyEntitySet",
-        ".resourcePath: MyEntitySet",
-        "..entitySetName: MyEntitySet",
+        colors.green("odataRelativeUri: MyEntitySet"),
+        colors.green(".resourcePath: MyEntitySet"),
+        colors.green("..entitySetName: MyEntitySet"),
 
         "",
         colors.red("3 test cases failed"),
@@ -123,9 +123,9 @@ describe("run test suite", () => {
         colors.red("fail due to constraint fails at 14:") +
           " notMyEntitySet" +
           colors.yellow("(1)"),
-        "odataRelativeUri: notMyEntitySet",
-        ".resourcePath: notMyEntitySet",
-        "..singletonEntity: notMyEntitySet",
+        colors.green("odataRelativeUri: notMyEntitySet"),
+        colors.green(".resourcePath: notMyEntitySet"),
+        colors.green("..singletonEntity: notMyEntitySet"),
         colors.yellow("notMyEntitySet is no entitySetName"),
 
         "",
