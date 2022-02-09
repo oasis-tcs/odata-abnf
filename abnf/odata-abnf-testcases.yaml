@@ -157,6 +157,9 @@ Constraints:
     - O'Neil
     - O%27Neil
     - Smartphone%2FTablet
+  lambdaVariableExpr:
+    - lambda
+    - m
   namespacePart:
     - Core
     - Measures
@@ -173,6 +176,7 @@ Constraints:
     - customer
     - Customers
     - complex
+    - Date
     - Ingredients
     - Kind
     - Location
@@ -195,6 +199,7 @@ Constraints:
     - Sizes
   primitiveFunction:
     - Available
+    - IsSunday
     - MostPopularCategory
     - MostPopularName
     - PhoneticallySimilar
@@ -3670,3 +3675,7 @@ TestCases:
   - Name: ODATA-633 hex pair bug
     Rule: stringInUrl
     Input: '"b%75g"'
+
+  - Name: dynamic property as function parameter
+    Rule: queryOptions
+    Input: $compute=concat(Date,'-05-01') as MayDay&$filter=Special.IsSunday(Date=MayDay)
