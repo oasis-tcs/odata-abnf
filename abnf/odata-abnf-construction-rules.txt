@@ -582,7 +582,7 @@ functionExpr = [ namespace "." ]
                / primitiveFunction    functionExprParameters [ primitivePathExpr ] 
                )
 
-functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE
+functionExprParameters = OPEN [ BWS functionExprParameter *( BWS COMMA BWS functionExprParameter ) ] BWS CLOSE
 functionExprParameter  = parameterName EQ ( parameterAlias / parameterValue )
 
 anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE

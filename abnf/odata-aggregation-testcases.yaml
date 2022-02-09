@@ -122,6 +122,7 @@ Constraints:
   customAggregate:
     - Budget
     - Forecast
+  customName: []
   entityColFunction:
     - ancestors
     - descendants
@@ -190,6 +191,7 @@ Constraints:
     - Cost
     - CountryCode
     - Region
+    - MayDay
     - Month
     - Name
     - PlannedRevenue
@@ -835,24 +837,25 @@ TestCases:
 
   - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
-    Input: $apply=filter($these/$filter($these/$filter(Name eq 'US')/Aggregation.isdescendant(
-      NodePropertyPath='ID',
+    Input: $apply=filter(Aggregation.isdescendant(
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
-      Node=@id,
+      Node=ID,
+      Nodes=$these/$filter(Name eq 'US'),
+      NodePropertyPath='ID',
       IncludeSelf=true
-     ) and contains(Name,'East'))/Aggregation.isancestor(
-      NodePropertyPath='ID',
+     ))/filter(Aggregation.isancestor(
       HierarchyNodes=@nodes,
       HierarchyQualifier='SalesOrgHierarchy',
-      Node=@id,
+      Node=ID,
+      Nodes=$these/$filter(contains(Name,'East')),
+      NodePropertyPath='ID',
       IncludeSelf=true
-     ))/orderby($these/Aggregation.preorder(
-      NodePropertyPath='ID',
-      HierarchyNodes=@nodes,
+     ))/orderby(Aggregation.preorder(
+      HierarchyNodes=$these,
       HierarchyQualifier='SalesOrgHierarchy',
-      Node=@id
-     ))&@nodes=$root/SalesOrganizations&@id=ID
+      Node=ID
+     ))
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
