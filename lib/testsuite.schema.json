@@ -43,6 +43,11 @@
             "type": "integer",
             "description": "Position where match is expected to fail",
             "minimum": 0
+          },
+          "Expect": {
+            "type": "array",
+            "description": "List of parsed tokens in format ruleName:matchedText",
+            "items": { "type": "string" }
           }
         }
       }

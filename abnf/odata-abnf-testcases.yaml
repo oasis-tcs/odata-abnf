@@ -826,6 +826,10 @@ TestCases:
   - Name: 4.3 Addressing entities - function call with subsequent key segment
     Rule: odataRelativeUri
     Input: ProductsByCategoryId(categoryId=2)(2)
+    Expect:
+      - entityColFunctionImport:ProductsByCategoryId
+      - parameterName:categoryId
+      - keyPredicate:(2)
 
   - Name: 4.3 Addressing entities - function call with alias
     Rule: odataRelativeUri
