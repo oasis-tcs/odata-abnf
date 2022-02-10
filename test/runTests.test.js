@@ -89,22 +89,22 @@ describe("run test suite", () => {
         colors.red("fail instead of succeed fails at 8:") +
           " MyEntity" +
           colors.yellow("-Set"),
-        "odataRelativeUri: MyEntity",
-        ".resourcePath: MyEntity",
-        "..entitySetName: MyEntity",
+        colors.green("odataRelativeUri: MyEntity"),
+        colors.green(".resourcePath: MyEntity"),
+        colors.green("..entitySetName: MyEntity"),
 
         colors.red("fail at wrong position fails at 8 instead of 7:") +
           " MyEntity" +
           colors.yellow("-Set"),
-        "odataRelativeUri: MyEntity",
-        ".resourcePath: MyEntity",
-        "..entitySetName: MyEntity",
+        colors.green("odataRelativeUri: MyEntity"),
+        colors.green(".resourcePath: MyEntity"),
+        colors.green("..entitySetName: MyEntity"),
 
         colors.red("fail to fail succeeds instead of failing at 7:") +
           " MyEntitySet",
-        "odataRelativeUri: MyEntitySet",
-        ".resourcePath: MyEntitySet",
-        "..entitySetName: MyEntitySet",
+        colors.green("odataRelativeUri: MyEntitySet"),
+        colors.green(".resourcePath: MyEntitySet"),
+        colors.green("..entitySetName: MyEntitySet"),
 
         "",
         colors.red("3 test cases failed"),
@@ -117,12 +117,16 @@ describe("run test suite", () => {
 
   it("test suite with constraints", () => {
     const suite = {
-      Constraints: { entitySetName: ["MyEntitySet"] },
+      Constraints: {
+        entitySetName: ["MyEntitySet"],
+        singletonEntity: [],
+        actionImport: [],
+      },
       TestCases: [
-        { Name: "success", Input: "MyEntitySet(1)", Rule: "odataRelativeUri" },
+        { Name: "success", Input: "MyEntitySet/1", Rule: "odataRelativeUri" },
         {
           Name: "fail due to constraint",
-          Input: "notMyEntitySet(1)",
+          Input: "notMyEntitySet/1",
           Rule: "odataRelativeUri",
         },
       ],
@@ -132,12 +136,26 @@ describe("run test suite", () => {
       [
         colors.red("fail due to constraint fails at 14:") +
           " notMyEntitySet" +
-          colors.yellow("(1)"),
-        "odataRelativeUri: notMyEntitySet",
-        ".resourcePath: notMyEntitySet",
-        "..singletonEntity: notMyEntitySet",
+          colors.yellow("/1"),
+        colors.green("odataRelativeUri: notMyEntitySet"),
+        colors.green(".resourcePath: notMyEntitySet"),
+        "..entityColFunctionImportCall: ",
+        colors.green("...entityColFunctionImport: notMyEntitySet"),
+        "..entityFunctionImportCall: ",
+        colors.green("...entityFunctionImport: notMyEntitySet"),
+        "..complexColFunctionImportCall: ",
+        colors.green("...complexColFunctionImport: notMyEntitySet"),
+        "..complexFunctionImportCall: ",
+        colors.green("...complexFunctionImport: notMyEntitySet"),
+        "..primitiveColFunctionImportCall: ",
+        colors.green("...primitiveColFunctionImport: notMyEntitySet"),
+        "..primitiveFunctionImportCall: ",
+        colors.green("...primitiveFunctionImport: notMyEntitySet"),
+        colors.green("..functionImportCallNoParens: notMyEntitySet"),
+        colors.green("...entityFunctionImport: notMyEntitySet"),
         colors.yellow("notMyEntitySet is no entitySetName"),
-
+        colors.yellow("notMyEntitySet is no singletonEntity"),
+        colors.yellow("notMyEntitySet is no actionImport"),
         "",
         colors.red("1 test case failed"),
         "",

@@ -40,7 +40,7 @@ function CompileAndCheck {
 CompileAndCheck
 
 if ($watch) {
-    $PathToMonitor = Resolve-Path "$pwd\abnf"
+    $PathToMonitor = Resolve-Path "$pwd"
     $WaitMessage = "Waiting for changes (press ^C to stop)..."
 
     $FileSystemWatcher = New-Object System.IO.FileSystemWatcher
