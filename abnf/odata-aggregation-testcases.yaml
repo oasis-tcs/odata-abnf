@@ -122,7 +122,6 @@ Constraints:
   customAggregate:
     - Budget
     - Forecast
-  customName: []
   entityColFunction:
     - ancestors
     - descendants
