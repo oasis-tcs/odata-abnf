@@ -3190,10 +3190,6 @@ TestCases:
     Rule: commonExpr
     Input: Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)
 
-  - Name: Functions in commonExpr - property as parameter
-    Rule: commonExpr
-    Input: Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)
-
   - Name: in operator with list of primitives
     Rule: commonExpr
     Input: FirstName in ('Miller','Smith')
