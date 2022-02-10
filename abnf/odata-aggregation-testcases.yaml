@@ -837,14 +837,14 @@ TestCases:
   - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
     Input: $apply=filter(Aggregation.isdescendant(
-      HierarchyNodes=@nodes,
+      HierarchyNodes=@hierarchyNodes,
       HierarchyQualifier='SalesOrgHierarchy',
       Node=ID,
       Nodes=$these/$filter(Name eq 'US'),
       NodePropertyPath='ID',
       IncludeSelf=true
      ))/filter(Aggregation.isancestor(
-      HierarchyNodes=@nodes,
+      HierarchyNodes=@hierarchyNodes,
       HierarchyQualifier='SalesOrgHierarchy',
       Node=ID,
       Nodes=$these/$filter(contains(Name,'East')),
@@ -854,7 +854,7 @@ TestCases:
       HierarchyNodes=$these,
       HierarchyQualifier='SalesOrgHierarchy',
       Node=ID
-     ))
+     ))&@hierarchyNodes=$root/SalesOrganizations
 
   - Name: $these and bound function call
     Rule: queryOptions
