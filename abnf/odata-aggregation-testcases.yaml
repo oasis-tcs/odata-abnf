@@ -201,6 +201,7 @@ Constraints:
     - Street
     - TaxRate
     - Year
+  singletonEntity: []
   streamProperty: []
 
 TestCases:
