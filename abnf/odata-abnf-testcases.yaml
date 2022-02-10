@@ -180,6 +180,8 @@ Constraints:
     - Number
     - Rank
     - Size
+    - What
+    - Where
     - Word
     - Word1
     - Word2
@@ -2167,6 +2169,15 @@ TestCases:
   - Name: 5.1.1.14.5 $root with entity set
     Rule: commonExpr
     Input: $root/SalesOrganizations
+
+  - Name: $root with bound function call
+    Rule: odataRelativeUri
+    FailAt: 68
+    Input: Sales?$filter=$root/Sales/Special.MostPopularCategory(Where=ZipCode) eq 'Food'
+
+  - Name: $root with unbound function call
+    Rule: odataRelativeUri
+    Input: Sales?$filter=Special.MostPopularCategory(What=$root/Sales,Where=ZipCode) eq 'Food'
 
   - Name: 5.1.1.14.6 $this
     Rule: boolCommonExpr
