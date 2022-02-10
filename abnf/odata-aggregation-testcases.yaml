@@ -191,7 +191,6 @@ Constraints:
     - Cost
     - CountryCode
     - Region
-    - MayDay
     - Month
     - Name
     - PlannedRevenue
