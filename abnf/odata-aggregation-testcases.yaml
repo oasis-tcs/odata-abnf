@@ -179,6 +179,7 @@ Constraints:
     - isdescendant
     - preorder
     - postorder
+    - MostPopularCategory
   primitiveFunctionImport: []
   primitiveKeyProperty:
     - Code
@@ -854,6 +855,14 @@ TestCases:
       HierarchyQualifier='SalesOrgHierarchy',
       Node=ID
      ))
+
+  - Name: $these and bound function call
+    Rule: queryOptions
+    Input: $apply=filter($these/Custom.MostPopularCategory(Where=Street) eq 'Food')
+
+  - Name: $these and unbound function call
+    Rule: queryOptions
+    Input: $apply=filter(Custom.MostPopularCategory(What=$these,Where=Street) eq 'Food')
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
