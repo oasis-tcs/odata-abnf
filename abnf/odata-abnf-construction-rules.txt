@@ -498,14 +498,14 @@ commonExpr = ( primitiveLiteral
 
 boolCommonExpr = commonExpr ; resulting in a Boolean
 
-rootExpr = %s"$root/" ( entitySetName                  [ collectionNavigation ]
-                      / singletonEntity                [ singleNavigationExpr ]
-                      / entityColFunctionImportCall    [ collectionNavigation ]
-                      / entityFunctionImportCall       [ singleNavigation ]
-                      / complexColFunctionImportCall   [ complexColPath ]
-                      / complexFunctionImportCall      [ complexPath ]
-                      / primitiveColFunctionImportCall [ collectionPath ]
-                      / primitiveFunctionImportCall    [ primitivePath ]
+rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
+                      / singletonEntity [ singleNavigationExpr ]
+                      / entityColFunctionImport    functionExprParameters [ collectionNavigationExpr ]
+                      / entityFunctionImport       functionExprParameters [ singleNavigationExpr ]
+                      / complexColFunctionImport   functionExprParameters [ complexColPathExpr ]
+                      / complexFunctionImport      functionExprParameters [ complexPathExpr ]
+                      / primitiveColFunctionImport functionExprParameters [ collectionPathExpr ]
+                      / primitiveFunctionImport    functionExprParameters [ primitivePathExpr ]
                       )
 
 firstMemberExpr = memberExpr

@@ -2172,7 +2172,6 @@ TestCases:
 
   - Name: $root with bound function call
     Rule: odataRelativeUri
-    FailAt: 72
     Input: Suppliers?$filter=$root/Sales/Special.MostPopularCategory(Where=ZipCode) eq 'Food'
 
   - Name: $root with unbound function call
