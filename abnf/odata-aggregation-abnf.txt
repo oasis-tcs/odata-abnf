@@ -192,7 +192,7 @@ traverseTrafo   = %s"traverse" OPEN
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
-recHierReference = BWS ( rootExpr / %s"$these" [ collectionNavigationExpr / complexColPathExpr / collectionPathExpr ] ) BWS COMMA
+recHierReference = BWS rootExpr BWS COMMA
                    BWS recHierQualifier BWS COMMA
                    BWS propertyPath BWS
 recHierQualifier = odataIdentifier

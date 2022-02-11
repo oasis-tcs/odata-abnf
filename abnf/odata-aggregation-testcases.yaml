@@ -604,7 +604,7 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors($these,SalesOrgHierarchy,ID,contains(Name,'East') or
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), 2)
 
   - Name: hierarchy transformations - ancestors
@@ -869,8 +869,8 @@ TestCases:
 
   - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
-    Input: $apply=descendants($these,SalesOrgHierarchy,ID,Name eq 'US',keep
-      start)/ancestors($these,SalesOrgHierarchy,ID,contains(Name,'East'),keep
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',keep
+      start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East'),keep
       start)/traverse(SalesOrgHierarchy,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy
