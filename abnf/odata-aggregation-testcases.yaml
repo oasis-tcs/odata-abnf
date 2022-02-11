@@ -599,7 +599,7 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'))
 
   - Name: hierarchy transformations - ancestors
@@ -609,29 +609,29 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,contains(Name,'East') or
+    Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), keep start)
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US')
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US')
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US', 3)
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US', 3)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',3,keep start)
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',3,keep start)
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
-    Input: $apply=traverse(SalesOrganizations,SalesOrgHierarchy,ID,preorder)
+    Input: $apply=traverse(SalesOrgHierarchy,preorder)
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
@@ -871,7 +871,7 @@ TestCases:
     Rule: queryOptions
     Input: $apply=descendants($these,SalesOrgHierarchy,ID,Name eq 'US',keep
       start)/ancestors($these,SalesOrgHierarchy,ID,contains(Name,'East'),keep
-      start)/traverse($these,SalesOrgHierarchy,ID,preorder)
+      start)/traverse(SalesOrgHierarchy,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
