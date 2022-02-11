@@ -3,6 +3,8 @@ trace:
   omit:
     - A-to-F
     - day
+    - geographyPrefix
+    - geometryPrefix
     - hour
     - identifierLeadingCharacter
     - identifierCharacter
@@ -10,8 +12,13 @@ trace:
     - month
     - odataIdentifier
     - oneToNine
+    - other-delims
+    - pchar
     - pchar-no-SQUOTE
+    - pct-encoded
+    - qchar-no-AMP-EQ-AT-DOLLAR
     - second
+    - sub-delims
     - unreserved
     - year
     - zeroToFiftyNine

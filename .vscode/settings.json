@@ -12,5 +12,7 @@
   },
   "yaml.schemas": {
     "./lib/testsuite.schema.json": "abnf/*.yaml"
-  }
+  },
+  "cSpell.words": ["ABNF", "odata"],
+  "cSpell.enableFiletypes": ["!json", "!yaml"]
 }
