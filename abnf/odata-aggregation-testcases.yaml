@@ -129,6 +129,7 @@ Constraints:
   entityColFunctionImport: []
   entityColNavigationProperty:
     - Items
+    - Nodes
     - Orders
     - Products
     - Sales
@@ -156,6 +157,7 @@ Constraints:
     - Sales
     - Sales_cj
     - SalesOrganizations
+    - SalesOrgHierarchies
     - Time
   entityTypeName: []
   enumerationMember: []
@@ -377,7 +379,7 @@ TestCases:
 
   - Name: aggregate - filter on $root
     Rule: queryOptions
-    Input: $apply=filter(Name eq $root/Products('P2')/Name)
+    Input: $apply=filter(Name eq Products('P2')/Name)
 
   - Name: aggregate - search
     Rule: queryOptions
