@@ -858,6 +858,15 @@ TestCases:
       Node=ID
      ))&@hierarchyNodes=$root/SalesOrganizations
 
+  - Name: transformation sequences - sub-hierarchy selection with filter
+    Rule: filterTrafo
+    Input: filter($root/SalesOrganizations/$filter(Name eq 'US')/any(p:Aggregation.isancestor(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Descendant=p/ID,
+      IncludeSelf=true)))
+
   - Name: $these and bound function call
     Rule: queryOptions
     Input: $apply=filter($these/Custom.MostPopularCategory(Where=Street) eq 'Food')
