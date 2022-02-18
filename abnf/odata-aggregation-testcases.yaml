@@ -373,9 +373,8 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Self.DigitalProduct/Region))
 
-  - Name: aggregate - groupby no final type cast
+  - Name: aggregate - groupby final type cast
     Rule: queryOptions
-    FailAt: 43
     Input: $apply=groupby((Product/Self.DigitalProduct))
 
   - Name: aggregate - groupby annotations 2

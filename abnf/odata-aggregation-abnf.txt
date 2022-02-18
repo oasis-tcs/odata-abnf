@@ -130,22 +130,19 @@ pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
 pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
 
-; grpPropPathPrefix cannot end with a primitive property or annotation
-; after grpPropPathPrefix comes one final non-primitive segment or a primitive segment plus an optional annotation
-groupingProperty = grpPropPathPrefix
-                   ( complexProperty          / complexAnnotationInQuery
-                   / entityNavigationProperty / entityAnnotationInQuery
-                   / ( primitiveProperty      / primitiveAnnotationInQuery )
-                     [ "/" ( complexAnnotationInQuery / entityAnnotationInQuery / primitiveAnnotationInQuery ) ]
-                   )
-grpPropPathPrefix  = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
-                     *( ( grpPropPathSegment / grpPropAnnoSegment ) "/" )
-grpPropPathSegment = complexProperty            [ "/" qualifiedComplexTypeName ]
-                   / entityNavigationProperty   [ "/" qualifiedEntityTypeName  ]
-                   / primitiveProperty            "/" grpPropAnnoSegment
-grpPropAnnoSegment = complexAnnotationInQuery   [ "/" qualifiedComplexTypeName ]
-                   / entityAnnotationInQuery    [ "/" qualifiedEntityTypeName  ]
-                   / primitiveAnnotationInQuery   "/" grpPropAnnoSegment
+; grpPropPathPrefix never ends with a primitive value, but grpPropPath may
+groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] grpPropPath
+                   / qualifiedComplexTypeName / qualifiedEntityTypeName
+grpPropPath        = [ grpPropPathPrefix "/" ] ( primitiveProperty / primitiveAnnotationInQuery )
+                   / grpPropPathPrefix
+grpPropPathPrefix  = ( grpPropPathSegment / grpPropAnnoSegment ) "/" grpPropPathPrefix
+                   / grpPropPathSegment / grpPropAnnoSegment
+grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName ]
+                   / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
+                   / primitiveProperty          "/" grpPropAnnoSegment
+grpPropAnnoSegment = complexAnnotationInQuery [ "/" qualifiedComplexTypeName ]
+                   / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName  ]
+                   / primitiveAnnotationInQuery "/" grpPropAnnoSegment
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
