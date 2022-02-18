@@ -377,6 +377,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Self.DigitalProduct))
 
+  - Name: aggregate - groupby only type cast
+    Rule: queryOptions
+    Input: $apply=groupby((Self.DigitalProduct))
+
   - Name: aggregate - groupby annotations 2
     Rule: queryOptions
     Input: $apply=groupby((Product/@Core.MediaType))
