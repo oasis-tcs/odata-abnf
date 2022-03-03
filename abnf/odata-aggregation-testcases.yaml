@@ -128,6 +128,7 @@ Constraints:
   entityColFunctionImport: []
   entityColNavigationProperty:
     - Items
+    - Nodes
     - Orders
     - Products
     - Sales
@@ -155,6 +156,7 @@ Constraints:
     - Sales
     - Sales_cj
     - SalesOrganizations
+    - SalesOrgHierarchies
     - Time
   entityTypeName:
     - DigitalProduct
@@ -633,35 +635,35 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')))
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
+      contains(Name,'Central'))
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), 2)
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
+      contains(Name,'Central'), 2)
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), keep start)
+    Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,contains(Name,'East') or
+      contains(Name,'Central'), keep start)
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(SalesOrgHierarchy,filter(contains(Name,'East') or
-      contains(Name,'Central')), 2, keep start)
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
+      contains(Name,'Central'), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'))
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US')
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'), 3)
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US', 3)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),3,keep start)
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',3,keep start)
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
@@ -903,8 +905,8 @@ TestCases:
 
   - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
-    Input: $apply=descendants(SalesOrgHierarchy,filter(Name eq 'US'),keep
-      start)/ancestors(SalesOrgHierarchy,filter(contains(Name,'East')),keep
+    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',keep
+      start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East'),keep
       start)/traverse(SalesOrgHierarchy,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy

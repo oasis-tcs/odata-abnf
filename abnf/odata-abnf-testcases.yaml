@@ -180,6 +180,8 @@ Constraints:
     - Number
     - Rank
     - Size
+    - What
+    - Where
     - Word
     - Word1
     - Word2
@@ -405,12 +407,12 @@ TestCases:
     FailAt: 12
     Input: 2012-09-03T24:00-03:00
 
-  - Name: "DateTimeOffset: negative infinitiy"
+  - Name: "DateTimeOffset: negative infinity"
     Rule: dateTimeOffsetValue
     FailAt: 1
     Input: -INF
 
-  - Name: "DateTimeOffset: positive infinitiy"
+  - Name: "DateTimeOffset: positive infinity"
     Rule: dateTimeOffsetValue
     FailAt: 0
     Input: INF
@@ -441,11 +443,11 @@ TestCases:
     Rule: decimalValue
     Input: "1e-101"
 
-  - Name: Decimal - negative infinitiy
+  - Name: Decimal - negative infinity
     Rule: decimalValue
     Input: -INF
 
-  - Name: Decimal - positive infinitiy
+  - Name: Decimal - positive infinity
     Rule: decimalValue
     Input: INF
 
@@ -826,6 +828,10 @@ TestCases:
   - Name: 4.3 Addressing entities - function call with subsequent key segment
     Rule: odataRelativeUri
     Input: ProductsByCategoryId(categoryId=2)(2)
+    Expect:
+      - entityColFunctionImport:ProductsByCategoryId
+      - parameterName:categoryId
+      - keyPredicate:(2)
 
   - Name: 4.3 Addressing entities - function call with alias
     Rule: odataRelativeUri
@@ -2164,6 +2170,18 @@ TestCases:
     Rule: odataRelativeUri
     Input: ProductsOrderedBy(Customers=@c)?@c=[$root/Customers('ALFKI'),$root/Customers('BLAUS')]
 
+  - Name: 5.1.1.14.5 $root with entity set
+    Rule: commonExpr
+    Input: $root/SalesOrganizations
+
+  - Name: $root with bound function call
+    Rule: odataRelativeUri
+    Input: Suppliers?$filter=$root/Sales/Special.MostPopularCategory(Where=ZipCode) eq 'Food'
+
+  - Name: $root with unbound function call
+    Rule: odataRelativeUri
+    Input: Suppliers?$filter=Special.MostPopularCategory(What=$root/Sales,Where=ZipCode) eq 'Food'
+
   - Name: 5.1.1.14.6 $this
     Rule: boolCommonExpr
     Input: $this eq 'Hugo'
@@ -3181,10 +3199,6 @@ TestCases:
     Rule: commonExpr
     Input: 'Model.Available(complex=%7B %22Name%22 : "double%20quote (%5C%22) in
       value" %7D)'
-
-  - Name: Functions in commonExpr - property as parameter
-    Rule: commonExpr
-    Input: Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)
 
   - Name: Functions in commonExpr - property as parameter
     Rule: commonExpr
