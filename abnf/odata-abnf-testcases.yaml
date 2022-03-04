@@ -826,6 +826,10 @@ TestCases:
   - Name: 4.3 Addressing entities - function call with subsequent key segment
     Rule: odataRelativeUri
     Input: ProductsByCategoryId(categoryId=2)(2)
+    Expect:
+      - entityColFunctionImport:ProductsByCategoryId
+      - parameterName:categoryId
+      - keyPredicate:(2)
 
   - Name: 4.3 Addressing entities - function call with alias
     Rule: odataRelativeUri
@@ -3193,10 +3197,6 @@ TestCases:
     Rule: commonExpr
     Input: 'Model.Available(complex=%7B %22Name%22 : "double%20quote (%5C%22) in
       value" %7D)'
-
-  - Name: Functions in commonExpr - property as parameter
-    Rule: commonExpr
-    Input: Model.PhoneticallySimilar(Word1=Name,Word2=Supplier/Name)
 
   - Name: Functions in commonExpr - property as parameter
     Rule: commonExpr
