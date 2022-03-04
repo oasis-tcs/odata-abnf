@@ -110,6 +110,7 @@ Constraints:
     - TotalPopulation
     - TotalSales
     - WeekDay
+  complexAnnotationInQuery: []
   complexColProperty:
     - Details
   complexColFunction:
@@ -123,6 +124,7 @@ Constraints:
   customAggregate:
     - Budget
     - Forecast
+  entityAnnotationInQuery: []
   entityColFunction:
     - TopCountAndBalance
   entityColFunctionImport: []
@@ -366,10 +368,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
 
-  - Name: aggregate - groupby no two consecutive primitive properties
-    Rule: queryOptions
-    FailAt: 30
-    Input: $apply=groupby((Product/Price/Quantity))
+#  - Name: aggregate - groupby no two consecutive primitive properties
+#    Rule: queryOptions
+#    FailAt: 30
+#    Input: $apply=groupby((Product/Price/Quantity))
 
   - Name: aggregate - groupby with type cast
     Rule: queryOptions
@@ -377,11 +379,12 @@ TestCases:
 
   - Name: aggregate - groupby final type cast
     Rule: queryOptions
+    FailAt: 43
     Input: $apply=groupby((Product/Self.DigitalProduct))
 
-  - Name: aggregate - groupby only type cast
+  - Name: aggregate - groupby only derived property
     Rule: queryOptions
-    Input: $apply=groupby((Self.DigitalProduct))
+    Input: $apply=groupby((Self.DigitalProduct/Region))
 
   - Name: aggregate - groupby annotations 2
     Rule: queryOptions

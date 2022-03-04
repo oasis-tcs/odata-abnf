@@ -130,19 +130,15 @@ pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
 pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
                 / navigationProperty [ "/" qualifiedEntityTypeName  ]
 
-; grpPropPathPrefix never ends with a primitive value, but grpPropPath may
-groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] grpPropPath
-                   / qualifiedComplexTypeName / qualifiedEntityTypeName
-grpPropPath        = [ grpPropPathPrefix "/" ] ( primitiveProperty / primitiveAnnotationInQuery )
-                   / grpPropPathPrefix
-grpPropPathPrefix  = ( grpPropPathSegment / grpPropAnnoSegment ) "/" grpPropPathPrefix
-                   / grpPropPathSegment / grpPropAnnoSegment
-grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName ]
-                   / entityNavigationProperty [ "/" qualifiedEntityTypeName  ]
-                   / primitiveProperty          "/" grpPropAnnoSegment
-grpPropAnnoSegment = complexAnnotationInQuery [ "/" qualifiedComplexTypeName ]
-                   / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName  ]
-                   / primitiveAnnotationInQuery "/" grpPropAnnoSegment
+; a type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment
+groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
+                     grpPropPathSegment *( "/" grpPropPathSegment )
+grpPropPathSegment = complexProperty          [ "/" qualifiedComplexTypeName "/" grpPropPathSegment ]
+                   / entityNavigationProperty [ "/" qualifiedEntityTypeName  "/" grpPropPathSegment ]
+                   / primitiveProperty
+                   / complexAnnotationInQuery [ "/" qualifiedComplexTypeName "/" grpPropPathSegment ]
+                   / entityAnnotationInQuery  [ "/" qualifiedEntityTypeName  "/" grpPropPathSegment ]
+                   / primitiveAnnotationInQuery
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
