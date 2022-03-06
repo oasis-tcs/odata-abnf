@@ -110,7 +110,8 @@ Constraints:
     - TotalPopulation
     - TotalSales
     - WeekDay
-  complexAnnotationInQuery: []
+  complexAnnotationInQuery:
+    - '@Core.GeometryFeature'
   complexColProperty:
     - Details
   complexColFunction:
@@ -174,6 +175,9 @@ Constraints:
     - Custom
     - Measures
     - Self
+  primitiveAnnotationInQuery:
+    - '@Core.MediaType'
+    - '@Measures.ISOCurrency'
   primitiveColFunction: []
   primitiveColFunctionImport: []
   primitiveColProperty: []
@@ -212,6 +216,7 @@ Constraints:
   streamProperty: []
   termName:
     - ISOCurrency
+    - GeometryFeature
     - MediaType
 
 TestCases:
@@ -386,9 +391,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Self.DigitalProduct/Region))
 
-  - Name: aggregate - groupby annotations 2
+  - Name: aggregate - groupby complex annotations
     Rule: queryOptions
-    Input: $apply=groupby((Product/@Core.MediaType))
+    Input: $apply=groupby((Country/@Core.GeometryFeature))
+    Expect:
+      - grpPropAnnoSegment:@Core.GeometryFeature
 
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances

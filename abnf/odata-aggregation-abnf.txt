@@ -138,8 +138,8 @@ grpPropPathSegment = grpPropAnnoSegment
                    / entityNavigationProperty [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
                    / primitiveProperty                                           "/" grpPropAnnoSegment
 grpPrimPathSegment = grpPrimAnnoSegment
-                   / complexProperty          [ [ "/" qualifiedComplexTypeName ] "/" grpPrimPathSegment ]
-                   / entityNavigationProperty [ [ "/" qualifiedEntityTypeName  ] "/" grpPrimPathSegment ]
+                   / complexProperty            [ "/" qualifiedComplexTypeName ] "/" grpPrimPathSegment
+                   / entityNavigationProperty   [ "/" qualifiedEntityTypeName  ] "/" grpPrimPathSegment
                    / grpPropPathSegment                                          "/" grpPrimPathSegment
                    / primitiveProperty                                           "/" grpPrimAnnoSegment
                    / primitiveProperty
