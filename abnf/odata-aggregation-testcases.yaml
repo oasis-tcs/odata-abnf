@@ -145,6 +145,7 @@ Constraints:
     - Products_cj
     - ProductGroup
     - Sales_cj
+    - SalesOrganization
     - Time
     - TotalSales
   entitySetName:
@@ -619,8 +620,8 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
-      contains(Name,'Central'), 2, keep start)
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,contains(SalesOrganization/Name,'East') or
+      contains(SalesOrganization/Name,'Central'), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
