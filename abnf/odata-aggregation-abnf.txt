@@ -194,8 +194,9 @@ traverseTrafo   = %s"traverse" OPEN
 
 recHierReference = BWS rootExpr BWS COMMA
                    BWS recHierQualifier BWS COMMA
-                   BWS propertyPath BWS
+                   BWS recHierPropertyPath BWS
 recHierQualifier = odataIdentifier
+recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 

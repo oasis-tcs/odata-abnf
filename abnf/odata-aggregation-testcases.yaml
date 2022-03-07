@@ -597,6 +597,11 @@ TestCases:
     Rule: odataRelativeUri
     Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
+  - Name: hierarchy transformations - ancestors with forbidden node property path
+    Rule: queryOptions
+    FailAt: 65
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,Sales(4711)/ID,true)
+
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
