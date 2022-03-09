@@ -177,14 +177,14 @@ ancestorsTrafo  = %s"ancestors" OPEN
                   BWS recHierReference BWS 
                   COMMA BWS boolCommonExpr BWS
                   [ COMMA BWS 1*DIGIT BWS ]
-                  [ COMMA BWS %s"keep start" BWS]
+                  [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
                  BWS recHierReference BWS 
                  COMMA BWS boolCommonExpr BWS
                  [ COMMA BWS 1*DIGIT BWS ]
-                 [ COMMA BWS %s"keep start" BWS]
+                 [ COMMA BWS %s"keep start" BWS ]
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
