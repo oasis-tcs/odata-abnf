@@ -618,10 +618,10 @@ TestCases:
     Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), keep start)
 
-  - Name: hierarchy transformations - ancestors node values via navigation property 
-    Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,contains(SalesOrganization/Name,'East') or
-      contains(SalesOrganization/Name,'Central'), 2, keep start)
+  - Name: hierarchy transformations - ancestors processing non-hierarchical input set; node values via navigation property
+    Rule: odataRelativeUri
+    Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+      contains(SalesOrganization/Name,'East') or contains(SalesOrganization/Name,'Central'), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions

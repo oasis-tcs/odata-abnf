@@ -192,7 +192,8 @@ traverseTrafo   = %s"traverse" OPEN
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
-recHierReference = BWS rootExpr BWS COMMA
+recHierReference = BWS rootExpr ; must have type Collection(Edm.EntityType)
+                   BWS COMMA
                    BWS recHierQualifier BWS COMMA
                    BWS recHierPropertyPath BWS
 recHierQualifier = odataIdentifier
