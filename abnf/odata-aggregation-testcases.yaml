@@ -145,6 +145,7 @@ Constraints:
     - Products_cj
     - ProductGroup
     - Sales_cj
+    - SalesOrganization
     - Time
     - TotalSales
   entitySetName:
@@ -597,35 +598,40 @@ TestCases:
     Rule: odataRelativeUri
     Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
+  - Name: hierarchy transformations - ancestors with forbidden node property path
+    Rule: queryOptions
+    FailAt: 65
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,Sales(4711)/ID,true)
+
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'))
 
-  - Name: hierarchy transformations - ancestors
+  - Name: hierarchy transformations - ancestors max distance
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), 2)
 
-  - Name: hierarchy transformations - ancestors
+  - Name: hierarchy transformations - ancestors hierarchy directory
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,contains(Name,'East') or
       contains(Name,'Central'), keep start)
 
-  - Name: hierarchy transformations - ancestors
-    Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East') or
-      contains(Name,'Central'), 2, keep start)
+  - Name: hierarchy transformations - ancestors processing non-hierarchical input set; node values via navigation property
+    Rule: odataRelativeUri
+    Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+      contains(SalesOrganization/Name,'East') or contains(SalesOrganization/Name,'Central'), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US')
 
-  - Name: hierarchy transformations - descendants
+  - Name: hierarchy transformations - descendants max distance
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US', 3)
 
-  - Name: hierarchy transformations - descendants
+  - Name: hierarchy transformations - descendants keep start
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',3,keep start)
 
