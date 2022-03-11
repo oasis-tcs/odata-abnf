@@ -129,7 +129,10 @@ expressionAlias = odataIdentifier
                 
 customAggregate = odataIdentifier
                 
-; a type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment
+; Two flavors of paths are defined now:
+; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
+; - one for use in groupby, whose segments must be single-valued (rules with prefix grp).
+; A type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment in either.
 aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
 aggPropPathSegment = aggPropAnnoSegment
                    / ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
