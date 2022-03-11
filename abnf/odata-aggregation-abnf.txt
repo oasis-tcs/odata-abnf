@@ -112,7 +112,7 @@ aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregat
 aggregateItem   = %s"$count" asAlias 
                 / aggregateExpr
 aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
-                / [ aggPathPrefix "/" ] ( primitiveProperty / primitiveColProperty ) aggregateWith [ aggregateFrom ] asAlias
+                / aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / [ aggPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
@@ -133,6 +133,7 @@ customAggregate = odataIdentifier
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp).
 ; A type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment in either.
+aggregatableExpr   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
 aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
 aggPropPathSegment = aggPropAnnoSegment
                    / ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
@@ -254,7 +255,7 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
                           / commonExpr aggregateWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] ( primitiveProperty / primitiveColProperty ) aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
