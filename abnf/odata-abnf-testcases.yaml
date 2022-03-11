@@ -1420,6 +1420,10 @@ TestCases:
     Rule: odataRelativeUri
     Input: Products/$filter(@foo)/Special.Cluster?@foo=Age gt 3
 
+  - Name: 4.12 Filter Path Segment followed by key predicate
+    Rule: propertyPathExpr
+    Input: Products/$filter(Age gt 3)(ID='Sugar')
+
   - Name: 4.12 Filter expression in query
     Rule: odataRelativeUri
     Input: Categories?$filter=Products/$filter(Age gt 3)/$count lt 10
