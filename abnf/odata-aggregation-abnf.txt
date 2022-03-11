@@ -112,7 +112,7 @@ aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregat
 aggregateItem   = %s"$count" asAlias 
                 / aggregateExpr
 aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
-                / [ aggPathPrefix "/" ] primitiveProperty aggregateWith [ aggregateFrom ] asAlias
+                / [ aggPathPrefix "/" ] ( primitiveProperty / primitiveColProperty ) aggregateWith [ aggregateFrom ] asAlias
                 / [ aggPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
@@ -144,8 +144,7 @@ aggPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) 
                    / ( entityAnnotationInQuery  / entityColAnnotationInQuery  ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
                    / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" aggPropAnnoSegment
 aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
-                   / primitiveAnnotationInQuery
-                   / primitiveColAnnotationInQuery
+                   /   primitiveAnnotationInQuery / primitiveColAnnotationInQuery
 
 groupingProperty = grpPropPathPrefix
                    ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
@@ -252,7 +251,7 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
                           / commonExpr aggregateWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] primitiveProperty aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] ( primitiveProperty / primitiveColProperty ) aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
