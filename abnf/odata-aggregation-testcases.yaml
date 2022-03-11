@@ -392,6 +392,12 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Self.DigitalProduct/Region))
 
+  - Name: aggregate - groupby context with type cast
+    Rule: odataRelativeUri
+    Input: $metadata#Products(ID,Self.DigitalProduct/Region)
+    Expect:
+      - qualifiedEntityTypeName:Self.DigitalProduct
+
   - Name: aggregate - groupby complex annotations
     Rule: queryOptions
     Input: $apply=groupby((Country/@Core.GeometryFeature))
