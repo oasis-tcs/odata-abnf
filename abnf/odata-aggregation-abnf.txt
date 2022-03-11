@@ -75,6 +75,9 @@ propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is r
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
+complexColAnnotationInQuery = annotationInQuery ; collection-valued complex annotation
+entityColAnnotationInQuery  = annotationInQuery ; collection-valued entity annotation
+
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
 ;------------------------------------------------------------------------------
@@ -109,8 +112,8 @@ aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregat
 aggregateItem   = %s"$count" asAlias 
                 / aggregateExpr
 aggregateExpr   = commonExpr aggregateWith [ aggregateFrom ] asAlias
-                / pathPrefix primitiveProperty aggregateWith [ aggregateFrom ] asAlias
-                / pathPrefix customAggregate [ customFrom asAlias ]
+                / [ aggPathPrefix "/" ] primitiveProperty aggregateWith [ aggregateFrom ] asAlias
+                / [ aggPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
 customFrom      = RWS %s"from" RWS groupingProperty [ aggregateWith ] [ customFrom ]
@@ -126,9 +129,23 @@ expressionAlias = odataIdentifier
                 
 customAggregate = odataIdentifier
                 
-pathPrefix      = [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] *( pathSegment "/" )
-pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComplexTypeName ]
-                / navigationProperty [ "/" qualifiedEntityTypeName  ]
+; a type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment
+aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
+aggPropPathSegment = aggPropAnnoSegment
+                   / ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
+                   / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
+                   / ( primitiveProperty        / primitiveColProperty        )                                    "/" aggPropAnnoSegment
+aggPrimPathSegment = aggPrimAnnoSegment
+                   / ( complexProperty          / complexColProperty          )   [ "/" qualifiedComplexTypeName ] "/" aggPrimPathSegment
+                   / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" qualifiedEntityTypeName  ] "/" aggPrimPathSegment
+                   / aggPropPathSegment                                                                            "/" aggPrimPathSegment
+                   / ( primitiveProperty        / primitiveColProperty        )   [                                "/" aggPrimAnnoSegment ]
+aggPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
+                   / ( entityAnnotationInQuery  / entityColAnnotationInQuery  ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
+                   / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" aggPropAnnoSegment
+aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
+                   / primitiveAnnotationInQuery
+                   / primitiveColAnnotationInQuery
 
 groupingProperty = grpPropPathPrefix
                    ( entityNavigationProperty [ "/" qualifiedEntityTypeName ]
@@ -235,8 +252,8 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
                           / commonExpr aggregateWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] pathPrefix primitiveProperty aggregateWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] pathPrefix customAggregate [ customFrom ]
+                          / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] primitiveProperty aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
