@@ -219,6 +219,9 @@ TestCases:
   - Name: aggregate - arithmetic expression
     Rule: queryOptions
     Input: $apply=aggregate((Amount sub Cost) mul TaxRate with sum as Tax)
+    Expect:
+      - aggregatableFactor:(Amount sub Cost)
+      - aggregatableFactor:TaxRate
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
