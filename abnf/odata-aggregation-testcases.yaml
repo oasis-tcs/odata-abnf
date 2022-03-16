@@ -216,6 +216,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Amount with sum as Total)
 
+  - Name: aggregate - arithmetic expression
+    Rule: queryOptions
+    Input: $apply=aggregate((Amount sub Cost) mul TaxRate with sum as Tax)
+
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
     Input: $metadata#Sales(Total)
@@ -241,8 +245,13 @@ TestCases:
 
   - Name: aggregate - no expression after path - this feature from CS02 has been removed
     Rule: queryOptions
-    FailAt: 29
+    FailAt: 22
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
+
+  - Name: aggregate - aggregate annotations
+    Rule: queryOptions
+    FailAt: 22 # no term casts in data aggregation paths
+    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
@@ -266,7 +275,7 @@ TestCases:
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
-    Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
+    Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts) # was: Product
 
   - Name: aggregate - from
     Rule: queryOptions
@@ -298,6 +307,7 @@ TestCases:
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
+    FailAt: 34
     Input: $apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as
       TotalPlannedRevenue)
 
@@ -690,7 +700,7 @@ TestCases:
       aggregation methods - $count only allowed on top level, not nested within
       path
     Rule: queryOptions
-    FailAt: 38
+    FailAt: 37
     Input: $apply=groupby((Name),aggregate(Sales($count as SalesCount)))
 
   - Name: collection-valued path
