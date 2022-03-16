@@ -257,7 +257,6 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
-                          / commonExpr aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] customAggregate [ customFrom ]
 
