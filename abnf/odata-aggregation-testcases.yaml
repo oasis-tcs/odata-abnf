@@ -275,7 +275,7 @@ TestCases:
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
-    Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts) # was: Product
+    Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts)
 
   - Name: aggregate - from
     Rule: queryOptions
