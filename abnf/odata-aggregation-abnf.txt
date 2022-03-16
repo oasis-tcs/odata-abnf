@@ -133,20 +133,20 @@ pathSegment     = ( complexProperty / complexColProperty ) [ "/" qualifiedComple
 ; a type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment
 groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
                      ( grpPrimPathSegment / grpPropPathSegment )
-grpPropPathSegment = grpPropAnnoSegment
-                   / complexProperty          [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
+grpPropPathSegment = ; grpPropAnnoSegment /
+                     complexProperty          [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
                    / entityNavigationProperty [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
-                   / primitiveProperty                                           "/" grpPropAnnoSegment
-grpPrimPathSegment = grpPrimAnnoSegment
-                   / complexProperty            [ "/" qualifiedComplexTypeName ] "/" grpPrimPathSegment
+                 ; / primitiveProperty                                           "/" grpPropAnnoSegment
+grpPrimPathSegment = ; grpPrimAnnoSegment /
+                     complexProperty            [ "/" qualifiedComplexTypeName ] "/" grpPrimPathSegment
                    / entityNavigationProperty   [ "/" qualifiedEntityTypeName  ] "/" grpPrimPathSegment
                    / grpPropPathSegment                                          "/" grpPrimPathSegment
-                   / primitiveProperty        [                                  "/" grpPrimAnnoSegment ]
-grpPropAnnoSegment = complexAnnotationInQuery [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
-                   / entityAnnotationInQuery  [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
-                   / primitiveAnnotationInQuery                                  "/" grpPropAnnoSegment
-grpPrimAnnoSegment = grpPropAnnoSegment                                          "/" grpPrimPathSegment
-                   / primitiveAnnotationInQuery
+                   / primitiveProperty        ; [                                "/" grpPrimAnnoSegment ]
+; grpPropAnnoSegment = complexAnnotationInQuery [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
+;                    / entityAnnotationInQuery  [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
+;                    / primitiveAnnotationInQuery                                  "/" grpPropAnnoSegment
+; grpPrimAnnoSegment = grpPropAnnoSegment                                          "/" grpPrimPathSegment
+;                    / primitiveAnnotationInQuery
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
@@ -166,10 +166,10 @@ nestPath        = nestNavigationPropertyPath
 nestComplexTypeInstancePath = ( complexProperty 
                               / complexColProperty 
                               / optionallyQualifiedComplexTypeName 
-                              / complexAnnotationInQuery
+                            ; / complexAnnotationInQuery
                               ) [ "/" nestComplexTypeInstancePath ] 
 nestNavigationPropertyPath  = ( navigationProperty 
-                              / entityAnnotationInQuery
+                            ; / entityAnnotationInQuery
                               ) 
                               [ "/" optionallyQualifiedEntityTypeName ]
 nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )

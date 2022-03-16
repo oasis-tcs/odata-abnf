@@ -258,10 +258,6 @@ TestCases:
     FailAt: 29
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
 
-  - Name: aggregate - aggregate annotations
-    Rule: queryOptions
-    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
-
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
     Input: $metadata#Products(Sales(Tax))
@@ -372,11 +368,12 @@ TestCases:
 
   - Name: aggregate - groupby annotations
     Rule: queryOptions
+    FailAt: 29  # no term casts in data aggregation paths
     Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
 
   - Name: aggregate - groupby no two consecutive primitive properties
     Rule: queryOptions
-    FailAt: 30
+    FailAt: 29
     Input: $apply=groupby((Product/Price/Quantity))
 
   - Name: aggregate - groupby with type cast
@@ -400,9 +397,10 @@ TestCases:
 
   - Name: aggregate - groupby complex annotations
     Rule: queryOptions
+    FailAt: 24  # no term casts in data aggregation paths
     Input: $apply=groupby((Country/@Core.GeometryFeature))
-    Expect:
-      - grpPropAnnoSegment:@Core.GeometryFeature
+#    Expect:
+#      - grpPropAnnoSegment:@Core.GeometryFeature
 
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances
