@@ -128,50 +128,57 @@ expressionAlias = odataIdentifier
                 
 customAggregate = odataIdentifier
                 
-; Two flavors of data aggregation paths are defined now:
+; Three flavors of data aggregation paths are defined now:
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
-; - one for use in groupby, whose segments must be single-valued (rules with prefix grp).
-; A type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment in either.
+; - one for use in groupby, whose segments must be single-valued (rules with prefix grp)
+; - one for use in transformnested and addnested, without entity-valued segments (rules with prefix nst)
+; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in either.
 aggPropPathSegment = ; aggPropAnnoSegment /
-                     ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
-                   / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
+                     ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
+                   / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPathSegment ]
                  ; / ( primitiveProperty        / primitiveColProperty        )                                    "/" aggPropAnnoSegment
 aggPrimPathSegment = ; aggPrimAnnoSegment /
-                     ( complexProperty          / complexColProperty          )   [ "/" qualifiedComplexTypeName ] "/" aggPrimPathSegment
-                   / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" qualifiedEntityTypeName  ] "/" aggPrimPathSegment
+                     ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPathSegment
+                   / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPathSegment
                    / aggPropPathSegment                                                                            "/" aggPrimPathSegment
                    / ( primitiveProperty        / primitiveColProperty        ) ; [                                "/" aggPrimAnnoSegment ]
-; aggPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
-;                    / ( entityAnnotationInQuery  / entityColAnnotationInQuery  ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
+; aggPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
+;                    / ( entityAnnotationInQuery  / entityColAnnotationInQuery  ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPathSegment ]
 ;                    / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" aggPropAnnoSegment
 ; aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
 ;                    /   primitiveAnnotationInQuery / primitiveColAnnotationInQuery
 
 grpPropPathSegment = ; grpPropAnnoSegment /
-                     complexProperty          [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
-                   / entityNavigationProperty [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
+                     complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
+                   / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPathSegment ]
                  ; / primitiveProperty                                           "/" grpPropAnnoSegment
 grpPrimPathSegment = ; grpPrimAnnoSegment /
-                     complexProperty            [ "/" qualifiedComplexTypeName ] "/" grpPrimPathSegment
-                   / entityNavigationProperty   [ "/" qualifiedEntityTypeName  ] "/" grpPrimPathSegment
+                     complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPathSegment
+                   / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPrimPathSegment
                    / grpPropPathSegment                                          "/" grpPrimPathSegment
                    / primitiveProperty        ; [                                "/" grpPrimAnnoSegment ]
-; grpPropAnnoSegment = complexAnnotationInQuery [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
-;                    / entityAnnotationInQuery  [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
+; grpPropAnnoSegment = complexAnnotationInQuery [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
+;                    / entityAnnotationInQuery  [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPathSegment ]
 ;                    / primitiveAnnotationInQuery                                  "/" grpPropAnnoSegment
 ; grpPrimAnnoSegment = grpPropAnnoSegment                                          "/" grpPrimPathSegment
 ;                    / primitiveAnnotationInQuery
 
+nstPropPathSegment = ; nstPropAnnoSegment /
+                     ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
+                 ; / ( primitiveProperty        / primitiveColProperty        )                                    "/" nstPropAnnoSegment
+; nstPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
+;                    / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" nstPropAnnoSegment
+
 ; Arithmetic is only allowed for single-valued data aggregation path segments
-aggregatableFactor = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] grpPrimPathSegment
+aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPathSegment
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
+                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPathSegment
                    / aggPathPrefix %s"/$count"
-aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
-groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
+aggPathPrefix      = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPropPathSegment
+groupingProperty   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
                      ( grpPrimPathSegment / grpPropPathSegment )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
@@ -183,22 +190,18 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
-                / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
-                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath        = nestNavigationPropertyPath
-                / nestComplexTypeInstancePath [ "/" nestNavigationPropertyPath ]
-; possible nest paths borrowed from expandPath, because nestPath accepts a subset of those paths accepted by the $expand query option
-nestComplexTypeInstancePath = ( complexProperty 
-                              / complexColProperty 
-                              / optionallyQualifiedComplexTypeName 
-                            ; / complexAnnotationInQuery
-                              ) [ "/" nestComplexTypeInstancePath ] 
-nestNavigationPropertyPath  = ( navigationProperty 
-                            ; / entityAnnotationInQuery
-                              ) 
-                              [ "/" optionallyQualifiedEntityTypeName ]
-nestApplyExpr               = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
+                           / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
+                           / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+nestPath                   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
+                             ( [ nstPropPathSegment "/" ] nestNavigationPropertyPath
+                             / nstPropPathSegment
+                             )
+nestNavigationPropertyPath = ( navigationProperty 
+                           ; / entityAnnotationInQuery
+                             ) 
+                             [ "/" optionallyQualifiedEntityTypeName ]
+nestApplyExpr              = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
