@@ -128,15 +128,10 @@ expressionAlias = odataIdentifier
                 
 customAggregate = odataIdentifier
                 
-; Two flavors of paths are defined now:
+; Two flavors of data aggregation paths are defined now:
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp).
 ; A type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment in either.
-aggregatableFactor = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
-                   / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment %s"/$count"
-                   / OPEN BWS aggregatableExpr BWS CLOSE
-aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
-aggregatableExpr   = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
 aggPropPathSegment = ; aggPropAnnoSegment /
                      ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
@@ -153,7 +148,6 @@ aggPrimPathSegment = ; aggPrimAnnoSegment /
 ; aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
 ;                    /   primitiveAnnotationInQuery / primitiveColAnnotationInQuery
 
-; a type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment
 groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
                      ( grpPrimPathSegment / grpPropPathSegment )
 grpPropPathSegment = ; grpPropAnnoSegment /
@@ -170,6 +164,15 @@ grpPrimPathSegment = ; grpPrimAnnoSegment /
 ;                    / primitiveAnnotationInQuery                                  "/" grpPropAnnoSegment
 ; grpPrimAnnoSegment = grpPropAnnoSegment                                          "/" grpPrimPathSegment
 ;                    / primitiveAnnotationInQuery
+
+; Arithmetic is only allowed for single-valued data aggregation path segments
+aggregatableFactor = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] grpPrimPathSegment
+                   / OPEN BWS aggregatableArith BWS CLOSE
+aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
+aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
+aggregatableExpr   = aggregatableArith
+                   / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
+                   / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment %s"/$count"
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
