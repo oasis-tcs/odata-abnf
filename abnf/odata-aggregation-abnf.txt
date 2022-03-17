@@ -148,8 +148,6 @@ aggPrimPathSegment = ; aggPrimAnnoSegment /
 ; aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
 ;                    /   primitiveAnnotationInQuery / primitiveColAnnotationInQuery
 
-groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
-                     ( grpPrimPathSegment / grpPropPathSegment )
 grpPropPathSegment = ; grpPropAnnoSegment /
                      complexProperty          [ [ "/" qualifiedComplexTypeName ] "/" grpPropPathSegment ]
                    / entityNavigationProperty [ [ "/" qualifiedEntityTypeName  ] "/" grpPropPathSegment ]
@@ -173,6 +171,8 @@ aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggre
 aggregatableExpr   = aggregatableArith
                    / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
                    / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment %s"/$count"
+groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
+                     ( grpPrimPathSegment / grpPropPathSegment )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
