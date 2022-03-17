@@ -132,7 +132,6 @@ customAggregate = odataIdentifier
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp).
 ; A type cast (qualifiedComplexTypeName or qualifiedEntityTypeName) cannot be the final segment in either.
-aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
 aggPropPathSegment = ; aggPropAnnoSegment /
                      ( complexProperty          / complexColProperty          ) [ [ "/" qualifiedComplexTypeName ] "/" aggPropPathSegment ]
                    / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" qualifiedEntityTypeName  ] "/" aggPropPathSegment ]
@@ -170,7 +169,8 @@ aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod"
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPrimPathSegment
-                   / [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment %s"/$count"
+                   / aggPathPrefix %s"/$count"
+aggPathPrefix      = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ] aggPropPathSegment
 groupingProperty   = [ ( qualifiedComplexTypeName / qualifiedEntityTypeName ) "/" ]
                      ( grpPrimPathSegment / grpPropPathSegment )
 
