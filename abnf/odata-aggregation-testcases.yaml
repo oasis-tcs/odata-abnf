@@ -86,6 +86,7 @@ Constraints:
     - ItemAmount
     - MaxAmount
     - MinAmount
+    - MinCurrency
     - MonthlyAverage
     - NumberOfLeaves
     - ProductNames
@@ -109,6 +110,8 @@ Constraints:
     - TotalPopulation
     - TotalSales
     - WeekDay
+  complexAnnotationInQuery:
+    - '@Core.GeometryFeature'
   complexColProperty:
     - Details
   complexColFunction:
@@ -122,6 +125,7 @@ Constraints:
   customAggregate:
     - Budget
     - Forecast
+  entityAnnotationInQuery: []
   entityColFunction:
     - TopCountAndBalance
   entityColFunctionImport: []
@@ -158,7 +162,8 @@ Constraints:
     - SalesOrganizations
     - SalesOrgHierarchies
     - Time
-  entityTypeName: []
+  entityTypeName:
+    - DigitalProduct
   enumerationMember: []
   enumerationTypeName: []
   keyPathLiteral: []
@@ -167,8 +172,13 @@ Constraints:
     - p
   namespacePart:
     - Aggregation
+    - Core
     - Custom
+    - Measures
     - Self
+  primitiveAnnotationInQuery:
+    - '@Core.MediaType'
+    - '@Measures.ISOCurrency'
   primitiveColFunction: []
   primitiveColFunctionImport: []
   primitiveColProperty: []
@@ -205,6 +215,10 @@ Constraints:
     - TaxRate
     - Year
   streamProperty: []
+  termName:
+    - ISOCurrency
+    - GeometryFeature
+    - MediaType
 
 TestCases:
   - Name: aggregate - no parameters
@@ -365,6 +379,42 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
 
+  - Name: aggregate - groupby annotations
+    Rule: queryOptions
+    FailAt: 29  # no term casts in data aggregation paths
+    Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
+
+  - Name: aggregate - groupby no two consecutive primitive properties
+    Rule: queryOptions
+    FailAt: 29
+    Input: $apply=groupby((Product/Price/Quantity))
+
+  - Name: aggregate - groupby with type cast
+    Rule: queryOptions
+    Input: $apply=groupby((Product/Self.DigitalProduct/Region))
+
+  - Name: aggregate - groupby final type cast
+    Rule: queryOptions
+    FailAt: 43
+    Input: $apply=groupby((Product/Self.DigitalProduct))
+
+  - Name: aggregate - groupby only derived property
+    Rule: queryOptions
+    Input: $apply=groupby((Self.DigitalProduct/Region))
+
+  - Name: aggregate - groupby context with type cast
+    Rule: odataRelativeUri
+    Input: $metadata#Products(ID,Self.DigitalProduct/Region)
+    Expect:
+      - qualifiedEntityTypeName:Self.DigitalProduct
+
+  - Name: aggregate - groupby complex annotations
+    Rule: queryOptions
+    FailAt: 24  # no term casts in data aggregation paths
+    Input: $apply=groupby((Country/@Core.GeometryFeature))
+#    Expect:
+#      - grpPropAnnoSegment:@Core.GeometryFeature
+
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances
     Rule: queryOptions
@@ -388,7 +438,7 @@ TestCases:
 
   - Name: aggregate - filter on $root
     Rule: queryOptions
-    Input: $apply=filter(Name eq Products('P2')/Name)
+    Input: $apply=filter(Name eq $root/Products('P2')/Name)
 
   - Name: aggregate - search
     Rule: queryOptions
