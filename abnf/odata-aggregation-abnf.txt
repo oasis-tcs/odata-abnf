@@ -133,41 +133,21 @@ customAggregate = odataIdentifier
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp)
 ; - one for use in transformnested and addnested, without entity-valued segments (rules with prefix nst)
 ; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in either.
-aggPropPathSegment = ; aggPropAnnoSegment /
-                     ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
+aggPropPathSegment = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
                    / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPathSegment ]
-                 ; / ( primitiveProperty        / primitiveColProperty        )                                    "/" aggPropAnnoSegment
-aggPrimPathSegment = ; aggPrimAnnoSegment /
-                     ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPathSegment
+aggPrimPathSegment = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPathSegment
                    / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPathSegment
-                   / aggPropPathSegment                                                                            "/" aggPrimPathSegment
-                   / ( primitiveProperty        / primitiveColProperty        ) ; [                                "/" aggPrimAnnoSegment ]
-; aggPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
-;                    / ( entityAnnotationInQuery  / entityColAnnotationInQuery  ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPathSegment ]
-;                    / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" aggPropAnnoSegment
-; aggPrimAnnoSegment = aggPropAnnoSegment                                                                            "/" aggPrimPathSegment
-;                    /   primitiveAnnotationInQuery / primitiveColAnnotationInQuery
+                   / aggPropPathSegment                                                                                      "/" aggPrimPathSegment
+                   / ( primitiveProperty        / primitiveColProperty        )
 
-grpPropPathSegment = ; grpPropAnnoSegment /
-                     complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
+nstPropPathSegment = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
+
+grpPropPathSegment = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
                    / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPathSegment ]
-                 ; / primitiveProperty                                           "/" grpPropAnnoSegment
-grpPrimPathSegment = ; grpPrimAnnoSegment /
-                     complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPathSegment
+grpPrimPathSegment = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPathSegment
                    / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPrimPathSegment
-                   / grpPropPathSegment                                          "/" grpPrimPathSegment
-                   / primitiveProperty        ; [                                "/" grpPrimAnnoSegment ]
-; grpPropAnnoSegment = complexAnnotationInQuery [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
-;                    / entityAnnotationInQuery  [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPathSegment ]
-;                    / primitiveAnnotationInQuery                                  "/" grpPropAnnoSegment
-; grpPrimAnnoSegment = grpPropAnnoSegment                                          "/" grpPrimPathSegment
-;                    / primitiveAnnotationInQuery
-
-nstPropPathSegment = ; nstPropAnnoSegment /
-                     ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
-                 ; / ( primitiveProperty        / primitiveColProperty        )                                    "/" nstPropAnnoSegment
-; nstPropAnnoSegment = ( complexAnnotationInQuery / complexColAnnotationInQuery ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
-;                    / ( primitiveAnnotationInQuery / primitiveColAnnotationInQuery )                                "/" nstPropAnnoSegment
+                   / grpPropPathSegment                                                    "/" grpPrimPathSegment
+                   / primitiveProperty
 
 ; Arithmetic is only allowed for single-valued data aggregation path segments
 aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPathSegment
