@@ -133,34 +133,34 @@ customAggregate = odataIdentifier
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp)
 ; - one for use in transformnested and addnested, without entity-valued segments (rules with prefix nst)
 ; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in either.
-aggPropPathSegment = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPathSegment ]
-                   / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPathSegment ]
-aggPrimPathSegment = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPathSegment
-                   / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPathSegment
-                   / aggPropPathSegment                                                                                      "/" aggPrimPathSegment
-                   / ( primitiveProperty        / primitiveColProperty        )
+aggPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPath ]
+            / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPath ]
+aggPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPath
+            / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPath
+            / aggPropPath                                                                                             "/" aggPrimPath
+            /   primitiveProperty        / primitiveColProperty
 
-nstPropPathSegment = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPathSegment ]
+nstPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPath ]
 
-grpPropPathSegment = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPathSegment ]
-                   / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPathSegment ]
-grpPrimPathSegment = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPathSegment
-                   / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPrimPathSegment
-                   / grpPropPathSegment                                                    "/" grpPrimPathSegment
-                   / primitiveProperty
+grpPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" grpPropPath ]
+            / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPath ]
+grpPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPath
+            / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPrimPath
+            / grpPropPath                                                           "/" grpPrimPath
+            / primitiveProperty
 
 ; Arithmetic is only allowed for single-valued data aggregation path segments
-aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPathSegment
+aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPath
                    / [ namespace "." ] primitiveFunction OPEN BWS aggregatableArith *( BWS COMMA BWS aggregatableArith ) BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPathSegment
+                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath
                    / aggPathPrefix %s"/$count"
-aggPathPrefix      = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPropPathSegment
+aggPathPrefix      = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPropPath
 groupingProperty   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
-                     ( grpPrimPathSegment / grpPropPathSegment )
+                     ( grpPrimPath / grpPropPath )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
@@ -175,13 +175,10 @@ nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
                            / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
                            / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
 nestPath                   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
-                             ( [ nstPropPathSegment "/" ] nestNavigationPropertyPath
-                             / nstPropPathSegment
+                             ( [ nstPropPath "/" ] nestNavigationPropertyPath
+                             / nstPropPath
                              )
-nestNavigationPropertyPath = ( navigationProperty 
-                           ; / entityAnnotationInQuery
-                             ) 
-                             [ "/" optionallyQualifiedEntityTypeName ]
+nestNavigationPropertyPath = navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
 nestApplyExpr              = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
