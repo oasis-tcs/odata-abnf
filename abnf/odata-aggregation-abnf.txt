@@ -75,9 +75,6 @@ propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is r
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
-; complexColAnnotationInQuery = annotationInQuery ; collection-valued complex annotation
-; entityColAnnotationInQuery  = annotationInQuery ; collection-valued entity annotation
-
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
 ;------------------------------------------------------------------------------
