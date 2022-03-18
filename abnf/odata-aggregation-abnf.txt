@@ -155,11 +155,10 @@ aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifie
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
+aggregatableSExpr  = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath
 aggregatableExpr   = aggregatableArith
-                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath
-                   / [ namespace "." ] primitiveFunction OPEN BWS
-                     [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath
-                     BWS CLOSE
+                   / aggregatableSExpr
+                   / [ namespace "." ] primitiveFunction OPEN BWS aggregatableSExpr BWS CLOSE
                    / aggPathPrefix %s"/$count"
 aggPathPrefix      = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPropPath
 groupingProperty   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
