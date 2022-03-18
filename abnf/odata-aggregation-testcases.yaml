@@ -243,6 +243,8 @@ TestCases:
     Rule: queryOptions
     FailAt: 37
     Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
+    Expect:
+      - aggregatableSExpr:Discounts
 
   - Name: aggregate - functional expression
     Rule: queryOptions
@@ -304,6 +306,8 @@ TestCases:
   - Name: aggregate - custom aggregation method
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
+    Expect:
+      - aggregatableFactor:Product/Name # is also an aggregatableSExpr
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
@@ -332,6 +336,8 @@ TestCases:
   - Name: aggregate - custom aggregate reached via path
     Rule: queryOptions
     Input: $apply=aggregate(Sales/Forecast)
+    Expect:
+      - aggPathPrefix:Sales
 
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
