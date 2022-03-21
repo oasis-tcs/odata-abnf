@@ -129,7 +129,7 @@ customAggregate = odataIdentifier
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp)
 ; - one for use in transformnested and addnested, without entity-valued segments (rules with prefix nst)
-; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in either.
+; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in them.
 aggPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPath ]
             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPath ]
 aggPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPath
