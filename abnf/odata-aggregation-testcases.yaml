@@ -239,9 +239,9 @@ TestCases:
       - aggregatableFactor:(Amount sub Cost)
       - aggregatableFactor:TaxRate
 
-  - Name: aggregate - arithmetic expression with literal
+  - Name: aggregate - arithmetic expression with literals
     Rule: queryOptions
-    Input: $apply=aggregate(TaxRate sub 1 with average as Tax)
+    Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
 
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
