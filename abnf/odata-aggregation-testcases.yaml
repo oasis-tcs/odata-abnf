@@ -189,6 +189,7 @@ Constraints:
     - isancestor
     - issibling
     - isdescendant
+    - Rating
     - sqrt
   primitiveFunctionImport: []
   primitiveKeyProperty:
@@ -248,15 +249,16 @@ TestCases:
     FailAt: 37
     Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
     Expect:
-      - aggregatableSExpr:Discounts
+      - aggPathPrimitive:Discounts
 
   - Name: aggregate - functional expression
     Rule: queryOptions
-    Input: $apply=aggregate(Self.sqrt(Amount mul Amount sub Cost mul Cost) with sum as TotalAmount)
+    Input: $apply=aggregate(Self.sqrt(Number=Amount mul Amount sub Cost mul Cost) with sum as TotalAmount)
 
-  - Name: aggregate - functional expression on collection
+  - Name: aggregate - functional expression on entity forbidden
     Rule: queryOptions
-    Input: $apply=aggregate(Self.sqrt(Discounts) with sum as TotalAmount)
+    FailAt: 46
+    Input: $apply=aggregate(Custom.Rating(Article=Product) with average as Stuff)
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
@@ -311,7 +313,7 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
     Expect:
-      - aggregatableFactor:Product/Name # is also an aggregatableSExpr
+      - aggregatableFactor:Product/Name # is also an aggPathPrimitive
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
