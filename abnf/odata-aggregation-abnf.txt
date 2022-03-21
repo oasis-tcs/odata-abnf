@@ -147,7 +147,9 @@ grpPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeNam
             / primitiveProperty
 
 ; Arithmetic is only allowed for single-valued data aggregation path segments
-aggregatableFactor = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPath
+aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
+                   / byteValue    / int16Value  / int32Value  / int64Value
+                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPath
                    / [ namespace "." ] primitiveFunction OPEN BWS aggregatableArith *( BWS COMMA BWS aggregatableArith ) BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )

@@ -239,6 +239,10 @@ TestCases:
       - aggregatableFactor:(Amount sub Cost)
       - aggregatableFactor:TaxRate
 
+  - Name: aggregate - arithmetic expression with literal
+    Rule: queryOptions
+    Input: $apply=aggregate(TaxRate sub 1 with average as Tax)
+
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
     FailAt: 37
