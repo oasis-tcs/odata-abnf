@@ -151,13 +151,14 @@ aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
                    / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPath
-                   / [ namespace "." ] primitiveFunction OPEN BWS
-                     [ parameterName EQ aggregatableArith *( BWS COMMA BWS parameterName EQ aggregatableArith ) ]
+                   / [ namespace "." ] primitiveFunction OPEN
+                     [ BWS parameterName EQ aggregatableArith *( BWS COMMA BWS parameterName EQ aggregatableArith ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
+                 ; / aggPathPrefix OPEN aggregatableArith CLOSE
                    / aggPathPrimitive
                    / ( aggPathPrimitive / aggPathPrefix ) %s"/$count"
 aggPathPrimitive   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath

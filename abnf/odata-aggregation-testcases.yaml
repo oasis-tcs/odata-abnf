@@ -244,12 +244,19 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
 
+  - Name: aggregate - forbidden arithmetic on collection
+    Rule: queryOptions
+    FailAt: 33
+    Input: $apply=aggregate(Products/Amount sub Products/Cost with sum as TotalAmount)
+
+#  - Name: aggregate - arithmetic on collection
+#    Rule: queryOptions
+#    Input: $apply=aggregate(Products(Amount sub Cost) with sum as TotalAmount)
+
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
     FailAt: 37
     Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
-    Expect:
-      - aggPathPrimitive:Discounts
 
   - Name: aggregate - functional expression
     Rule: queryOptions
