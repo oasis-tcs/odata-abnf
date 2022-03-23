@@ -146,11 +146,12 @@ grpPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeNam
             / grpPropPath                                                           "/" grpPrimPath
             / primitiveProperty
 
-; Arithmetic is only allowed for single-valued data aggregation path segments
+optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
+
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] grpPrimPath
+                   / optionalLeadingTypeCast grpPrimPath ; arithmetic only for single-valued data aggregation path segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableArith *( BWS COMMA BWS parameterName EQ aggregatableArith ) ]
                      BWS CLOSE
@@ -161,10 +162,9 @@ aggregatableExpr   = aggregatableArith
                  ; / aggPathPrefix OPEN aggregatableArith CLOSE
                    / aggPathPrimitive
                    / ( aggPathPrimitive / aggPathPrefix ) %s"/$count"
-aggPathPrimitive   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPrimPath
-aggPathPrefix      = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ] aggPropPath
-groupingProperty   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
-                     ( grpPrimPath / grpPropPath )
+aggPathPrimitive   = optionalLeadingTypeCast aggPrimPath
+aggPathPrefix      = optionalLeadingTypeCast aggPropPath
+groupingProperty   = optionalLeadingTypeCast ( grpPrimPath / grpPropPath )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
@@ -178,7 +178,7 @@ concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BW
 nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
                            / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
                            / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath                   = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
+nestPath                   = optionalLeadingTypeCast
                              ( [ nstPropPath "/" ] nestNavigationPropertyPath
                              / nstPropPath
                              )
