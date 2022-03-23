@@ -135,7 +135,7 @@ aggPropPath = ( complexProperty          / complexColProperty          ) [ [ "/"
 aggPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPath
             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPath
             / aggPropPath                                                                                             "/" aggPrimPath
-            / ( complexColProperty       / entityColNavigationProperty )                                            %s"/$count"
+            /                              entityColNavigationProperty                                              %s"/$count"
             /   primitiveProperty        / primitiveColProperty
 
 nstPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPath ]
