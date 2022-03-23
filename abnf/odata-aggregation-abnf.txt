@@ -135,6 +135,7 @@ aggPropPath = ( complexProperty          / complexColProperty          ) [ [ "/"
 aggPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPath
             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPath
             / aggPropPath                                                                                             "/" aggPrimPath
+            / ( complexColProperty       / entityColNavigationProperty )                                            %s"/$count"
             /   primitiveProperty        / primitiveColProperty
 
 nstPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPath ]
@@ -161,7 +162,6 @@ aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggre
 aggregatableExpr   = aggregatableArith
                  ; / aggPathPrefix OPEN aggregatableArith CLOSE
                    / aggPathPrimitive
-                   / ( aggPathPrimitive / aggPathPrefix ) %s"/$count"
 aggPathPrimitive   = optionalLeadingTypeCast aggPrimPath
 aggPathPrefix      = optionalLeadingTypeCast aggPropPath
 groupingProperty   = optionalLeadingTypeCast ( grpPrimPath / grpPropPath )

@@ -777,6 +777,8 @@ TestCases:
   - Name: aggregation methods - $count segment
     Rule: queryOptions
     Input: $apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount))
+    Expect:
+      - aggPrimPath:Sales/$count
 
   - Name: aggregation methods - $count segment and sum
     Rule: queryOptions
