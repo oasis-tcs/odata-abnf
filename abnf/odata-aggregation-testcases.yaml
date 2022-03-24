@@ -92,6 +92,7 @@ Constraints:
     - ProductNames
     - ProductIDs
     - Profit
+    - Profits
     - RelativeAmount
     - RelativeOrderSize
     - RegionAmount
@@ -134,6 +135,7 @@ Constraints:
     - Nodes
     - Orders
     - Products
+    - Profits # dynamic
     - Sales
     - SalesPlan
     - Suppliers
@@ -201,6 +203,10 @@ Constraints:
     - City
     - Cost
     - CountryCode
+    - CountryPopulation # dynamic
+    - CustomerAmount # dynamic
+    - CustomerYearAmount # dynamic
+    - FirstLetter # dynamic
     - Region
     - Month
     - Name
@@ -208,14 +214,18 @@ Constraints:
     - Population
     - Price
     - ProductID
+    - Profit # dynamic
     - Quantity
+    - RegionAmount # dynamic
     - Revenue
     - SalesArea
+    - SalesCount # dynamic
     - SalesNumber
     - Shipped
     - Status
     - Street
     - TaxRate
+    - Total # dynamic
     - Year
   streamProperty: []
   termName:
@@ -246,12 +256,15 @@ TestCases:
 
   - Name: aggregate - forbidden arithmetic on collection
     Rule: queryOptions
-    FailAt: 33
-    Input: $apply=aggregate(Products/Amount sub Products/Cost with sum as TotalAmount)
+    FailAt: 30
+    Input: $apply=aggregate(Sales/Amount sub Sales/Cost with sum as TotalAmount)
 
-#  - Name: aggregate - arithmetic on collection
-#    Rule: queryOptions
-#    Input: $apply=aggregate(Products(Amount sub Cost) with sum as TotalAmount)
+  - Name: aggregate - allowed arithmetic on collection
+    Rule: queryOptions
+    Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
+      Profits)/aggregate(Profits/Profit with sum as TotalAmount)
+    Expect:
+      - aggPathPrimitive:Profits/Profit
 
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
@@ -302,7 +315,7 @@ TestCases:
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
-    Input: $metadata#Products(Sales(Tax))
+    Input: $metadata#Products(Sales(TaxRate))
 
   - Name: aggregate - min
     Rule: queryOptions
@@ -776,13 +789,11 @@ TestCases:
 
   - Name: aggregation methods - $count segment
     Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount))
-    Expect:
-      - aggPrimPath:Sales/$count
+    Input: $apply=groupby((Name),aggregate(Sales/$count as SalesCount))
 
   - Name: aggregation methods - $count segment and sum
     Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales/$count with sum as
+    Input: $apply=groupby((Name),aggregate(Sales/$count as
       SalesCount,Sales/Amount with sum as Total))
 
   - Name:
@@ -981,8 +992,7 @@ TestCases:
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count with
-      sum as PaperSalesCount))
+      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri

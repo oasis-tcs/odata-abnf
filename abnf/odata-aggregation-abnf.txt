@@ -69,7 +69,7 @@ expandOption =/ apply
 
 boolMethodCallExpr =/ isdefinedExpr
 
-primitiveProperty =/ expressionAlias / customAggregate
+primitiveProperty =/ customAggregate
 
 propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is restricted for compatibility reasons
 
@@ -108,7 +108,8 @@ applyTrafo = aggregateTrafo
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
                 / aggregateExpr
-aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
+aggregateExpr   = aggregatableExpr aggregateWith   [ aggregateFrom ] asAlias
+                / aggregateCount                   [ aggregateFrom ] asAlias
                 / [ aggPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
@@ -119,6 +120,8 @@ aggregateMethod = %s"sum"
                 / %s"average"
                 / %s"countdistinct"
                 / namespace "." odataIdentifier
+aggregateCount  = optionalLeadingTypeCast ( aggPropPath / aggPrimPath ) %s"/$count"
+optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
 
 asAlias         = RWS %s"as" RWS expressionAlias
 expressionAlias = odataIdentifier
@@ -128,14 +131,13 @@ customAggregate = odataIdentifier
 ; Three flavors of data aggregation paths are defined now:
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix agg)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix grp)
-; - one for use in transformnested and addnested, without entity-valued segments (rules with prefix nst)
+; - one for use in transformnested and addnested, without entity-valued segments (rule with prefix nst)
 ; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in them.
+; Term casts are not allowed in data aggregation paths.
 aggPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggPropPath ]
             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPropPath ]
 aggPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggPrimPath
             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggPrimPath
-            / aggPropPath                                                                                             "/" aggPrimPath
-            /                              entityColNavigationProperty                                              %s"/$count"
             /   primitiveProperty        / primitiveColProperty
 
 nstPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nstPropPath ]
@@ -144,15 +146,12 @@ grpPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeNam
             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPropPath ]
 grpPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" grpPrimPath
             / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" grpPrimPath
-            / grpPropPath                                                           "/" grpPrimPath
             / primitiveProperty
-
-optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / optionalLeadingTypeCast grpPrimPath ; arithmetic only for single-valued data aggregation path segments
+                   / optionalLeadingTypeCast grpPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableArith *( BWS COMMA BWS parameterName EQ aggregatableArith ) ]
                      BWS CLOSE
@@ -160,7 +159,6 @@ aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                 ; / aggPathPrefix OPEN aggregatableArith CLOSE
                    / aggPathPrimitive
 aggPathPrimitive   = optionalLeadingTypeCast aggPrimPath
 aggPathPrefix      = optionalLeadingTypeCast aggPropPath
