@@ -791,6 +791,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Name),aggregate(Sales/$count as SalesCount))
 
+  - Name: aggregation methods - no $count segment after single-valued
+    Rule: queryOptions
+    FailAt: 44
+    Input: $apply=groupby((Name),aggregate(Sales/Amount/$count as SalesCount))
+
   - Name: aggregation methods - $count segment and sum
     Rule: queryOptions
     Input: $apply=groupby((Name),aggregate(Sales/$count as

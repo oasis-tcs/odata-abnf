@@ -107,9 +107,9 @@ applyTrafo = aggregateTrafo
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
+                / aggregateCount asAlias
                 / aggregateExpr
-aggregateExpr   = aggregatableExpr aggregateWith   [ aggregateFrom ] asAlias
-                / aggregateCount                   [ aggregateFrom ] asAlias
+aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / [ aggPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
@@ -120,7 +120,8 @@ aggregateMethod = %s"sum"
                 / %s"average"
                 / %s"countdistinct"
                 / namespace "." odataIdentifier
-aggregateCount  = optionalLeadingTypeCast ( aggPropPath / aggPrimPath ) %s"/$count"
+aggregateCount  = optionalLeadingTypeCast ( complexColProperty / entityColNavigationProperty / primitiveColProperty ) %s"/$count"
+                / aggPathPrefix aggregateCount
 optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
 
 asAlias         = RWS %s"as" RWS expressionAlias
@@ -253,6 +254,7 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
                           / [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] aggregateCount
                           / [ inscopeVariableExpr "/" ] [ aggPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
