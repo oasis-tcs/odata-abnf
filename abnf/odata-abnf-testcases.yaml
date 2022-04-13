@@ -236,6 +236,7 @@ Constraints:
     - ReleaseDate
     - Revenue
     - SalesArea
+    - Schuhgröße
     - severity
     - Shipped
     - Spokesperson
@@ -3684,3 +3685,12 @@ TestCases:
   - Name: ODATA-633 hex pair bug
     Rule: stringInUrl
     Input: '"b%75g"'
+
+  - Name: non-ALPHA characters
+    Rule: odataRelativeUri
+    Input: Customers('Bigfoot')/Schuhgröße
+
+  - Name: encoded non-ALPHA characters
+    Rule: odataRelativeUri
+    FailAt: 28
+    Input: Customers('Bigfoot')/Schuhgr%c3%b6%c3%9fe
