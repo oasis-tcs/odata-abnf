@@ -798,10 +798,10 @@ enumerationTypeName = odataIdentifier
 enumerationMember   = odataIdentifier
 termName            = odataIdentifier
 
-; Note: this pattern is overly restrictive, the normative definition is type TSimpleIdentifier in OData EDM XML Schema
 odataIdentifier             = identifierLeadingCharacter *127identifierCharacter
-identifierLeadingCharacter  = ALPHA / "_"         ; plus Unicode characters from the categories L or Nl
-identifierCharacter         = ALPHA / "_" / DIGIT ; plus Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
+; Note: the two folloing rules are overly restrictive, see comments for the full set of allowed characters
+identifierLeadingCharacter  = ALPHA / "_"         ; plus percent-encoded Unicode characters from the categories L or Nl
+identifierCharacter         = ALPHA / "_" / DIGIT ; plus percent-encoded Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
 
 primitiveTypeName = %s"Edm." ( %s"Binary"
                            / %s"Boolean"
