@@ -799,7 +799,7 @@ enumerationMember   = odataIdentifier
 termName            = odataIdentifier
 
 odataIdentifier             = identifierLeadingCharacter *127identifierCharacter
-; Note: the two folloing rules are overly restrictive, see comments for the full set of allowed characters
+; Note: the two following rules are overly restrictive, see comments for the full set of allowed characters
 identifierLeadingCharacter  = ALPHA / "_"         ; plus percent-encoded Unicode characters from the categories L or Nl
 identifierCharacter         = ALPHA / "_" / DIGIT ; plus percent-encoded Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
 
