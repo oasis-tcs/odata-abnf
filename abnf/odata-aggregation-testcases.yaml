@@ -276,9 +276,8 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Self.sqrt(Number=Amount mul Amount sub Cost mul Cost) with sum as TotalAmount)
 
-  - Name: aggregate - functional expression on entity forbidden
+  - Name: aggregate - functional expression on entity
     Rule: queryOptions
-    FailAt: 46
     Input: $apply=aggregate(Custom.Rating(Article=Product) with average as Stuff)
 
   - Name: aggregate - alias - context URL

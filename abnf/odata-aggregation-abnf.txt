@@ -154,9 +154,10 @@ aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / duration
                    / optionalLeadingTypeCast grpPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
-                     [ BWS parameterName EQ aggregatableArith *( BWS COMMA BWS parameterName EQ aggregatableArith ) ]
+                     [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
+aggregatableParam  = aggregatableArith / optionalLeadingTypeCast grpPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
