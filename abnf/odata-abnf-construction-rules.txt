@@ -220,7 +220,7 @@ functionImportCallNoParens     = entityFunctionImport
                                / primitiveFunctionImport
                                / primitiveColFunctionImport
 
-functionParameters = OPEN [ functionParameter *( COMMA functionParameter ) ] CLOSE
+functionParameters = OPEN [ BWS functionParameter *( BWS COMMA BWS functionParameter ) ] BWS CLOSE
 functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )
 parameterName      = odataIdentifier
 parameterAlias     = AT odataIdentifier 
@@ -583,7 +583,7 @@ functionExpr = [ namespace "." ]
                / primitiveFunction    functionExprParameters [ primitivePathExpr ] 
                )
 
-functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE
+functionExprParameters = OPEN [ BWS functionExprParameter *( BWS COMMA BWS functionExprParameter ) ] BWS CLOSE
 functionExprParameter  = parameterName EQ ( parameterAlias / parameterValue )
 
 anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE
