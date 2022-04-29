@@ -265,7 +265,7 @@ TestCases:
     Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
       Profits)/aggregate(Profits/Profit with sum as TotalAmount)
     Expect:
-      - aggPathPrimitive:Profits/Profit
+      - aggrPathPrimitive:Profits/Profit
 
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
@@ -333,7 +333,7 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
     Expect:
-      - aggregatableFactor:Product/Name # is also an aggPathPrimitive
+      - aggregatableFactor:Product/Name # is also an aggrPathPrimitive
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
@@ -363,7 +363,7 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Sales/Forecast)
     Expect:
-      - aggPathPrefix:Sales
+      - aggrPathPrefix:Sales
 
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
