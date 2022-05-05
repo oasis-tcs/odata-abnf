@@ -86,11 +86,13 @@ Constraints:
     - ItemAmount
     - MaxAmount
     - MinAmount
+    - MinCurrency
     - MonthlyAverage
     - NumberOfLeaves
     - ProductNames
     - ProductIDs
     - Profit
+    - Profits
     - RelativeAmount
     - RelativeOrderSize
     - RegionAmount
@@ -109,6 +111,8 @@ Constraints:
     - TotalPopulation
     - TotalSales
     - WeekDay
+  complexAnnotationInQuery:
+    - '@Core.GeometryFeature'
   complexColProperty:
     - Details
   complexColFunction:
@@ -122,6 +126,7 @@ Constraints:
   customAggregate:
     - Budget
     - Forecast
+  entityAnnotationInQuery: []
   entityColFunction:
     - TopCountAndBalance
   entityColFunctionImport: []
@@ -130,6 +135,7 @@ Constraints:
     - Nodes
     - Orders
     - Products
+    - Profits # dynamic
     - Sales
     - SalesPlan
     - Suppliers
@@ -158,7 +164,8 @@ Constraints:
     - SalesOrganizations
     - SalesOrgHierarchies
     - Time
-  entityTypeName: []
+  entityTypeName:
+    - DigitalProduct
   enumerationMember: []
   enumerationTypeName: []
   keyPathLiteral: []
@@ -167,17 +174,25 @@ Constraints:
     - p
   namespacePart:
     - Aggregation
+    - Core
     - Custom
+    - Measures
     - Self
+  primitiveAnnotationInQuery:
+    - '@Core.MediaType'
+    - '@Measures.ISOCurrency'
   primitiveColFunction: []
   primitiveColFunctionImport: []
-  primitiveColProperty: []
+  primitiveColProperty:
+    - Discounts
   primitiveFunction:
     - isroot
     - isleaf
     - isancestor
     - issibling
     - isdescendant
+    - Rating
+    - sqrt
   primitiveFunctionImport: []
   primitiveKeyProperty:
     - Code
@@ -188,6 +203,10 @@ Constraints:
     - City
     - Cost
     - CountryCode
+    - CountryPopulation # dynamic
+    - CustomerAmount # dynamic
+    - CustomerYearAmount # dynamic
+    - FirstLetter # dynamic
     - Region
     - Month
     - Name
@@ -195,16 +214,25 @@ Constraints:
     - Population
     - Price
     - ProductID
+    - Profit # dynamic
     - Quantity
+    - RegionAmount # dynamic
     - Revenue
     - SalesArea
+    - SalesCount # dynamic
     - SalesNumber
     - Shipped
     - Status
     - Street
     - TaxRate
+    - Total # dynamic
     - Year
-  streamProperty: []
+  streamProperty:
+    - Image
+  termName:
+    - ISOCurrency
+    - GeometryFeature
+    - MediaType
 
 TestCases:
   - Name: aggregate - no parameters
@@ -215,6 +243,42 @@ TestCases:
   - Name: aggregate - property with method as alias
     Rule: queryOptions
     Input: $apply=aggregate(Amount with sum as Total)
+
+  - Name: aggregate - arithmetic expression
+    Rule: queryOptions
+    Input: $apply=aggregate((Amount sub Cost) mul TaxRate with sum as Tax)
+    Expect:
+      - aggregatableFactor:(Amount sub Cost)
+      - aggregatableFactor:TaxRate
+
+  - Name: aggregate - arithmetic expression with literals
+    Rule: queryOptions
+    Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
+
+  - Name: aggregate - forbidden arithmetic on collection
+    Rule: queryOptions
+    FailAt: 30
+    Input: $apply=aggregate(Sales/Amount sub Sales/Cost with sum as TotalAmount)
+
+  - Name: aggregate - allowed arithmetic on collection
+    Rule: queryOptions
+    Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
+      Profits)/aggregate(Profits/Profit with sum as TotalAmount)
+    Expect:
+      - aggrPathPrimitive:Profits/Profit
+
+  - Name: aggregate - forbidden arithmetic
+    Rule: queryOptions
+    FailAt: 37
+    Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
+
+  - Name: aggregate - functional expression
+    Rule: queryOptions
+    Input: $apply=aggregate(Self.sqrt(Number=Amount mul Amount sub Cost mul Cost) with sum as TotalAmount)
+
+  - Name: aggregate - functional expression on entity
+    Rule: queryOptions
+    Input: $apply=aggregate(Custom.Rating(Article=Product) with average as Stuff)
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
@@ -241,12 +305,17 @@ TestCases:
 
   - Name: aggregate - no expression after path - this feature from CS02 has been removed
     Rule: queryOptions
-    FailAt: 29
+    FailAt: 22
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
+
+  - Name: aggregate - aggregate annotations
+    Rule: queryOptions
+    FailAt: 22 # no term casts in data aggregation paths
+    Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
-    Input: $metadata#Products(Sales(Tax))
+    Input: $metadata#Products(Sales(TaxRate))
 
   - Name: aggregate - min
     Rule: queryOptions
@@ -263,10 +332,12 @@ TestCases:
   - Name: aggregate - custom aggregation method
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
+    Expect:
+      - aggregatableFactor:Product/Name # is also an aggrPathPrimitive
 
   - Name: aggregate - countdistinct
     Rule: queryOptions
-    Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
+    Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts)
 
   - Name: aggregate - from
     Rule: queryOptions
@@ -291,6 +362,8 @@ TestCases:
   - Name: aggregate - custom aggregate reached via path
     Rule: queryOptions
     Input: $apply=aggregate(Sales/Forecast)
+    Expect:
+      - aggrPathPrefix:Sales
 
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
@@ -298,6 +371,7 @@ TestCases:
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
+    FailAt: 34
     Input: $apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as
       TotalPlannedRevenue)
 
@@ -352,6 +426,47 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
 
+  - Name: aggregate - no groupby stream property
+    Rule: queryOptions
+    FailAt: 29
+    Input: $apply=groupby((Product/Image))
+
+  - Name: aggregate - groupby annotations
+    Rule: queryOptions
+    FailAt: 29  # no term casts in data aggregation paths
+    Input: $apply=groupby((Product/Price/@Measures.ISOCurrency))
+
+  - Name: aggregate - groupby no two consecutive primitive properties
+    Rule: queryOptions
+    FailAt: 29
+    Input: $apply=groupby((Product/Price/Quantity))
+
+  - Name: aggregate - groupby with type cast
+    Rule: queryOptions
+    Input: $apply=groupby((Product/Self.DigitalProduct/Region))
+
+  - Name: aggregate - groupby final type cast
+    Rule: queryOptions
+    FailAt: 43
+    Input: $apply=groupby((Product/Self.DigitalProduct))
+
+  - Name: aggregate - groupby only derived property
+    Rule: queryOptions
+    Input: $apply=groupby((Self.DigitalProduct/Region))
+
+  - Name: aggregate - groupby context with type cast
+    Rule: odataRelativeUri
+    Input: $metadata#Products(ID,Self.DigitalProduct/Region)
+    Expect:
+      - qualifiedEntityTypeName:Self.DigitalProduct
+
+  - Name: aggregate - groupby complex annotations
+    Rule: queryOptions
+    FailAt: 24  # no term casts in data aggregation paths
+    Input: $apply=groupby((Country/@Core.GeometryFeature))
+#    Expect:
+#      - grpPropAnnoSegment:@Core.GeometryFeature
+
   - Name: aggregate - groupby with custom aggregates calculated from aggregated
       instances
     Rule: queryOptions
@@ -375,7 +490,7 @@ TestCases:
 
   - Name: aggregate - filter on $root
     Rule: queryOptions
-    Input: $apply=filter(Name eq Products('P2')/Name)
+    Input: $apply=filter(Name eq $root/Products('P2')/Name)
 
   - Name: aggregate - search
     Rule: queryOptions
@@ -679,18 +794,23 @@ TestCases:
 
   - Name: aggregation methods - $count segment
     Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales/$count with sum as SalesCount))
+    Input: $apply=groupby((Name),aggregate(Sales/$count as SalesCount))
+
+  - Name: aggregation methods - no $count segment after single-valued
+    Rule: queryOptions
+    FailAt: 44
+    Input: $apply=groupby((Name),aggregate(Sales/Amount/$count as SalesCount))
 
   - Name: aggregation methods - $count segment and sum
     Rule: queryOptions
-    Input: $apply=groupby((Name),aggregate(Sales/$count with sum as
+    Input: $apply=groupby((Name),aggregate(Sales/$count as
       SalesCount,Sales/Amount with sum as Total))
 
   - Name:
       aggregation methods - $count only allowed on top level, not nested within
       path
     Rule: queryOptions
-    FailAt: 38
+    FailAt: 37
     Input: $apply=groupby((Name),aggregate(Sales($count as SalesCount)))
 
   - Name: collection-valued path
@@ -882,8 +1002,7 @@ TestCases:
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count with
-      sum as PaperSalesCount))
+      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
