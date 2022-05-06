@@ -220,7 +220,7 @@ functionImportCallNoParens     = entityFunctionImport
                                / primitiveFunctionImport
                                / primitiveColFunctionImport
 
-functionParameters = OPEN [ functionParameter *( COMMA functionParameter ) ] CLOSE
+functionParameters = OPEN [ BWS functionParameter *( BWS COMMA BWS functionParameter ) ] BWS CLOSE
 functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )
 parameterName      = odataIdentifier
 parameterAlias     = AT odataIdentifier 
@@ -498,13 +498,14 @@ commonExpr = ( primitiveLiteral
 
 boolCommonExpr = commonExpr ; resulting in a Boolean
 
-rootExpr = %s"$root/" ( ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
-                      / entityColFunctionImportCall    [ collectionNavigation ]
-                      / entityFunctionImportCall       [ singleNavigation ]
-                      / complexColFunctionImportCall   [ complexColPath ]
-                      / complexFunctionImportCall      [ complexPath ]
-                      / primitiveColFunctionImportCall [ collectionPath ]
-                      / primitiveFunctionImportCall    [ primitivePath ]
+rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
+                      / singletonEntity [ singleNavigationExpr ]
+                      / entityColFunctionImport    functionExprParameters [ collectionNavigationExpr ]
+                      / entityFunctionImport       functionExprParameters [ singleNavigationExpr ]
+                      / complexColFunctionImport   functionExprParameters [ complexColPathExpr ]
+                      / complexFunctionImport      functionExprParameters [ complexPathExpr ]
+                      / primitiveColFunctionImport functionExprParameters [ collectionPathExpr ]
+                      / primitiveFunctionImport    functionExprParameters [ primitivePathExpr ]
                       )
 
 firstMemberExpr = memberExpr
@@ -585,7 +586,7 @@ functionExpr = [ namespace "." ]
                / primitiveFunction    functionExprParameters [ primitivePathExpr ] 
                )
 
-functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE
+functionExprParameters = OPEN [ BWS functionExprParameter *( BWS COMMA BWS functionExprParameter ) ] BWS CLOSE
 functionExprParameter  = parameterName EQ ( parameterAlias / parameterValue )
 
 anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE
@@ -800,10 +801,10 @@ enumerationTypeName = odataIdentifier
 enumerationMember   = odataIdentifier
 termName            = odataIdentifier
 
-; Note: this pattern is overly restrictive, the normative definition is type TSimpleIdentifier in OData EDM XML Schema
 odataIdentifier             = identifierLeadingCharacter *127identifierCharacter
-identifierLeadingCharacter  = ALPHA / "_"         ; plus Unicode characters from the categories L or Nl
-identifierCharacter         = ALPHA / "_" / DIGIT ; plus Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
+; Note: the two following rules are overly restrictive, see comments for the full set of allowed characters
+identifierLeadingCharacter  = ALPHA / "_"         ; plus percent-encoded Unicode characters from the categories L or Nl
+identifierCharacter         = ALPHA / "_" / DIGIT ; plus percent-encoded Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
 
 primitiveTypeName = %s"Edm." ( %s"Binary"
                            / %s"Boolean"
