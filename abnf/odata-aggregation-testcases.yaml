@@ -492,6 +492,14 @@ TestCases:
     Rule: queryOptions
     Input: $apply=filter(Name eq $root/Products('P2')/Name)
 
+  - Name: aggregate - expand with filter on $this
+    Rule: queryOptions
+    Input: $apply=expand(Sales,filter($this/Customer/City eq ShipTo/City))
+
+  - Name: aggregate - expand with filter on $root
+    Rule: queryOptions
+    Input: $apply=filter(Name eq $root/Products('P2')/Name)
+
   - Name: aggregate - search
     Rule: queryOptions
     Input: $apply=search(coffee)
