@@ -548,9 +548,9 @@ lambdaVariableExpr   = odataIdentifier
 collectionNavigationExpr = collectionNavNoCastExpr
                          / "/" optionallyQualifiedEntityTypeName collectionNavNoCastExpr
 
-collectionNavNoCastExpr = collectionPathExpr
-                        / keyPredicate [ singleNavigationExpr ] 
-                        / filterExpr [ collectionNavigationExpr ]                     
+collectionNavNoCastExpr = keyPredicate [ singleNavigationExpr ]
+                        / filterExpr [ collectionNavigationExpr ]
+                        / collectionPathExpr
 
 singleNavigationExpr = "/" memberExpr
 
