@@ -87,7 +87,7 @@ odataRelativeUri = %s"$batch"  [ "?" batchOptions ]
                  / %s"$entity" "?" entityOptions  
                  / %s"$entity" "/" optionallyQualifiedEntityTypeName "?" entityCastOptions  
                  / %s"$metadata" [ "?" metadataOptions ] [ context ]
-                 / resourcePath [ "?" queryOptions ]
+                 / resourcePath [ "?" [ queryOptions ] ]
 
 
 ;------------------------------------------------------------------------------
