@@ -488,10 +488,6 @@ TestCases:
     Rule: queryOptions
     Input: $apply=filter(Amount gt 3)
 
-  - Name: aggregate - filter on $root
-    Rule: queryOptions
-    Input: $apply=filter(Name eq $root/Products('P2')/Name)
-
   - Name: aggregate - search
     Rule: queryOptions
     Input: $apply=search(coffee)
@@ -513,6 +509,14 @@ TestCases:
   - Name: aggregate - addnested
     Rule: queryOptions
     Input: $apply=addnested(Sales,filter(Amount gt 3) as FilteredSales)
+
+  - Name: aggregate - transformnested with filter on $this
+    Rule: queryOptions
+    Input: $apply=transformnested(Sales,filter($this/Customer/City eq ShipTo/City))
+
+  - Name: aggregate - filter on $root
+    Rule: queryOptions
+    Input: $apply=filter(Name eq $root/Products('P2')/Name)
 
   - Name: aggregate - nesting complex property
     Rule: queryOptions
