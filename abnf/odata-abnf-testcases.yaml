@@ -767,6 +767,10 @@ TestCases:
     FailAt: 22
     Input: Categories('Smartphone/Tablet')
 
+  - Name: 2 URL Components - empty query options
+    Rule: odataRelativeUri
+    Input: Customers?
+
   - Name: 4.1 - Metadata URL
     Rule: odataUri
     Input: http://services.odata.org/OData/OData.svc/$metadata
