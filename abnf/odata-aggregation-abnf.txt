@@ -230,7 +230,7 @@ groupbyElement  = groupingProperty / rollup / rollupAll
 rollup            = %s"rollup"    OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupAll         = %s"rollupall" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier   = recHierQualifier
+rollupNamedHier   = OPEN BWS recHierReference BWS CLOSE
 
 identityTrafo   = %s"identity"
 
