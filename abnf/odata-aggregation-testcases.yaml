@@ -752,7 +752,7 @@ TestCases:
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
-    Input: $apply=traverse(SalesOrgHierarchy,preorder)
+    Input: $apply=traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
@@ -997,7 +997,7 @@ TestCases:
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,Name eq 'US',keep
       start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,contains(Name,'East'),keep
-      start)/traverse(SalesOrgHierarchy,preorder)
+      start)/traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions

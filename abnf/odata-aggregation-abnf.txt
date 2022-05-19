@@ -208,7 +208,7 @@ descendantsTrafo = %s"descendants" OPEN
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierQualifier BWS 
+                  BWS recHierReference BWS 
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
