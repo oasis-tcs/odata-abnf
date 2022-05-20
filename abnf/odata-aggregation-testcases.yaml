@@ -687,31 +687,59 @@ TestCases:
 
   - Name: hierarchy functions - isroot
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isroot(Hierarchy='SalesOrgHierarchy')
+    Input: SalesOrganizations?$filter=Aggregation.isroot(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID)
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Ancestor='EMEA')
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
+    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Ancestor='EMEA',
+      MaxDistance=1)
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.isancestor(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Descendant='EMEA')
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
+    Input: SalesOrganizations?$filter=Aggregation.isancestor(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Descendant='EMEA',
+      MaxDistance=1)
 
   - Name: hierarchy functions - issibling
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.issibling(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.issibling(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Other='EMEA')
 
   - Name: hierarchy functions - isleaf
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
+    Input: SalesOrganizations?$filter=Aggregation.isleaf(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID)
 
   - Name: hierarchy transformations - ancestors with forbidden node property path
     Rule: queryOptions
