@@ -83,27 +83,29 @@ apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
            / ancestorsTrafo
-           / bottomcountTrafo
-           / bottompercentTrafo
-           / bottomsumTrafo
            / computeTrafo
            / concatTrafo
            / customFunction
            / descendantsTrafo
-           / filterTrafo
            / groupbyTrafo
-           / identityTrafo
            / joinTrafo
            / nestTrafo
-           / orderbyTrafo
            / outerjoinTrafo
-           / searchTrafo
-           / skipTrafo
-           / topcountTrafo
-           / toppercentTrafo
-           / topsumTrafo
-           / topTrafo
            / traverseTrafo
+           / preservingTrafo
+preservingTrafo = bottomcountTrafo
+                / bottompercentTrafo
+                / bottomsumTrafo
+                / filterTrafo
+                / identityTrafo
+                / orderbyTrafo
+                / searchTrafo
+                / skipTrafo
+                / topTrafo
+                / topcountTrafo
+                / toppercentTrafo
+                / topsumTrafo
+preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
@@ -195,14 +197,14 @@ joinProperty    = ( complexColProperty
 
 ancestorsTrafo  = %s"ancestors" OPEN 
                   BWS recHierReference BWS 
-                  COMMA BWS boolCommonExpr BWS
+                  COMMA BWS preservingTrafos BWS
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
                  BWS recHierReference BWS 
-                 COMMA BWS boolCommonExpr BWS
+                 COMMA BWS preservingTrafos BWS
                  [ COMMA BWS 1*DIGIT BWS ]
                  [ COMMA BWS %s"keep start" BWS ]
                  CLOSE
