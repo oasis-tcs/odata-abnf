@@ -722,6 +722,12 @@ TestCases:
     FailAt: 65
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,Sales(4711)/ID,identity)
 
+  - Name: hierarchy transformations - ancestors of search result
+    Rule: queryOptions
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,search(East)/top(3))
+    Expect:
+      - preservingTrafos:search(East)/top(3)
+
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
