@@ -104,7 +104,7 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
-                / customFunction
+                / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
