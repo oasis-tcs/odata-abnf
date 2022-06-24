@@ -164,7 +164,7 @@ aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod"
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
-                   / aggrPathPrefix
+                   / aggrPathPrefix ; must be followed by with countdistinct or a custom aggregation method
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
 aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
