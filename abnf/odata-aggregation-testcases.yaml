@@ -349,6 +349,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
 
+  - Name: aggregate - forbidden sum with navigation property
+    Rule: queryOptions
+    FailAt: 33
+    Input: $apply=aggregate(Product with sum as Stuff)
+
   - Name: aggregate - from
     Rule: queryOptions
     Input: $apply=aggregate(Amount with sum from Time with average as DailyAverage)
@@ -676,6 +681,10 @@ TestCases:
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
     Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
+
+  - Name: aggregate function - countdistinct with navigation property
+    Rule: queryOptions
+    Input: $filter=Products/aggregate(p:p/Sales with countdistinct) gt 3
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri

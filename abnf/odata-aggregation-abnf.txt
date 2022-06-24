@@ -112,16 +112,19 @@ aggregateItem   = %s"$count" asAlias
                 / aggregateCount asAlias
                 / aggregateExpr
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
+                / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
                 / [ aggrPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
+nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
 customFrom      = RWS %s"from" RWS groupingProperty [ aggregateWith ] [ customFrom ]
 aggregateMethod = %s"sum"
                 / %s"min"
                 / %s"max"
                 / %s"average"
-                / %s"countdistinct"
-                / namespace "." odataIdentifier
+                / nonprimAggMethod
+nonprimAggMethod = %s"countdistinct"
+                 / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
 aggregateCount  = optionalLeadingTypeCast ( complexColProperty / entityColNavigationProperty / primitiveColProperty ) %s"/$count"
                 / aggrPathPrefix aggregateCount
 optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
@@ -164,7 +167,6 @@ aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod"
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
-                   / aggrPathPrefix ; must be followed by with countdistinct or a custom aggregation method
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
 aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
@@ -258,6 +260,7 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = %s"$count"
                           / [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
+                          / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                           / [ inscopeVariableExpr "/" ] aggregateCount
                           / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
 
