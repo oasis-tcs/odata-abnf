@@ -164,8 +164,9 @@ aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod"
 aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
-aggrPathPrimitive   = optionalLeadingTypeCast aggrPrimPath
-aggrPathPrefix      = optionalLeadingTypeCast aggrPropPath
+                   / aggrPathPrefix
+aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
+aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE

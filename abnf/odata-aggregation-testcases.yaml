@@ -335,9 +335,19 @@ TestCases:
     Expect:
       - aggregatableFactor:Product/Name # is also an aggrPathPrimitive
 
+  - Name: aggregate - custom aggregation method with complex property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product/ShipTo with Custom.TSP as Stuff)
+    Expect:
+      - aggrPathPrefix:Product/ShipTo
+
   - Name: aggregate - countdistinct
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts)
+
+  - Name: aggregate - countdistinct with navigation property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
 
   - Name: aggregate - from
     Rule: queryOptions
