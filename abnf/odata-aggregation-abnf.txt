@@ -117,7 +117,7 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
-customFrom      = 1*( RWS %s"from" RWS groupingProperty ) aggregateWith
+customFrom      = 1*( RWS %s"from" RWS groupingProperty ) aggregateWith [ aggregateFrom ]
 aggregateMethod = %s"sum"
                 / %s"min"
                 / %s"max"
