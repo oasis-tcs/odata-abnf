@@ -229,7 +229,7 @@ groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] B
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
 groupbyElement  = groupingProperty / rollup / rollupDesc
 
-rollup            = ( %s"rollup" / %s"rollupall" )
+rollup            = ( %s"rollupall" / %s"rollup" )
                     OPEN BWS ( groupingProperty 1*( BWS COMMA BWS groupingProperty ) ) BWS CLOSE
 rollupDesc        = %s"rollupdescendants" OPEN BWS recHierReference BWS CLOSE
 
