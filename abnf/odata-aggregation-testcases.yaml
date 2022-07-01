@@ -335,9 +335,24 @@ TestCases:
     Expect:
       - aggregatableFactor:Product/Name # is also an aggrPathPrimitive
 
+  - Name: aggregate - custom aggregation method with complex property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product/ShipTo with Custom.TSP as Stuff)
+    Expect:
+      - aggrPathPrefix:Product/ShipTo
+
   - Name: aggregate - countdistinct
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with countdistinct as DistinctProducts)
+
+  - Name: aggregate - countdistinct with navigation property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
+
+  - Name: aggregate - forbidden sum with navigation property
+    Rule: queryOptions
+    FailAt: 33
+    Input: $apply=aggregate(Product with sum as Stuff)
 
   - Name: aggregate - from
     Rule: queryOptions
@@ -666,6 +681,10 @@ TestCases:
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
     Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
+
+  - Name: aggregate function - countdistinct with navigation property
+    Rule: queryOptions
+    Input: $filter=Products/aggregate(p:p/Sales with countdistinct) gt 3
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri
