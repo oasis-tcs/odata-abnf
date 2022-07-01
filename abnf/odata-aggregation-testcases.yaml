@@ -401,7 +401,11 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
 
-  - Name: aggregate - custom aggregate and multiple from
+  - Name: aggregate - custom aggregate and from multiple
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from (Time,Product/Name) with average as DailyAverage)
+
+  - Name: aggregate - custom aggregate and multiple from with
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average from Product/Name with max as DailyAverage)
 
