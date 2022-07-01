@@ -116,8 +116,8 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / [ aggrPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
-aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
-customFrom      = 1*( RWS %s"from" RWS groupingProperty ) aggregateWith [ aggregateFrom ]
+aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
+customFrom      = 1*( RWS %s"from" RWS groupingProperties ) aggregateWith [ aggregateFrom ]
 aggregateMethod = %s"sum"
                 / %s"min"
                 / %s"max"
@@ -170,6 +170,8 @@ aggregatableExpr   = aggregatableArith
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
 aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
+groupingProperties = groupingProperty
+                   / OPEN BWS groupingProperty *( BWS COMMA BWS groupingProperty ) BWS CLOSE
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
