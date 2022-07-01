@@ -384,6 +384,15 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
 
+  - Name: aggregate - custom aggregate and multiple from
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
+
+  - Name: aggregate - custom aggregate and from without with
+    Rule: queryOptions
+    FailAt: 36
+    Input: $apply=aggregate(Forecast from Time as Stuff)
+
   - Name: aggregate - path with key segment
     Rule: queryOptions
     FailAt: 34
