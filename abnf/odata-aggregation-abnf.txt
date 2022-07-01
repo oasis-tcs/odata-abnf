@@ -227,12 +227,11 @@ searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement  = groupingProperty / rollup / rollupAll
+groupbyElement  = groupingProperty / rollup / rollupDesc
 
-rollup            = %s"rollup"    OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupAll         = %s"rollupall" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier   = OPEN BWS recHierReference BWS CLOSE
+rollup            = ( %s"rollup" / %s"rollupall" )
+                    OPEN BWS ( groupingProperty 1*( BWS COMMA BWS groupingProperty ) ) BWS CLOSE
+rollupDesc        = %s"rollupdescendants" OPEN BWS recHierReference BWS CLOSE
 
 identityTrafo   = %s"identity"
 
