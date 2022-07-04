@@ -215,7 +215,7 @@ descendantsTrafo = %s"descendants" OPEN
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierReference BWS 
+                  BWS recHierQualifier BWS 
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
@@ -232,11 +232,12 @@ searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement  = groupingProperty / rollup / rollupDesc
+groupbyElement  = groupingProperty / rollup / rollupAll
 
-rollup            = ( %s"rollupall" / %s"rollup" )
-                    OPEN BWS ( groupingProperty 1*( BWS COMMA BWS groupingProperty ) ) BWS CLOSE
-rollupDesc        = %s"rollupdescendants" OPEN BWS recHierReference BWS CLOSE
+rollup            = %s"rollup"    OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupAll         = %s"rollupall" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
+rollupNamedHier   = recHierQualifier
 
 identityTrafo   = %s"identity"
 

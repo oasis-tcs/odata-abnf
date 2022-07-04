@@ -526,7 +526,7 @@ TestCases:
 
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
-    Input: $apply=groupby((rollupdescendants($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
+    Input: $apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as
       SalesOrgCount))
 
   - Name: aggregate - filter
@@ -740,59 +740,31 @@ TestCases:
 
   - Name: hierarchy functions - isroot
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isroot(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID)
+    Input: SalesOrganizations?$filter=$it/Aggregation.isroot(Hierarchy='SalesOrgHierarchy')
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID,
-      Ancestor='EMEA')
+    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA')
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID,
-      Ancestor='EMEA',
-      MaxDistance=1)
+    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isancestor(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID,
-      Descendant='EMEA')
+    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA')
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isancestor(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID,
-      Descendant='EMEA',
-      MaxDistance=1)
+    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
 
   - Name: hierarchy functions - issibling
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.issibling(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID,
-      Other='EMEA')
+    Input: SalesOrganizations?$filter=$it/Aggregation.issibling(Hierarchy='SalesOrgHierarchy',Node='EMEA')
 
   - Name: hierarchy functions - isleaf
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=Aggregation.isleaf(
-      HierarchyNodes=$root/SalesOrganizations,
-      HierarchyQualifier='SalesOrgHierarchy',
-      Node=ID)
+    Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
 
   - Name: hierarchy transformations - ancestors with forbidden node property path
     Rule: queryOptions
@@ -839,7 +811,7 @@ TestCases:
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
-    Input: $apply=traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
+    Input: $apply=traverse(SalesOrgHierarchy,preorder)
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
@@ -1084,13 +1056,12 @@ TestCases:
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'),keep
       start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East')),keep
-      start)/traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
+      start)/traverse(SalesOrgHierarchy,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rollupdescendants($root/SalesOrganizations,SalesOrgHierarchy,ID)),
-      aggregate(Sales/$count as PaperSalesCount))
+      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
