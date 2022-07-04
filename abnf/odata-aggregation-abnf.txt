@@ -164,7 +164,7 @@ aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableParam  = aggregatableArith / optionalLeadingTypeCast snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
-aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
+aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
