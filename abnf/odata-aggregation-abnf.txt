@@ -233,7 +233,7 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollup / rollupDesc
 
 rollup          = ( %s"rollupall" / %s"rollup" )
-                    OPEN BWS ( groupingProperty 1*( BWS COMMA BWS groupingProperty ) ) BWS CLOSE
+                  OPEN BWS ( groupingProperty 1*( BWS COMMA BWS groupingProperty ) ) BWS CLOSE
 rollupDesc      = %s"rollupdescendants" OPEN BWS recHierReference BWS CLOSE
 
 identityTrafo   = %s"identity"
