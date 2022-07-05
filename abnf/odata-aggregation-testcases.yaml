@@ -382,7 +382,12 @@ TestCases:
     FailAt: 55
     Input: $apply=aggregate(Amount with sum from Time with average)
 
-  - Name: aggregate - property from requires with
+  - Name: aggregate - property from requires with 1
+    Rule: queryOptions
+    FailAt: 47
+    Input: $apply=aggregate(Amount with average from Time as DailyAverage)
+
+  - Name: aggregate - property from requires with 2
     Rule: queryOptions
     FailAt: 24
     Input: $apply=aggregate(Amount from Time with average as DailyAverage)
