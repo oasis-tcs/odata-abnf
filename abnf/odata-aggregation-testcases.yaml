@@ -514,6 +514,12 @@ TestCases:
       $apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
       with sum as Total))
 
+  - Name: aggregate - groupby rollup named leveled hierarchy
+    Rule: queryOptions
+    Input:
+      $apply=groupby((rollup(CustomerHierarchy),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
+      with sum as Total))
+
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
     Input: $apply=groupby((rollupdescendants($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
