@@ -519,6 +519,8 @@ TestCases:
     Input:
       $apply=groupby((rollup(CustomerHierarchy),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
       with sum as Total))
+    Expect:
+      - rollupNamedHier:CustomerHierarchy
 
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
