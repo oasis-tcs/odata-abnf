@@ -117,7 +117,7 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperty aggregateWith [ aggregateFrom ]
-customFrom      = 1*( RWS %s"from" RWS groupingProperty ) aggregateWith [ aggregateFrom ]
+customFrom      = RWS %s"from" RWS groupingProperty [ aggregateWith ] [ customFrom ]
 aggregateMethod = %s"sum"
                 / %s"min"
                 / %s"max"
@@ -235,7 +235,7 @@ groupbyElement  = groupingProperty / rollupLevels / rollupDesc
 rollupLevels      = ( %s"rollupall" / %s"rollup" ) OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupDesc        = %s"rollupdescendants" OPEN BWS recHierReference BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier   = odataIdentifier
+rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
 identityTrafo   = %s"identity"
 

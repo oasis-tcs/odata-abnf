@@ -364,13 +364,6 @@ TestCases:
       $apply=aggregate(Amount with sum from Time with average from Product/Name
       with max as DailyAverage)
 
-  - Name: aggregate - from twice in one step
-    Rule: queryOptions
-    FailAt: 47
-    Input:
-      $apply=aggregate(Amount with average from Time from Product/Name
-      with max as DailyAverage)
-
   - Name: aggregate - from requires as
     Rule: queryOptions
     FailAt: 55
@@ -390,19 +383,6 @@ TestCases:
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
-
-  - Name: aggregate - custom aggregate and multiple from
-    Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
-
-  - Name: aggregate - custom aggregate and multiple from
-    Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time with average from Product/Name with max as DailyAverage)
-
-  - Name: aggregate - custom aggregate and from without with
-    Rule: queryOptions
-    FailAt: 36
-    Input: $apply=aggregate(Forecast from Time as Stuff)
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
