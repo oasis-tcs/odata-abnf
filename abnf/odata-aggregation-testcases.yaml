@@ -361,13 +361,13 @@ TestCases:
   - Name: aggregate - from twice
     Rule: queryOptions
     Input:
-      $apply=aggregate(Amount with sum from Time with average from (Product/Name)
+      $apply=aggregate(Amount with sum from Time with average from Product/Name
       with max as DailyAverage)
 
   - Name: aggregate - from twice in one step
     Rule: queryOptions
     Input:
-      $apply=aggregate(Amount with average from (Time,Product/Name)
+      $apply=aggregate(Amount with average from Time,Product/Name
       with max as DailyAverage)
 
   - Name: aggregate - from twice in one step wrong
@@ -408,7 +408,7 @@ TestCases:
 
   - Name: aggregate - custom aggregate and from multiple
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from (Time,Product/Name) with average as DailyAverage)
+    Input: $apply=aggregate(Forecast from Time,Product/Name with average as DailyAverage)
 
   - Name: aggregate - custom aggregate and multiple from with
     Rule: queryOptions

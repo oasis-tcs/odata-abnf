@@ -170,8 +170,7 @@ aggregatableExpr   = aggregatableArith
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
 aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
-groupingProperties = groupingProperty
-                   / OPEN BWS groupingProperty *( BWS COMMA BWS groupingProperty ) BWS CLOSE
+groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
