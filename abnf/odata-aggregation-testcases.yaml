@@ -504,7 +504,7 @@ TestCases:
 
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
-    Input: $apply=groupby((rollupdescendants($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
       SalesOrgCount))
 
   - Name: aggregate - filter
@@ -1067,7 +1067,7 @@ TestCases:
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rollupdescendants($root/SalesOrganizations,SalesOrgHierarchy,ID)),
+      'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
       aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
