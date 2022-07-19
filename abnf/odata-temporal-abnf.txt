@@ -1,8 +1,9 @@
 ;------------------------------------------------------------------------------
 ; OData Temporal ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
-;  Committee Specification 01
 ;  13 January 2022
+;
+; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-temporal-abnf.txt
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
