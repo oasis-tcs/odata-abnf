@@ -1,8 +1,9 @@
 ;------------------------------------------------------------------------------
 ; OData Aggregation ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
-;  Working Draft 04
-;  04 November 2015
+; 04 November 2015
+;
+; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-aggregation-abnf.txt
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
