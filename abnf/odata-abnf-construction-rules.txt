@@ -2,6 +2,8 @@
 ; OData ABNF Construction Rules Version 4.01 and 4.0
 ;------------------------------------------------------------------------------
 ; 17 September 2020
+;
+; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-construction-rules.txt
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
