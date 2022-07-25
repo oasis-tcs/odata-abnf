@@ -364,12 +364,30 @@ TestCases:
       $apply=aggregate(Amount with sum from Time with average from Product/Name
       with max as DailyAverage)
 
+  - Name: aggregate - from twice in one step
+    Rule: queryOptions
+    Input:
+      $apply=aggregate(Amount with average from Time,Product/Name
+      with max as DailyAverage)
+
+  - Name: aggregate - from twice in one step wrong
+    Rule: queryOptions
+    FailAt: 47
+    Input:
+      $apply=aggregate(Amount with average from Time from Product/Name
+      with max as DailyAverage)
+
   - Name: aggregate - from requires as
     Rule: queryOptions
     FailAt: 55
     Input: $apply=aggregate(Amount with sum from Time with average)
 
-  - Name: aggregate - property from requires with
+  - Name: aggregate - property from requires with 1
+    Rule: queryOptions
+    FailAt: 47
+    Input: $apply=aggregate(Amount with average from Time as DailyAverage)
+
+  - Name: aggregate - property from requires with 2
     Rule: queryOptions
     FailAt: 24
     Input: $apply=aggregate(Amount from Time with average as DailyAverage)
@@ -383,6 +401,26 @@ TestCases:
   - Name: aggregate - custom aggregate and from
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
+
+  - Name: aggregate - custom aggregate and multiple from
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
+
+  - Name: aggregate - custom aggregate and from multiple
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time,Product/Name with average as DailyAverage)
+
+  - Name: aggregate - custom aggregate and multiple from with
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time with average from Product/Name with max as DailyAverage)
+
+  - Name: aggregate - custom aggregate, with, custom aggregate again
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time with average from Product/Name as DailyAverage)
+
+  - Name: aggregate - custom aggregate and from without with
+    Rule: queryOptions
+    Input: $apply=aggregate(Forecast from Time as Stuff)
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
