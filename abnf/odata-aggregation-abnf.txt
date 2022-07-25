@@ -233,7 +233,7 @@ groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] B
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
-rollupLevels      = ( %s"rollupall" / %s"rollup" ) OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierReference BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation

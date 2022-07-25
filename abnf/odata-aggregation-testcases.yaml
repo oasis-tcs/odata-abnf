@@ -1010,7 +1010,7 @@ TestCases:
   - Name: controlling aggregation - rollup and from
     Rule: queryOptions
     Input:
-      $apply=groupby((rollupall(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
+      $apply=groupby((rollup(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
       with sum from Customer/ID with average from Customer/Country with average
       as CustomerCountryAverage))
 
