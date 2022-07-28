@@ -164,7 +164,7 @@ aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableParam  = aggregatableArith / optionalLeadingTypeCast snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
-aggregatableArith  = [ "-" ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
+aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
@@ -214,7 +214,7 @@ descendantsTrafo = %s"descendants" OPEN
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierQualifier BWS 
+                  BWS recHierReference BWS 
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
@@ -231,12 +231,12 @@ searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement  = groupingProperty / rollup / rollupAll
+groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
-rollup            = %s"rollup"    OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupAll         = %s"rollupall" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierReference BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier   = recHierQualifier
+rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
 identityTrafo   = %s"identity"
 

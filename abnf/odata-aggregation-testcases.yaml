@@ -532,9 +532,17 @@ TestCases:
       $apply=groupby((rollup(Customer/Country,Customer/Name),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
       with sum as Total))
 
+  - Name: aggregate - groupby rollup named leveled hierarchy
+    Rule: queryOptions
+    Input:
+      $apply=groupby((rollup(CustomerHierarchy),rollup(Product/ProductGroup/Name,Product/Name),Currency/Code),aggregate(Amount
+      with sum as Total))
+    Expect:
+      - rollupNamedHier:CustomerHierarchy
+
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
-    Input: $apply=groupby((rollup(SalesOrgHierarchy)),aggregate($count as
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
       SalesOrgCount))
 
   - Name: aggregate - filter
@@ -748,31 +756,59 @@ TestCases:
 
   - Name: hierarchy functions - isroot
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isroot(Hierarchy='SalesOrgHierarchy')
+    Input: SalesOrganizations?$filter=Aggregation.isroot(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID)
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Ancestor='EMEA')
 
   - Name: hierarchy functions - isdescendant
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isdescendant(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
+    Input: SalesOrganizations?$filter=Aggregation.isdescendant(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Ancestor='EMEA',
+      MaxDistance=1)
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.isancestor(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Descendant='EMEA')
 
   - Name: hierarchy functions - isancestor
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isancestor(Hierarchy='SalesOrgHierarchy',Node='EMEA',MaxDistance=1)
+    Input: SalesOrganizations?$filter=Aggregation.isancestor(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Descendant='EMEA',
+      MaxDistance=1)
 
   - Name: hierarchy functions - issibling
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.issibling(Hierarchy='SalesOrgHierarchy',Node='EMEA')
+    Input: SalesOrganizations?$filter=Aggregation.issibling(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID,
+      Other='EMEA')
 
   - Name: hierarchy functions - isleaf
     Rule: odataRelativeUri
-    Input: SalesOrganizations?$filter=$it/Aggregation.isleaf(Hierarchy='SalesOrgHierarchy')
+    Input: SalesOrganizations?$filter=Aggregation.isleaf(
+      HierarchyNodes=$root/SalesOrganizations,
+      HierarchyQualifier='SalesOrgHierarchy',
+      Node=ID)
 
   - Name: hierarchy transformations - ancestors with forbidden node property path
     Rule: queryOptions
@@ -819,7 +855,7 @@ TestCases:
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
-    Input: $apply=traverse(SalesOrgHierarchy,preorder)
+    Input: $apply=traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
@@ -974,7 +1010,7 @@ TestCases:
   - Name: controlling aggregation - rollup and from
     Rule: queryOptions
     Input:
-      $apply=groupby((rollupall(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
+      $apply=groupby((rollup(Customer/Country,Customer/ID),Currency/Code),aggregate(Amount
       with sum from Customer/ID with average from Customer/Country with average
       as CustomerCountryAverage))
 
@@ -1064,12 +1100,13 @@ TestCases:
     Rule: queryOptions
     Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'),keep
       start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East')),keep
-      start)/traverse(SalesOrgHierarchy,preorder)
+      start)/traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rollup(SalesOrgHierarchy)),aggregate(Sales/$count as PaperSalesCount))
+      'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
+      aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
