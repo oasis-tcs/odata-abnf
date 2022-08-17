@@ -555,7 +555,7 @@ TestCases:
 
   - Name: aggregate - search with quoted argument
     Rule: queryOptions
-    Input: $apply=search(')/top(1')
+    Input: $apply=search(')/top(1')/top(1)
     Expect:
       - searchExpr-incomplete:')/top(1'
 
