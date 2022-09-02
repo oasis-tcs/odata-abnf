@@ -392,6 +392,10 @@ TestCases:
     FailAt: 24
     Input: $apply=aggregate(Amount from Time with average as DailyAverage)
 
+  - Name: aggregate - $count from
+    Rule: queryOptions
+    Input: $apply=aggregate(Sales/$count from Time with average as DailyAverage)
+
   - Name: aggregate - custom aggregate reached via path
     Rule: queryOptions
     Input: $apply=aggregate(Sales/Forecast)
@@ -416,11 +420,11 @@ TestCases:
 
   - Name: aggregate - custom aggregate, with, custom aggregate again
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time with average from Product/Name as DailyAverage)
+    Input: $apply=aggregate(Forecast from Time with average from Product/Name)
 
   - Name: aggregate - custom aggregate and from without with
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time as Stuff)
+    Input: $apply=aggregate(Forecast from Time)
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
@@ -699,9 +703,9 @@ TestCases:
       $apply=compute(Amount div $these/aggregate(p:Amount with sum from Time
       with average) as RelativeAmount)
 
-  - Name: aggregate function - across input set with $count
+  - Name: aggregate function - across input set with $count and from
     Rule: queryOptions
-    Input: $apply=compute($these/aggregate(p:$count) as SalesCount)
+    Input: $apply=compute($these/aggregate(p:$count from Product with max) as SalesCount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
