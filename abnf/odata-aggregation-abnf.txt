@@ -263,7 +263,7 @@ aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregate
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom / customFromAlias ]
+                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFromAlias / customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
