@@ -112,12 +112,11 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
                 / %s"$count" [ aggregateFrom ] asAlias
                 / aggregateCount [ aggregateFrom ] asAlias
-                / [ aggrPathPrefix "/" ] customAggregate [ customFromAlias asAlias / customFrom ]
+                / [ aggrPathPrefix "/" ] customAggregate [ customFrom asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
-aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]  ; 3.2.1.5, rule 1
-customFrom      = RWS %s"from" RWS groupingProperties [ [ aggregateWith ] customFrom ] ; 3.2.1.5, rule 3 or 4
-customFromAlias = customFrom aggregateWith                                             ; 3.2.1.5, rule 2
+aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
+customFrom      = RWS %s"from" RWS groupingProperties [ aggregateWith ] [ customFrom ]
 aggregateMethod = %s"sum"
                 / %s"min"
                 / %s"max"
@@ -263,7 +262,7 @@ aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregate
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFromAlias / customFrom ]
+                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf

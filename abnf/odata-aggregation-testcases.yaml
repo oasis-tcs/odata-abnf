@@ -420,10 +420,11 @@ TestCases:
 
   - Name: aggregate - custom aggregate, with, custom aggregate again
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time with average from Product/Name)
+    Input: $apply=aggregate(Forecast from Time with average from Product/Name as DailyAverage)
 
   - Name: aggregate - custom aggregate and from without with
     Rule: queryOptions
+    FailAt: 35
     Input: $apply=aggregate(Forecast from Time)
 
   - Name: aggregate - path with key segment
