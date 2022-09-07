@@ -425,7 +425,7 @@ TestCases:
 
   - Name: aggregate - custom aggregate and from without with
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time as DailyAverage)
+    Input: $apply=aggregate(Forecast from Time as Stuff)
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
