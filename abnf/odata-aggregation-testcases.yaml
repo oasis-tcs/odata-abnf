@@ -406,9 +406,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
 
-  - Name: aggregate - custom aggregate and multiple from
+  - Name: aggregate - custom aggregate and multiple from, missing alias
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
+    FailAt: 66
+    Input: $apply=aggregate(Forecast from Time from Product/Name with average)
 
   - Name: aggregate - custom aggregate and from multiple
     Rule: queryOptions
