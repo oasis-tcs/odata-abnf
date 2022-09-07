@@ -753,7 +753,7 @@ TestCases:
 
   - Name: custom aggregates - entity set
     Rule: odataRelativeUri
-    Input: Sales?$apply=groupby((Time/Month),aggregate(Forecast))
+    Input: Sales?$apply=groupby((Time/Month),aggregate(Forecast as Stuff))
 
   - Name: custom aggregates - crossjoin
     Rule: odataRelativeUri

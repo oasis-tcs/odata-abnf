@@ -112,7 +112,7 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
                 / %s"$count" [ aggregateFrom ] asAlias
                 / aggregateCount [ aggregateFrom ] asAlias
-                / [ aggrPathPrefix "/" ] customAggregate [ customFrom asAlias ]
+                / [ aggrPathPrefix "/" ] customAggregate [ [ customFrom ] asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
