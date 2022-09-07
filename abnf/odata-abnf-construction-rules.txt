@@ -2,6 +2,8 @@
 ; OData ABNF Construction Rules Version 4.01 and 4.0
 ;------------------------------------------------------------------------------
 ; 17 September 2020
+;
+; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-construction-rules.txt
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -87,7 +89,7 @@ odataRelativeUri = %s"$batch"  [ "?" batchOptions ]
                  / %s"$entity" "?" entityOptions  
                  / %s"$entity" "/" optionallyQualifiedEntityTypeName "?" entityCastOptions  
                  / %s"$metadata" [ "?" metadataOptions ] [ context ]
-                 / resourcePath [ "?" queryOptions ]
+                 / resourcePath [ "?" [ queryOptions ] ]
 
 
 ;------------------------------------------------------------------------------
@@ -548,9 +550,9 @@ lambdaVariableExpr   = odataIdentifier
 collectionNavigationExpr = collectionNavNoCastExpr
                          / "/" optionallyQualifiedEntityTypeName collectionNavNoCastExpr
 
-collectionNavNoCastExpr = collectionPathExpr
-                        / keyPredicate [ singleNavigationExpr ] 
-                        / filterExpr [ collectionNavigationExpr ]                     
+collectionNavNoCastExpr = keyPredicate [ singleNavigationExpr ]
+                        / filterExpr [ collectionNavigationExpr ]
+                        / collectionPathExpr
 
 singleNavigationExpr = "/" memberExpr
 
