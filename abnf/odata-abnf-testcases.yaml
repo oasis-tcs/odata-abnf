@@ -2,6 +2,8 @@
 #
 #  17 September 2020
 #
+#  Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-testcases.yaml
+#
 #  Technical Committee:
 #  OASIS Open Data Protocol (OData) TC
 #  https://www.oasis-open.org/committees/odata
@@ -767,6 +769,10 @@ TestCases:
     FailAt: 22
     Input: Categories('Smartphone/Tablet')
 
+  - Name: 2 URL Components - empty query options
+    Rule: odataRelativeUri
+    Input: Customers?
+
   - Name: 4.1 - Metadata URL
     Rule: odataUri
     Input: http://services.odata.org/OData/OData.svc/$metadata
@@ -1421,6 +1427,10 @@ TestCases:
   - Name: 4.12 Filter Path Segment - with action
     Rule: odataRelativeUri
     Input: Products/$filter(@foo)/Special.Cluster?@foo=Age gt 3
+
+  - Name: 4.12 Filter Path Segment followed by key predicate
+    Rule: propertyPathExpr
+    Input: Products/$filter(Age gt 3)(ID='Sugar')
 
   - Name: 4.12 Filter expression in query
     Rule: odataRelativeUri
