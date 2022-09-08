@@ -484,10 +484,17 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
 
-  - Name: aggregate - no groupby stream property
+  - Name: aggregate - groupby stream property
     Rule: queryOptions
-    FailAt: 29
     Input: $apply=groupby((Product/Image))
+    Expect:
+      - snglPrimPath:Product/Image
+
+  - Name: aggregate - groupby complex property
+    Rule: queryOptions
+    Input: $apply=groupby((Product/ShipTo))
+    Expect:
+      - snglPropPath:Product/ShipTo
 
   - Name: aggregate - groupby annotations
     Rule: queryOptions

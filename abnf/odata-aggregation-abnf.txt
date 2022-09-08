@@ -144,7 +144,8 @@ aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/
 aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPrimPath
              / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPrimPath
              /   primitiveProperty        / primitiveColProperty
-
+             /   streamProperty
+             
 nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
 snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
@@ -152,6 +153,7 @@ snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeNa
 snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
              / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
              / primitiveProperty
+             / streamProperty
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
