@@ -569,7 +569,8 @@ TestCases:
           IncludeSelf=true)),
         SalesOrgHierarchy,
         SalesOrganization/ID)),
-      aggregate(Amount with sum as Total))
+      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
+        SalesOrgHierarchy,SalesOrganization/ID,preorder)
 
   - Name: aggregate - filter
     Rule: queryOptions
