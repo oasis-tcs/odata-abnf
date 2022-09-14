@@ -572,18 +572,19 @@ TestCases:
       aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
         SalesOrgHierarchy,SalesOrganization/ID,preorder)
 
-  - Name: aggregate - groupby rollup recursive sub-hierarchy, shortcut
+  - Name: aggregate - groupby rollup recursive sub-hierarchy with filter
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive(
         $root/SalesOrganizations,
         SalesOrgHierarchy,
         SalesOrganization/ID,
-        filter(ID eq 'EMEA'),
-        2)),
+        descendants(filter(ID eq 'EMEA'),2),
+        ancestors(filter(contains(Name, 'Central'))))),
       aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
         SalesOrgHierarchy,SalesOrganization/ID,preorder)
     Expect:
       - preservingTrafos:filter(ID eq 'EMEA')
+      - preservingTrafos:filter(contains(Name, 'Central'))
 
   - Name: aggregate - filter
     Rule: queryOptions
