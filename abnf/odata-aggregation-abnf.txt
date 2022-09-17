@@ -107,7 +107,7 @@ hierarchyTrafo  = ancestorsTrafo
                 / descendantsTrafo
                 / traverseTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
-hierarchyTrafos  = [ hierarchyTrafo *( "/" hierarchyTrafo ) ]
+hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
