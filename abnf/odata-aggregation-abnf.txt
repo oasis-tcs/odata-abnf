@@ -107,7 +107,7 @@ hierarchyTrafo  = ancestorsTrafo
                 / descendantsTrafo
                 / traverseTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
-optionalHierarchyTrafos = [ hierarchyTrafo *( "/" hierarchyTrafo ) ]
+hierarchyTrafos  = [ hierarchyTrafo *( "/" hierarchyTrafo ) ]
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
@@ -220,8 +220,8 @@ traverseTrafo   = %s"traverse" OPEN
 hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ recHierReference
 recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA
-                   BWS recHierQualifier BWS COMMA
-                   BWS recHierPropertyPath
+                   BWS recHierQualifier
+                   [ BWS COMMA BWS recHierPropertyPath ]
 recHierQualifier = odataIdentifier
 recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
 
@@ -235,8 +235,8 @@ groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupRecursive   = %s"rolluprecursive" OPEN BWS
-                    ( recHierPropertyPath [ BWS COMMA BWS optionalHierarchyTrafos ]
-                    / optionalHierarchyTrafos )
+                    ( recHierPropertyPath [ BWS COMMA BWS hierarchyTrafos ]
+                    / [ hierarchyTrafos ] )
                     BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
