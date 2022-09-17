@@ -63,9 +63,9 @@
 ; 1. New alternatives for OData ABNF Construction Rules
 ;------------------------------------------------------------------------------
 
-systemQueryOption =/ apply
+systemQueryOption =/ apply / hierarchy
 
-expandOption =/ apply
+expandOption =/ apply / hierarchy
 
 boolMethodCallExpr =/ isdefinedExpr
 
@@ -82,15 +82,12 @@ collectionPathExpr =/ "/" aggregateMethodCallExpr
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / ancestorsTrafo
            / computeTrafo
            / concatTrafo
-           / descendantsTrafo
            / groupbyTrafo
            / joinTrafo
            / nestTrafo
            / outerjoinTrafo
-           / traverseTrafo
            / preservingTrafo
 preservingTrafo = bottomcountTrafo
                 / bottompercentTrafo
@@ -104,8 +101,13 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
+                / hierarchyTrafo
                 / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
+hierarchyTrafo  = ancestorsTrafo
+                / descendantsTrafo
+                / traverseTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
+optionalHierarchyTrafos = [ hierarchyTrafo *( "/" hierarchyTrafo ) ]
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
 aggregateItem   = %s"$count" asAlias 
@@ -200,24 +202,22 @@ joinProperty    = ( complexColProperty
                   )
 
 ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS recHierReference BWS 
-                  COMMA BWS preservingTrafos BWS
+                  BWS preservingTrafos BWS
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
-                 BWS recHierReference BWS 
-                 COMMA BWS preservingTrafos BWS
+                 BWS preservingTrafos BWS
                  [ COMMA BWS 1*DIGIT BWS ]
                  [ COMMA BWS %s"keep start" BWS ]
                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierReference BWS 
-                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
+                  BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
+hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ recHierReference
 recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA
                    BWS recHierQualifier BWS COMMA
@@ -234,7 +234,7 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierReference BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS optionalHierarchyTrafos BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
