@@ -89,6 +89,7 @@ applyTrafo = aggregateTrafo
            / nestTrafo
            / outerjoinTrafo
            / preservingTrafo
+           / hierarchyTrafo
 preservingTrafo = bottomcountTrafo
                 / bottompercentTrafo
                 / bottomsumTrafo
@@ -101,7 +102,6 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
-                / hierarchyTrafo
                 / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
 hierarchyTrafo  = ancestorsTrafo
                 / descendantsTrafo
@@ -234,7 +234,10 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS optionalHierarchyTrafos BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS
+                    ( recHierPropertyPath [ BWS COMMA BWS optionalHierarchyTrafos ]
+                    / optionalHierarchyTrafos )
+                    BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
