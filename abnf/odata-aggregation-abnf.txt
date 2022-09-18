@@ -106,6 +106,7 @@ preservingTrafo = bottomcountTrafo
 hierarchyTrafo  = ancestorsTrafo
                 / descendantsTrafo
                 / traverseTrafo
+                / customFunction ; custom functions could be hierarchical, hence are allowed in hierarchyTrafos
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
