@@ -63,9 +63,9 @@
 ; 1. New alternatives for OData ABNF Construction Rules
 ;------------------------------------------------------------------------------
 
-systemQueryOption =/ apply
+systemQueryOption =/ apply / hierarchy
 
-expandOption =/ apply
+expandOption =/ apply / hierarchy
 
 boolMethodCallExpr =/ isdefinedExpr
 
@@ -82,16 +82,14 @@ collectionPathExpr =/ "/" aggregateMethodCallExpr
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / ancestorsTrafo
            / computeTrafo
            / concatTrafo
-           / descendantsTrafo
            / groupbyTrafo
            / joinTrafo
            / nestTrafo
            / outerjoinTrafo
-           / traverseTrafo
            / preservingTrafo
+           / hierarchyTrafo
 preservingTrafo = bottomcountTrafo
                 / bottompercentTrafo
                 / bottomsumTrafo
@@ -105,7 +103,12 @@ preservingTrafo = bottomcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
                 / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
+hierarchyTrafo  = ancestorsTrafo
+                / descendantsTrafo
+                / traverseTrafo
+                / customFunction ; custom functions could be hierarchical, hence are allowed in hierarchyTrafos
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
+hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
@@ -200,29 +203,28 @@ joinProperty    = ( complexColProperty
                   / entityAnnotationInQuery  ; must be collection-valued
                   )
 
-ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS recHierReference BWS 
+ancestorsTrafo  = %s"ancestors" OPEN
+                  BWS recHierPropertyPath BWS
                   COMMA BWS preservingTrafos BWS
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
-                 BWS recHierReference BWS 
-                 COMMA BWS preservingTrafos BWS
-                 [ COMMA BWS 1*DIGIT BWS ]
-                 [ COMMA BWS %s"keep start" BWS ]
-                 CLOSE
+                  BWS recHierPropertyPath BWS
+                  COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS 1*DIGIT BWS ]
+                  [ COMMA BWS %s"keep start" BWS ]
+                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierReference BWS 
+                  BWS recHierPropertyPath BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
-recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
-                   BWS COMMA
-                   BWS recHierQualifier BWS COMMA
-                   BWS recHierPropertyPath
+hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ
+                   rootExpr ; must have type Collection(Edm.EntityType)
+                   BWS COMMA BWS recHierQualifier
 recHierQualifier = odataIdentifier
 recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
 
@@ -235,10 +237,7 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierReference BWS
-                    *( COMMA BWS ( %s"ancestors" / %s"descendants" )
-                       OPEN BWS preservingTrafos BWS [ COMMA BWS 1*DIGIT BWS ] CLOSE BWS )
-                    CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierPropertyPath [ BWS COMMA BWS hierarchyTrafos ] BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 

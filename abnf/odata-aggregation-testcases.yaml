@@ -554,34 +554,22 @@ TestCases:
 
   - Name: aggregate - groupby rollup recursive hierarchy
     Rule: queryOptions
-    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
-      SalesOrgCount))
+    Input: $apply=groupby((rolluprecursive(ID)),aggregate($count as
+      SalesOrgCount))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: aggregate - groupby rollup recursive sub-hierarchy
     Rule: queryOptions
-    Input: $apply=groupby((rolluprecursive(
-        $root/SalesOrganizations/$filter(Aggregation.isdescendant(
-          HierarchyNodes=$root/SalesOrganizations,
-          HierarchyQualifier='SalesOrgHierarchy',
-          Node=ID,
-          Ancestor='EMEA',
-          MaxDistance=2,
-          IncludeSelf=true)),
-        SalesOrgHierarchy,
-        SalesOrganization/ID)),
-      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
-        SalesOrgHierarchy,SalesOrganization/ID,preorder)
+    Input: $apply=groupby((rolluprecursive(SalesOrganization/ID,descendants(ID,filter(ID eq 'EMEA')))),
+      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse(SalesOrganization/ID,
+      preorder)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: aggregate - groupby rollup recursive sub-hierarchy with filter
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive(
-        $root/SalesOrganizations,
-        SalesOrgHierarchy,
         SalesOrganization/ID,
-        descendants(filter(ID eq 'EMEA'),2),
-        ancestors(filter(contains(Name, 'Central'))))),
-      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
-        SalesOrgHierarchy,SalesOrganization/ID,preorder)
+        descendants(ID,filter(ID eq 'EMEA'),2,keep start)/ancestors(ID,filter(contains(Name, 'Central')),keep start))),
+      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse(SalesOrganization/ID,
+      preorder)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
     Expect:
       - preservingTrafos:filter(ID eq 'EMEA')
       - preservingTrafos:filter(contains(Name, 'Central'))
@@ -853,50 +841,50 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors with forbidden node property path
     Rule: queryOptions
-    FailAt: 65
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,Sales(4711)/ID,identity)
+    FailAt: 25
+    Input: $apply=ancestors(ID,Sales(4711)/ID,identity)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - ancestors of search result
     Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,search(East)/top(3))
+    Input: $apply=ancestors(ID,search(East)/top(3))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
     Expect:
       - preservingTrafos:search(East)/top(3)
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
-      contains(Name,'Central')))
+    Input: $apply=ancestors(ID,filter(contains(Name,'East') or
+      contains(Name,'Central')))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - ancestors max distance
     Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
-      contains(Name,'Central')), 2)
+    Input: $apply=ancestors(ID,filter(contains(Name,'East') or
+      contains(Name,'Central')), 2)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - ancestors hierarchy directory
     Rule: queryOptions
-    Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
-      contains(Name,'Central')), keep start)
+    Input: $apply=ancestors(ID,filter(contains(Name,'East') or
+      contains(Name,'Central')), keep start)&$hierarchy=$root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy
 
   - Name: hierarchy transformations - ancestors processing non-hierarchical input set; node values via navigation property
     Rule: odataRelativeUri
-    Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
-      filter(contains(SalesOrganization/Name,'East') or contains(SalesOrganization/Name,'Central')), 2, keep start)
+    Input: Sales?$apply=ancestors(SalesOrganization/ID,filter(contains(SalesOrganization/Name,'East') or
+      contains(SalesOrganization/Name,'Central')), 2, keep start)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
-    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'))
+    Input: $apply=descendants(ID,filter(Name eq 'US'))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - descendants max distance
     Rule: queryOptions
-    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'), 3)
+    Input: $apply=descendants(ID,filter(Name eq 'US'), 3)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - descendants keep start
     Rule: queryOptions
-    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'),3,keep start)
+    Input: $apply=descendants(ID,filter(Name eq 'US'),3,keep start)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: hierarchy transformations - traverse
     Rule: queryOptions
-    Input: $apply=traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
+    Input: $apply=traverse(ID,preorder)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: distinct values - no aggregate
     Rule: odataRelativeUri
@@ -1139,15 +1127,15 @@ TestCases:
 
   - Name: transformation sequences - sub-hierarchy selection
     Rule: queryOptions
-    Input: $apply=descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(Name eq 'US'),keep
-      start)/ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East')),keep
-      start)/traverse($root/SalesOrganizations,SalesOrgHierarchy,ID,preorder)
+    Input: $apply=descendants(ID,filter(Name eq 'US'),keep
+      start)/ancestors(ID,filter(contains(Name,'East')),keep
+      start)/traverse(ID,preorder)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
-      aggregate(Sales/$count as PaperSalesCount))
+      'Paper'))/groupby((rolluprecursive(ID)),
+      aggregate(Sales/$count as PaperSalesCount))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
