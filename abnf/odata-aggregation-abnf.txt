@@ -110,13 +110,12 @@ hierarchyTrafo  = ancestorsTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
-aggregateTrafo  = %s"aggregate" OPEN BWS aggregateItem *( BWS COMMA BWS aggregateItem ) BWS CLOSE
-aggregateItem   = %s"$count" asAlias 
-                / aggregateCount asAlias
-                / aggregateExpr
+aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
-                / [ aggrPathPrefix "/" ] customAggregate [ customFrom asAlias ]
+                / %s"$count" [ aggregateFrom ] asAlias
+                / aggregateCount [ aggregateFrom ] asAlias
+                / [ aggrPathPrefix "/" ] customAggregate [ [ customFrom ] asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
@@ -148,7 +147,8 @@ aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/
 aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPrimPath
              / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPrimPath
              /   primitiveProperty        / primitiveColProperty
-
+             /   streamProperty
+             
 nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
 snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
@@ -156,6 +156,7 @@ snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeNa
 snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
              / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
              / primitiveProperty
+             / streamProperty
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
@@ -202,27 +203,28 @@ joinProperty    = ( complexColProperty
                   / entityAnnotationInQuery  ; must be collection-valued
                   )
 
-ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS preservingTrafos BWS
+ancestorsTrafo  = %s"ancestors" OPEN
+                  BWS recHierPropertyPath BWS
+                  COMMA BWS preservingTrafos BWS
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN 
-                 BWS preservingTrafos BWS
-                 [ COMMA BWS 1*DIGIT BWS ]
-                 [ COMMA BWS %s"keep start" BWS ]
-                 CLOSE
+                  BWS recHierPropertyPath BWS
+                  COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS 1*DIGIT BWS ]
+                  [ COMMA BWS %s"keep start" BWS ]
+                  CLOSE
 
 traverseTrafo   = %s"traverse" OPEN 
-                  BWS ( %s"preorder" / %s"postorder" ) BWS 
+                  BWS recHierPropertyPath BWS
+                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
                   CLOSE 
 
-hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ recHierReference
-recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
-                   BWS COMMA
-                   BWS recHierQualifier
-                   [ BWS COMMA BWS recHierPropertyPath ]
+hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ
+                   rootExpr ; must have type Collection(Edm.EntityType)
+                   BWS COMMA BWS recHierQualifier
 recHierQualifier = odataIdentifier
 recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
 
@@ -235,7 +237,7 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN [ BWS hierarchyTrafos ] BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierPropertyPath [ BWS COMMA BWS hierarchyTrafos ] BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
@@ -260,11 +262,11 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
-aggregateFunctionExpr   = %s"$count"
-                          / [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                          / [ inscopeVariableExpr "/" ] aggregateCount
-                          / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
+aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
+                        / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
+                        / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
+                        / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
+                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
