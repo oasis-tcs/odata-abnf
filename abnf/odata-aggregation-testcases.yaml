@@ -1105,10 +1105,8 @@ TestCases:
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rolluprecursive(SalesOrganization/ID)),
+      'Paper'))/groupby((rolluprecursive()),
       aggregate(Sales/$count as PaperSalesCount))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
-    Expect:
-      - recHierPropertyPath:SalesOrganization/ID
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
