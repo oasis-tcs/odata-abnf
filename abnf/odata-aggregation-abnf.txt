@@ -226,7 +226,10 @@ hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ
                    rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA BWS recHierQualifier
 recHierQualifier = odataIdentifier
-recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
+recHierPropertyPath = optionalLeadingTypeCast snglPrimPath
+recHierRollupPPath  = optionalLeadingTypeCast
+                      [ [ snglPropPath ] ( complexColProperty / entityColNavigationProperty ) ] snglPrimPath
+                    / optionalLeadingTypeCast [ snglPropPath ] primitiveColProperty
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
@@ -237,7 +240,7 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierPropertyPath [ BWS COMMA BWS hierarchyTrafos ] BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierRollupPPath [ BWS COMMA BWS hierarchyTrafos ] BWS CLOSE
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
