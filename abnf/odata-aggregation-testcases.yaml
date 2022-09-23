@@ -560,8 +560,10 @@ TestCases:
   - Name: aggregate - groupby rollup recursive sub-hierarchy
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive(SalesOrganization/ID,descendants(ID,filter(ID eq 'EMEA')))),
-      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse(SalesOrganization/ID,
-      preorder)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
+      aggregate(Amount with sum as Total))/traverse(SalesOrganization/ID,
+      preorder,Name desc)&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
+    Expect:
+      - orderbyItem:Name desc
 
   - Name: aggregate - groupby rollup recursive sub-hierarchy with filter
     Rule: queryOptions
@@ -852,8 +854,8 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors
     Rule: queryOptions
-    Input: $apply=ancestors(ID,filter(contains(Name,'East') or
-      contains(Name,'Central')))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
+      contains(Name,'Central')))
 
   - Name: hierarchy transformations - ancestors max distance
     Rule: queryOptions
@@ -1134,8 +1136,8 @@ TestCases:
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rolluprecursive(ID)),
-      aggregate(Sales/$count as PaperSalesCount))&$hierarchy=$root/SalesOrganizations,SalesOrgHierarchy
+      'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
+      aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
