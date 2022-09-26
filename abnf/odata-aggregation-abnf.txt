@@ -151,8 +151,11 @@ aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/
              
 nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
-snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
-             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPropPath ]
+snglCmpPPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglCmpPPath ]
+             / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglCmpPPath
+snglNavPPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglNavPPath
+             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglNavPPath ]
+snglPropPath = snglCmpPPath / snglNavPPath
 snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
              / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
              / primitiveProperty
@@ -231,9 +234,15 @@ recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA BWS recHierQualifier
 recHierQualifier = odataIdentifier
 recHierPropertyPath = optionalLeadingTypeCast snglPrimPath
-recHierRollupPPath  = optionalLeadingTypeCast
-                      [ [ snglPropPath ] ( complexColProperty / entityColNavigationProperty ) ] snglPrimPath
-                    / optionalLeadingTypeCast [ snglPropPath ] primitiveColProperty
+recHierRollupPPath  = recHierPropertyPath
+                    / optionalLeadingTypeCast
+                      [ snglCmpPPath [ "/" optionallyQualifiedComplexTypeName ] "/"
+                      / snglNavPPath [ "/" optionallyQualifiedEntityTypeName  ] "/" ]
+                      ( ( complexColProperty          [ "/" optionallyQualifiedComplexTypeName ]
+                        / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName  ] )
+                        snglPrimPath
+                      / primitiveColProperty
+                      )
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
