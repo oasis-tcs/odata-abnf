@@ -102,7 +102,7 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
-                / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
+                / hierarchyTrafo
 hierarchyTrafo  = ancestorsTrafo
                 / descendantsTrafo
                 / traverseTrafo
