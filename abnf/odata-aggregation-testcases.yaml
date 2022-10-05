@@ -392,6 +392,10 @@ TestCases:
     FailAt: 24
     Input: $apply=aggregate(Amount from Time with average as DailyAverage)
 
+  - Name: aggregate - $count from
+    Rule: queryOptions
+    Input: $apply=aggregate(Sales/$count from Time with average as DailyAverage)
+
   - Name: aggregate - custom aggregate reached via path
     Rule: queryOptions
     Input: $apply=aggregate(Sales/Forecast)
@@ -402,9 +406,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Forecast from Time with average as DailyAverage)
 
-  - Name: aggregate - custom aggregate and multiple from
+  - Name: aggregate - custom aggregate and multiple from, missing alias
     Rule: queryOptions
-    Input: $apply=aggregate(Forecast from Time from Product/Name with average as DailyAverage)
+    FailAt: 66
+    Input: $apply=aggregate(Forecast from Time from Product/Name with average)
 
   - Name: aggregate - custom aggregate and from multiple
     Rule: queryOptions
@@ -479,10 +484,17 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((Product/Name,Amount))
 
-  - Name: aggregate - no groupby stream property
+  - Name: aggregate - groupby stream property
     Rule: queryOptions
-    FailAt: 29
     Input: $apply=groupby((Product/Image))
+    Expect:
+      - snglPrimPath:Product/Image
+
+  - Name: aggregate - groupby complex property
+    Rule: queryOptions
+    Input: $apply=groupby((Product/ShipTo))
+    Expect:
+      - snglPropPath:Product/ShipTo
 
   - Name: aggregate - groupby annotations
     Rule: queryOptions
@@ -544,6 +556,21 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),aggregate($count as
       SalesOrgCount))
+
+  - Name: aggregate - groupby rollup recursive sub-hierarchy
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive(
+        $root/SalesOrganizations/$filter(Aggregation.isdescendant(
+          HierarchyNodes=$root/SalesOrganizations,
+          HierarchyQualifier='SalesOrgHierarchy',
+          Node=ID,
+          Ancestor='EMEA',
+          MaxDistance=2,
+          IncludeSelf=true)),
+        SalesOrgHierarchy,
+        SalesOrganization/ID)),
+      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
+        SalesOrgHierarchy,SalesOrganization/ID,preorder)
 
   - Name: aggregate - filter
     Rule: queryOptions
@@ -699,9 +726,9 @@ TestCases:
       $apply=compute(Amount div $these/aggregate(p:Amount with sum from Time
       with average) as RelativeAmount)
 
-  - Name: aggregate function - across input set with $count
+  - Name: aggregate function - across input set with $count and from
     Rule: queryOptions
-    Input: $apply=compute($these/aggregate(p:$count) as SalesCount)
+    Input: $apply=compute($these/aggregate(p:$count from Product with max) as SalesCount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
@@ -748,7 +775,7 @@ TestCases:
 
   - Name: custom aggregates - entity set
     Rule: odataRelativeUri
-    Input: Sales?$apply=groupby((Time/Month),aggregate(Forecast))
+    Input: Sales?$apply=groupby((Time/Month),aggregate(Forecast as Stuff))
 
   - Name: custom aggregates - crossjoin
     Rule: odataRelativeUri
