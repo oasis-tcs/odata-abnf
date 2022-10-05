@@ -1144,7 +1144,8 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID,
       ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,
-      descendants($root/SalesRepresentatives,SalesRepHierarchy,ID,filter(ID eq 'DE-MA'),keep start),keep start))),
+        descendants($root/SalesRepresentatives,SalesRepHierarchy,ID,filter(ID eq 'DE-MA'),keep start),
+      keep start))),
       aggregate(Amount with sum as Total))
 
   - Name: aggregation with 1:n hierarchy assignment
