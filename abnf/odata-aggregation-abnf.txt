@@ -240,7 +240,7 @@ recHierRollupPPath  = recHierPropertyPath
                       / snglNavPPath [ "/" optionallyQualifiedEntityTypeName  ] "/" ]
                       ( ( complexColProperty          [ "/" optionallyQualifiedComplexTypeName ]
                         / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName  ] )
-                        snglPrimPath
+                        "/" snglPrimPath
                       / primitiveColProperty
                       )
 

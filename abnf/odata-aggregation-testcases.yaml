@@ -1140,12 +1140,19 @@ TestCases:
       'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
       aggregate(Sales/$count as PaperSalesCount))
 
-  - Name: two hierarchies in one transformation sequence 
+  - Name: two hierarchies in one transformation sequence
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID,
       ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,
       descendants($root/SalesRepresentatives,SalesRepHierarchy,ID,filter(ID eq 'DE-MA'),keep start),keep start))),
       aggregate(Amount with sum as Total))
+
+  - Name: aggregation with 1:n hierarchy assignment
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,Suppliers/SalesOrganization/ID)),
+      aggregate(Amount with sum as Total))
+    Expect:
+      - recHierRollupPPath:Suppliers/SalesOrganization/ID
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
