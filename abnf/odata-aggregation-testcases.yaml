@@ -847,8 +847,8 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors with forbidden node property path
     Rule: queryOptions
-    FailAt: 68
-    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,Sales(4711)/ID,identity)
+    FailAt: 65
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,Sales(4711)/ID,identity)
 
   - Name: hierarchy transformations - ancestors of search result
     Rule: queryOptions
@@ -873,7 +873,8 @@ TestCases:
 
   - Name: hierarchy transformations - ancestors processing non-hierarchical input set; node values via navigation property
     Rule: odataRelativeUri
-    Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,filter(contains(SalesOrganization/Name,'East') or
+    Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+      filter(contains(SalesOrganization/Name,'East') or
       contains(SalesOrganization/Name,'Central')), 2, keep start)
 
   - Name: hierarchy transformations - descendants
