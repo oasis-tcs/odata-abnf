@@ -63,9 +63,9 @@
 ; 1. New alternatives for OData ABNF Construction Rules
 ;------------------------------------------------------------------------------
 
-systemQueryOption =/ apply / hierarchy
+systemQueryOption =/ apply
 
-expandOption =/ apply / hierarchy
+expandOption =/ apply
 
 boolMethodCallExpr =/ isdefinedExpr
 
@@ -207,34 +207,32 @@ joinProperty    = ( complexColProperty
                   )
 
 ancestorsTrafo  = %s"ancestors" OPEN BWS
-                  [ recHierReference BWS COMMA BWS ]
-                  recHierPropertyPath BWS
+                  recHierReference BWS
                   COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS hierarchyTrafos BWS ]
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 descendantsTrafo = %s"descendants" OPEN BWS
-                  [ recHierReference BWS COMMA BWS ]
-                  recHierPropertyPath BWS
+                  recHierReference BWS
                   COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS hierarchyTrafos BWS ]
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
 traverseTrafo   = %s"traverse" OPEN BWS
-                  [ recHierReference BWS COMMA BWS ]
-                  recHierPropertyPath BWS
+                  recHierReference BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
                   [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
                   CLOSE 
 
-hierarchy        = ( "$hierarchy" / "hierarchy" ) EQ recHierReference
 recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA BWS recHierQualifier
+                   BWS COMMA BWS recHierPropertyPath
 recHierQualifier = odataIdentifier
 recHierPropertyPath = optionalLeadingTypeCast snglPrimPath
-recHierRollupPPath  = recHierPropertyPath
                     / optionalLeadingTypeCast
                       [ snglCmpPPath [ "/" optionallyQualifiedComplexTypeName ] "/"
                       / snglNavPPath [ "/" optionallyQualifiedEntityTypeName  ] "/" ]
@@ -253,9 +251,11 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN
-                    [ BWS recHierReference BWS COMMA ]
-                    BWS recHierRollupPPath [ BWS COMMA BWS hierarchyTrafos ] BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS
+                    recHierReference BWS
+                    [ COMMA BWS hierarchyTrafos BWS ]
+                    CLOSE
+ 
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
