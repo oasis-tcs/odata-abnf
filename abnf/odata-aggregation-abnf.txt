@@ -225,6 +225,7 @@ descendantsTrafo = %s"descendants" OPEN BWS
 traverseTrafo   = %s"traverse" OPEN BWS
                   recHierReference BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
+                  [ COMMA BWS hierarchyTrafos BWS ]
                   [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
                   CLOSE 
 
