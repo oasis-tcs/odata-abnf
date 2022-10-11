@@ -151,11 +151,8 @@ aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/
              
 nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
-snglCmpPPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglCmpPPath ]
-             / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglCmpPPath
-snglNavPPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglNavPPath
-             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglNavPPath ]
-snglPropPath = snglCmpPPath / snglNavPPath
+snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
+             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPropPath ]
 snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
              / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
              / primitiveProperty
@@ -233,15 +230,7 @@ recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA BWS recHierQualifier
                    BWS COMMA BWS recHierPropertyPath
 recHierQualifier = odataIdentifier
-recHierPropertyPath = optionalLeadingTypeCast snglPrimPath
-                    / optionalLeadingTypeCast
-                      [ snglCmpPPath [ "/" optionallyQualifiedComplexTypeName ] "/"
-                      / snglNavPPath [ "/" optionallyQualifiedEntityTypeName  ] "/" ]
-                      ( ( complexColProperty          [ "/" optionallyQualifiedComplexTypeName ]
-                        / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName  ] )
-                        "/" snglPrimPath
-                      / primitiveColProperty
-                      )
+recHierPropertyPath = optionalLeadingTypeCast aggrPrimPath
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
