@@ -1162,9 +1162,9 @@ TestCases:
   - Name: traverserecursive
     Rule: queryOptions
     Input: $apply=groupby((traverserecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
-      preorderby(Name))),identity)
+      preorder(Name))),identity)
     Expect:
-      - traverseOrder:preorderby(Name)
+      - traverseOrder:preorder(Name)
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri

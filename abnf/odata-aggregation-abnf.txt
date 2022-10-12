@@ -251,7 +251,7 @@ traverseRecursive = %s"traverserecursive" OPEN BWS
                     [ COMMA BWS hierarchyTrafos BWS ]
                     [ COMMA BWS traverseOrder BWS ]
                     CLOSE
-traverseOrder     = ( %s"preorderby" / %s"postorderby" ) OPEN BWS
+traverseOrder     = ( %s"preorder" / %s"postorder" ) OPEN BWS
                     [ orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ] CLOSE
 
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
