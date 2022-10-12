@@ -1159,6 +1159,13 @@ TestCases:
     Expect:
       - recHierPropertyPath:Suppliers/SalesOrganization/ID
 
+  - Name: traverserecursive
+    Rule: queryOptions
+    Input: $apply=groupby((traverserecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+      preorderby(Name))),identity)
+    Expect:
+      - traverseOrder:preorderby(Name)
+
   - Name: aggregate in $expand
     Rule: odataRelativeUri
     Input: Categories?$expand=Products($apply=aggregate(Price with average as
