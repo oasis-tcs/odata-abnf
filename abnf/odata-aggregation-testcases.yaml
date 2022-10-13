@@ -192,6 +192,7 @@ Constraints:
     - isancestor
     - issibling
     - isdescendant
+    - excludingdescendants
     - Rating
     - sqrt
   primitiveFunctionImport: []
@@ -1161,10 +1162,8 @@ TestCases:
 
   - Name: traverserecursive
     Rule: queryOptions
-    Input: $apply=groupby((traverserecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
-      preorder(Name))),identity)
-    Expect:
-      - traverseOrder:preorder(Name)
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID)),
+      filter(Aggregation.excludingdescendants()))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
