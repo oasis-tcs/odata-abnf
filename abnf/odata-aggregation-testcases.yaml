@@ -69,6 +69,7 @@ Constraints:
   actionImport: []
   expressionAlias:
     - Actual
+    - AmountExcl
     - AverageAmount
     - AveragePrice
     - AvgAmt
@@ -107,6 +108,7 @@ Constraints:
     - Tax
     - Total
     - TotalAmount
+    - TotalAmountExcl
     - TotalPlannedRevenue
     - TotalPopulation
     - TotalSales
@@ -202,6 +204,7 @@ Constraints:
     - ID
   primitiveNonKeyProperty:
     - Amount
+    - AmountExcl
     - City
     - Cost
     - CountryCode
@@ -1164,6 +1167,20 @@ TestCases:
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID)),
       filter(Aggregation.excludingdescendants()))
+
+  - Name: restricted hierarchical measure
+    Rule: queryOptions
+    Input: $apply=groupby(
+      (rolluprecursive(
+        $root/SalesOrganizations,
+        SalesOrgHierarchy,
+        SalesOrganization/ID,
+        descendants($root/SalesOrganizations,
+                    SalesOrgHierarchy,
+                    ID, filter(ID eq 'US'), keep start))),
+      compute(case(Aggregation.excludingdescendants():Amount) as AmountExcl)/aggregate(
+        Amount with sum as TotalAmount,
+        AmountExcl with sum as TotalAmountExcl))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri
