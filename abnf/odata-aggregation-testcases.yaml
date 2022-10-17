@@ -204,7 +204,7 @@ Constraints:
     - ID
   primitiveNonKeyProperty:
     - Amount
-    - AmountExcl
+    - AmountExcl # dynamic
     - City
     - Cost
     - CountryCode
