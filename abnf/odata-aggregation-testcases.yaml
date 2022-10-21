@@ -137,6 +137,7 @@ Constraints:
     - Nodes
     - Orders
     - Products
+    - ProductCategories
     - Profits # dynamic
     - Sales
     - SalesPlan
@@ -161,11 +162,11 @@ Constraints:
     - Customers
     - Products
     - Products_cj
+    - ProductCategories
     - Sales
     - Sales_cj
     - SalesOrganizations
     - SalesOrgHierarchies
-    - SalesRepresentatives
     - Time
   entityTypeName:
     - DigitalProduct
@@ -1150,10 +1151,24 @@ TestCases:
 
   - Name: two hierarchies in one transformation sequence
     Rule: queryOptions
-    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID,
-        ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,
-        descendants($root/SalesRepresentatives,SalesRepHierarchy,ID,filter(ID eq 'DE-MA'),keep start),
-        keep start))),
+    Input: $apply=groupby((rolluprecursive(
+      $root/SalesOrganizations,SalesOrgHierarchy,
+      SalesOrganization/ID,
+      ancestors(
+        $root/SalesOrganizations,SalesOrgHierarchy,
+        ID,
+        traverse(
+          $root/ProductCategories,
+          ProductCategoryHierarchy,
+          ProductCategories/ID,
+          preorder,
+          descendants(
+            $root/ProductCategories,ProductCategoryHierarchy,
+            ID,
+            filter(Name eq 'Car'),
+            keep start)),
+          keep start)
+      )),
       aggregate(Amount with sum as Total))
 
   - Name: aggregation with 1:n hierarchy assignment
