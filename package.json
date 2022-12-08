@@ -24,13 +24,13 @@
   },
   "homepage": "https://github.com/oasis-tcs/odata-abnf#readme",
   "dependencies": {
-    "apg-js": "^4.1.1",
+    "apg-js": "^4.1.2",
     "colors": "^1.4.0",
-    "yaml": "^1.10.2"
+    "yaml": "^2.1.3"
   },
   "devDependencies": {
-    "c8": "^7.7.3",
-    "eslint": "^7.31.0",
-    "mocha": "^9.0.2"
+    "c8": "^7.12.0",
+    "eslint": "^8.29.0",
+    "mocha": "^10.1.0"
   }
 }
