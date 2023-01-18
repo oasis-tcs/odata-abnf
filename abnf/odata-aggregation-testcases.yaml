@@ -442,6 +442,10 @@ TestCases:
     FailAt: 24
     Input: $apply=aggregate($count with sum as SalesCount)
 
+  - Name: aggregate - $count with type cast
+    Rule: queryOptions
+    Input: $apply=aggregate(Products/Self.DigitalProduct/$count as Stuff)
+
   - Name: aggregate - topcount
     Rule: queryOptions
     Input: $apply=topcount(2,Amount)
