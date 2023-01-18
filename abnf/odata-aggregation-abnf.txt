@@ -115,7 +115,7 @@ aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
                 / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
                 / %s"$count" [ aggregateFrom ] asAlias
                 / aggregateCount [ aggregateFrom ] asAlias
-                / aggregateCustom [ [ customFrom ] asAlias ]
+                / [ aggrPathPrefix "/" ] customAggregate [ [ customFrom ] asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
@@ -127,9 +127,12 @@ aggregateMethod = %s"sum"
                 / nonprimAggMethod
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
-aggregateCount  = ( optionalLeadingTypeCast aggrCollPath / aggrCastPath ) %s"/$count"
-                / [ aggrPathPrefix "/" ] optionalLeadingTypeCast primitiveColProperty %s"/$count"
-aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
+aggregateCount  = optionalLeadingTypeCast
+                  ( complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
+                  / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+                  / primitiveColProperty
+                  ) %s"/$count"
+                / aggrPathPrefix aggregateCount
 optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
 
 asAlias         = RWS %s"as" RWS expressionAlias
@@ -143,13 +146,13 @@ customAggregate = odataIdentifier
 ; - one for use in transformnested and addnested, without entity-valued segments (rule with prefix nest)
 ; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in them.
 ; Term casts are not allowed in data aggregation paths.
-aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ]   "/" aggrPropPath ]
-             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ]   "/" aggrPropPath ]
-aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ]   "/" aggrPrimPath
-             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ]   "/" aggrPrimPath
+aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPropPath ]
+             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPropPath ]
+aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPrimPath
+             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPrimPath
              /   primitiveProperty        / primitiveColProperty
              /   streamProperty
-
+             
 nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
 snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
@@ -158,14 +161,6 @@ snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeNa
              / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
              / primitiveProperty
              / streamProperty
-
-; Certain variants of aggregate allow paths with a final type cast segment.
-aggrCollStep = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ]
-             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ]
-aggrCollPath = complexColProperty          [ "/" optionallyQualifiedComplexTypeName ]
-             / entityColNavigationProperty [ "/" optionallyQualifiedEntityTypeName  ]
-             / aggrCollStep "/" aggrCollPath
-aggrCastPath = optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
@@ -181,7 +176,7 @@ aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS a
 aggregatableExpr   = aggregatableArith
                    / aggrPathPrimitive
 aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
-aggrPathPrefix     = optionalLeadingTypeCast ( aggrCollPath / aggrPropPath )
+aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
 groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
@@ -283,7 +278,7 @@ aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregate
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
+                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
