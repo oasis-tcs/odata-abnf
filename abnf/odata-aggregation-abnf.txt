@@ -140,10 +140,10 @@ customAggregate = odataIdentifier
 ; - one for use in transformnested and addnested, without entity-valued segments (rule with prefix nest)
 ; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in them.
 ; Term casts are not allowed in data aggregation paths.
-aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ]   "/" aggrPropPath ]
-             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ]   "/" aggrPropPath ]
-aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ]   "/" aggrPrimPath
-             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ]   "/" aggrPrimPath
+aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPropPath ]
+             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPropPath ]
+aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPrimPath
+             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPrimPath
              /   primitiveProperty        / primitiveColProperty
              /   streamProperty
 
