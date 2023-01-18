@@ -128,7 +128,7 @@ aggregateMethod = %s"sum"
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
 aggregateCount  = optionalLeadingTypeCast ( complexColProperty / entityColNavigationProperty / primitiveColProperty ) %s"/$count"
-                / aggrPathPrefix aggregateCount
+                / aggrPathPrefix "/" aggregateCount
 optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
 
 asAlias         = RWS %s"as" RWS expressionAlias
