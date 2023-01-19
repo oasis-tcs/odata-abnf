@@ -593,6 +593,12 @@ TestCases:
     Rule: queryOptions
     Input: $apply=search(coffee)
 
+  - Name: aggregate - search with quoted argument
+    Rule: queryOptions
+    Input: $apply=search(')/top(1')/top(1)
+    Expect:
+      - searchExpr-incomplete:')/top(1'
+
   - Name: aggregate - transformnested
     Rule: queryOptions
     Input: $apply=transformnested(Sales,filter(Amount gt 3))

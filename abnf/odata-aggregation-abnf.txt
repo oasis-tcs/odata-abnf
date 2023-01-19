@@ -234,7 +234,7 @@ recHierPropertyPath = optionalLeadingTypeCast aggrPrimPath
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
-searchTrafo     = %s"search" OPEN BWS searchExpr BWS CLOSE
+searchTrafo     = %s"search" OPEN BWS ( searchExpr / searchExpr-incomplete ) BWS CLOSE
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
