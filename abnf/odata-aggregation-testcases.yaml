@@ -265,7 +265,7 @@ TestCases:
     Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
       Profits)/aggregate(Profits/Profit with sum as TotalAmount)
     Expect:
-      - aggrPathPrimitive:Profits/Profit
+      - aggregatableExpr:Profits/Profit
 
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
@@ -333,18 +333,19 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
     Expect:
-      - aggregatableFactor:Product/Name # is also an aggrPathPrimitive
+      - aggregatableFactor:Product/Name
 
   - Name: aggregate - custom aggregation method with type cast
     Rule: queryOptions
     Input: $apply=aggregate(Products/Self.DigitalProduct with Custom.discount as Stuff)
     Expect:
-      - aggrPathPrefix:Products/Self.DigitalProduct # is also an aggrCollPath
+      - aggrPathPrefix:Products/Self.DigitalProduct
 
   - Name: aggregate - forbidden type cast after single-valued segment
     Rule: queryOptions
-    FailAt: 44
     Input: $apply=aggregate(Product/Self.DigitalProduct with Custom.discount as Stuff)
+    Expect:
+      - aggrPathPrefix:Product/Self.DigitalProduct
 
   - Name: aggregate - custom aggregation method with complex property
     Rule: queryOptions
@@ -469,11 +470,21 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate(Products/Self.DigitalProduct/$count as Stuff)
     Expect:
-      - aggrCollPath:Products/Self.DigitalProduct
+      - aggrPropPath:Products/Self.DigitalProduct
 
   - Name: aggregate - $count with type cast
     Rule: queryOptions
     Input: $apply=aggregate(Self.DigitalProduct/$count as Stuff)
+
+  - Name: aggregate - $count after single-valued property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product/$count as Stuff)
+
+  - Name: aggregate - $count with type-cast after single-valued property
+    Rule: queryOptions
+    Input: $apply=aggregate(Product/Self.DigitalProduct/$count as Stuff)
+    Expect:
+      - aggrPropPath:Product/Self.DigitalProduct
 
   - Name: aggregate - topcount
     Rule: queryOptions
