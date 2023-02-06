@@ -347,6 +347,11 @@ TestCases:
     Expect:
       - aggrPathPrefix:Product/Self.DigitalProduct
 
+  - Name: aggregate - custom aggregation method with only type cast forbidden
+    Rule: queryOptions
+    FailAt: 36
+    Input: $apply=aggregate(Self.DigitalProduct with Custom.discount as Stuff)
+
   - Name: aggregate - custom aggregation method with complex property
     Rule: queryOptions
     Input: $apply=aggregate(Product/ShipTo with Custom.TSP as Stuff)
