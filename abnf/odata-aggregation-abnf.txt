@@ -124,8 +124,8 @@ aggregateMethod = %s"sum"
                 / nonprimAggMethod
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
-aggregateCount  = ( optionalLeadingTypeCast aggrPropPath / aggrCastPath ) %s"/$count"
-                / [ aggrPathPrefix "/" ] optionalLeadingTypeCast primitiveColProperty %s"/$count"
+aggregateCount  = ( [ aggrCastPath "/" ] aggrPropPath / aggrCastPath ) %s"/$count"
+                / [ aggrPathPrefix "/" ] [ aggrCastPath "/" ] primitiveColProperty %s"/$count"
 aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
 
 asAlias         = RWS %s"as" RWS expressionAlias
@@ -144,7 +144,6 @@ aggrPropPath = aggrPropStep [ "/" aggrPropPath ]
 aggrPrimPath = aggrPropStep "/" aggrPrimPath
              / primitiveProperty / primitiveColProperty / streamProperty
 aggrCastPath = optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName
-optionalLeadingTypeCast = [ aggrCastPath "/" ]
 
 nestPropPath = ( complexProperty / complexColProperty ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
@@ -158,18 +157,18 @@ snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeNa
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / optionalLeadingTypeCast snglPrimPath ; arithmetic only with single-valued segments
+                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
-aggregatableParam  = aggregatableArith / optionalLeadingTypeCast snglPropPath
+aggregatableParam  = aggregatableArith / [ aggrCastPath "/" ] snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / optionalLeadingTypeCast aggrPrimPath
-aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
-groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
+                   / [ aggrCastPath "/" ] aggrPrimPath
+aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
+groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
@@ -184,7 +183,7 @@ concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BW
 nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
                            / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
                            / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath                   = optionalLeadingTypeCast
+nestPath                   = [ aggrCastPath "/" ]
                              ( [ nestPropPath "/" ] nestNavigationPropertyPath
                              / nestPropPath
                              )
