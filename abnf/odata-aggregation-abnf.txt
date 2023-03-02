@@ -138,8 +138,8 @@ customAggregate = odataIdentifier
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix sngl)
 ; - one for use in transformnested and addnested, without entity-valued segments (rule with prefix nest)
 ; Term casts are not allowed in data aggregation paths.
-aggrPropStep = ( complexProperty          / complexColProperty          ) [ "/" optionallyQualifiedComplexTypeName ]
-             / ( entityNavigationProperty / entityColNavigationProperty ) [ "/" optionallyQualifiedEntityTypeName  ]
+aggrPropStep = ( complexProperty / complexColProperty / entityNavigationProperty / entityColNavigationProperty )
+               [ "/" aggrCastPath ]
 aggrPropPath = aggrPropStep [ "/" aggrPropPath ]
 aggrPrimPath = aggrPropStep "/" aggrPrimPath
              / primitiveProperty / primitiveColProperty / streamProperty
@@ -147,12 +147,9 @@ aggrCastPath = optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTyp
 
 nestPropPath = ( complexProperty / complexColProperty ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
-snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
-             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPropPath ]
-snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
-             / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
-             / primitiveProperty
-             / streamProperty
+snglPropPath = ( complexProperty / entityNavigationProperty ) [ [ "/" aggrCastPath ] "/" snglPropPath ]
+snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPath ] "/" snglPrimPath
+             / primitiveProperty / streamProperty
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
@@ -180,15 +177,14 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
-                           / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
-                           / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath                   = [ aggrCastPath "/" ]
-                             ( [ nestPropPath "/" ] nestNavigationPropertyPath
-                             / nestPropPath
-                             )
-nestNavigationPropertyPath = navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
-nestApplyExpr              = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
+                / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
+                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+nestPath        = [ aggrCastPath "/" ]
+                  ( [ nestPropPath "/" ] navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+                  / nestPropPath
+                  )
+nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
