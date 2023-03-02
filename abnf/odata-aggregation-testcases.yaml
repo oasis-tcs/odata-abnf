@@ -350,6 +350,8 @@ TestCases:
   - Name: aggregate - custom aggregation method with only type cast
     Rule: queryOptions
     Input: $apply=aggregate(Self.DigitalProduct with Custom.discount as Stuff)
+    Expect:
+      - aggrCastPath:Self.DigitalProduct
 
   - Name: aggregate - custom aggregation method with complex property
     Rule: queryOptions
