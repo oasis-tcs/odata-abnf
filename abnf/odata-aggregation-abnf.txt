@@ -109,8 +109,7 @@ preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
-                / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
-                / %s"$count" [ aggregateFrom ] asAlias
+                / ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
                 / aggregateCount [ aggregateFrom ] asAlias
                 / aggregateCustom [ [ customFrom ] asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
@@ -124,7 +123,8 @@ aggregateMethod = %s"sum"
                 / nonprimAggMethod
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
-aggregateCount  = ( [ aggrCastPath "/" ] aggrPropPath / aggrCastPath ) %s"/$count"
+aggregateCount  = %s"$count"
+                / ( [ aggrCastPath "/" ] aggrPropPath / aggrCastPath ) %s"/$count"
                 / [ aggrPathPrefix "/" ] [ aggrCastPath "/" ] primitiveColProperty %s"/$count"
 aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
 
@@ -260,7 +260,6 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
 

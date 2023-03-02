@@ -341,15 +341,14 @@ TestCases:
     Expect:
       - aggrPathPrefix:Products/Self.DigitalProduct
 
-  - Name: aggregate - forbidden type cast after single-valued segment
+  - Name: aggregate - type cast after single-valued segment
     Rule: queryOptions
     Input: $apply=aggregate(Product/Self.DigitalProduct with Custom.discount as Stuff)
     Expect:
       - aggrPathPrefix:Product/Self.DigitalProduct
 
-  - Name: aggregate - custom aggregation method with only type cast forbidden
+  - Name: aggregate - custom aggregation method with only type cast
     Rule: queryOptions
-    FailAt: 36
     Input: $apply=aggregate(Self.DigitalProduct with Custom.discount as Stuff)
 
   - Name: aggregate - custom aggregation method with complex property
