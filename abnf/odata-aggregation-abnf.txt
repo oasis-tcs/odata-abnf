@@ -112,10 +112,9 @@ hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
-                / aggrPathPrefix nonprimAggWith [ aggregateFrom ] asAlias
-                / %s"$count" [ aggregateFrom ] asAlias
+                / ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
                 / aggregateCount [ aggregateFrom ] asAlias
-                / [ aggrPathPrefix "/" ] customAggregate [ [ customFrom ] asAlias ]
+                / aggregateCustom [ [ customFrom ] asAlias ]
 aggregateWith   = RWS %s"with" RWS aggregateMethod
 nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
 aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
@@ -127,9 +126,10 @@ aggregateMethod = %s"sum"
                 / nonprimAggMethod
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
-aggregateCount  = optionalLeadingTypeCast ( complexColProperty / entityColNavigationProperty / primitiveColProperty ) %s"/$count"
-                / aggrPathPrefix "/" aggregateCount
-optionalLeadingTypeCast = [ ( optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName ) "/" ]
+aggregateCount  = %s"$count"
+                / ( [ aggrCastPath "/" ] aggrPropPath / aggrCastPath ) %s"/$count"
+                / [ aggrPathPrefix "/" ] [ aggrCastPath "/" ] primitiveColProperty %s"/$count"
+aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
 
 asAlias         = RWS %s"as" RWS expressionAlias
 expressionAlias = odataIdentifier
@@ -140,40 +140,35 @@ customAggregate = odataIdentifier
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix aggr)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix sngl)
 ; - one for use in transformnested and addnested, without entity-valued segments (rule with prefix nest)
-; A type cast (optionallyQualifiedComplexTypeName or optionallyQualifiedEntityTypeName) cannot be the final segment in them.
 ; Term casts are not allowed in data aggregation paths.
-aggrPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPropPath ]
-             / ( entityNavigationProperty / entityColNavigationProperty ) [ [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPropPath ]
-aggrPrimPath = ( complexProperty          / complexColProperty          )   [ "/" optionallyQualifiedComplexTypeName ] "/" aggrPrimPath
-             / ( entityNavigationProperty / entityColNavigationProperty )   [ "/" optionallyQualifiedEntityTypeName  ] "/" aggrPrimPath
-             /   primitiveProperty        / primitiveColProperty
-             /   streamProperty
-             
-nestPropPath = ( complexProperty          / complexColProperty          ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
+aggrPropStep = ( complexProperty / complexColProperty / entityNavigationProperty / entityColNavigationProperty )
+               [ "/" aggrCastPath ]
+aggrPropPath = aggrPropStep [ "/" aggrPropPath ]
+aggrPrimPath = aggrPropStep "/" aggrPrimPath
+             / primitiveProperty / primitiveColProperty / streamProperty
+aggrCastPath = optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName
 
-snglPropPath = complexProperty          [ [ "/" optionallyQualifiedComplexTypeName ] "/" snglPropPath ]
-             / entityNavigationProperty [ [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPropPath ]
-snglPrimPath = complexProperty            [ "/" optionallyQualifiedComplexTypeName ] "/" snglPrimPath
-             / entityNavigationProperty   [ "/" optionallyQualifiedEntityTypeName  ] "/" snglPrimPath
-             / primitiveProperty
-             / streamProperty
+nestPropPath = ( complexProperty / complexColProperty ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
+
+snglPropPath = ( complexProperty / entityNavigationProperty ) [ [ "/" aggrCastPath ] "/" snglPropPath ]
+snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPath ] "/" snglPrimPath
+             / primitiveProperty / streamProperty
 
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / optionalLeadingTypeCast snglPrimPath ; arithmetic only with single-valued segments
+                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
-aggregatableParam  = aggregatableArith / optionalLeadingTypeCast snglPropPath
+aggregatableParam  = aggregatableArith / [ aggrCastPath "/" ] snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / aggrPathPrimitive
-aggrPathPrimitive  = optionalLeadingTypeCast aggrPrimPath
-aggrPathPrefix     = optionalLeadingTypeCast aggrPropPath
-groupingProperty   = optionalLeadingTypeCast ( snglPrimPath / snglPropPath )
+                   / [ aggrCastPath "/" ] aggrPrimPath
+aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
+groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
@@ -185,15 +180,14 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo                  = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
-                           / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
-                           / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath                   = optionalLeadingTypeCast
-                             ( [ nestPropPath "/" ] nestNavigationPropertyPath
-                             / nestPropPath
-                             )
-nestNavigationPropertyPath = navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
-nestApplyExpr              = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
+                / %s"transformnested" OPEN BWS nestPath BWS COMMA BWS applyExpr BWS CLOSE
+                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+nestPath        = [ aggrCastPath "/" ]
+                  ( [ nestPropPath "/" ] navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+                  / nestPropPath
+                  )
+nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
@@ -272,9 +266,8 @@ isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
 aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] %s"$count" [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] [ aggrPathPrefix "/" ] customAggregate [ customFrom ]
+                        / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
