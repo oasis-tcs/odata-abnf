@@ -838,6 +838,8 @@ TestCases:
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
     Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
+    Expect:
+      - pathCollectionExpr:aggregate(p:p/Sales/Amount with sum)
 
   - Name: aggregate function - countdistinct with navigation property
     Rule: queryOptions
