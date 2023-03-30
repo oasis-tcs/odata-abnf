@@ -155,16 +155,17 @@ snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPa
 aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
+                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
-aggregatableParam  = aggregatableArith / [ aggrCastPath "/" ] snglPropPath
+aggregatableParam  = aggregatableArith
+                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / [ aggrCastPath "/" ] aggrPrimPath
+                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] aggrPrimPath
 aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
@@ -255,7 +256,7 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
-aggregateFunctionExpr   = [ inscopeVariableExpr "/" ] aggregatableExpr aggregateWith [ aggregateFrom ]
+aggregateFunctionExpr   = aggregatableExpr aggregateWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
