@@ -251,6 +251,11 @@ TestCases:
       - aggregatableFactor:(Amount sub Cost)
       - aggregatableFactor:TaxRate
 
+  - Name: aggregate - arithmetic expression with forbidden lambda variable
+    Rule: queryOptions
+    FailAt: 18
+    Input: $apply=aggregate(p/Amount mul TaxRate with sum as Tax)
+
   - Name: aggregate - arithmetic expression with literals
     Rule: queryOptions
     Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
@@ -746,8 +751,14 @@ TestCases:
     Rule: queryOptions
     Input: $filter=Sales/aggregate(p:TaxRate mul p/Amount with sum) gt 5
     Expect:
-      - aggregatableFactor:TaxRate
-      - aggregatableFactor:p/Amount
+      - aggregateFunFactor:TaxRate
+      - aggregateFunFactor:p/Amount
+
+  - Name: aggregate function - function expression
+    Rule: queryOptions
+    Input: $filter=Sales/aggregate(p:Custom.Rating(Article=p/Product) with average) gt 5
+    Expect:
+      - aggregateFunParam:p/Product
 
   - Name: aggregate function - after grouping
     Rule: queryOptions

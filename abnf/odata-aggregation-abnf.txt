@@ -152,20 +152,36 @@ snglPropPath = ( complexProperty / entityNavigationProperty ) [ [ "/" aggrCastPa
 snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPath ] "/" snglPrimPath
              / primitiveProperty / streamProperty
 
-aggregatableFactor = decimalValue / doubleValue / singleValue / sbyteValue
+aggregatableValue  = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
+aggregatableFactor = aggregatableValue
+                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableParam  = aggregatableArith
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
+                   / [ aggrCastPath "/" ] snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
+                   / [ aggrCastPath "/" ] aggrPrimPath
+
+; aggregateFunExpr is analogous to aggregatableExpr but appears in aggregateFunctionExpr and allows inscopeVariableExpr
+aggregateFunFactor = aggregatableValue
+                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath
+                   / [ namespace "." ] primitiveFunction OPEN
+                     [ BWS parameterName EQ aggregateFunParam *( BWS COMMA BWS parameterName EQ aggregateFunParam ) ]
+                     BWS CLOSE
+                   / OPEN BWS aggregatableArith BWS CLOSE
+aggregateFunParam  = aggregateFunArith
+                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
+aggregateFunTerm   = aggregateFunFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregateFunFactor )
+aggregateFunArith  = [ "-" BWS ] aggregateFunTerm *( RWS ( "add" / "sub" ) RWS aggregateFunTerm )
+aggregateFunExpr   = aggregateFunArith
                    / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] aggrPrimPath
+
 aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
@@ -256,7 +272,7 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
-aggregateFunctionExpr   = aggregatableExpr aggregateWith [ aggregateFrom ]
+aggregateFunctionExpr   = aggregateFunExpr aggregateWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
