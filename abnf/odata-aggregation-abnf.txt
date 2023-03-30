@@ -71,7 +71,7 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ customAggregate
 
-propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is restricted for compatibility reasons
+propertyPathExpr =/ curColAggMethodCallExpr
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
@@ -271,7 +271,12 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
+curColAggMethodCallExpr = %s"aggregate" OPEN BWS curColAggFunctionExpr BWS CLOSE
 aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
+curColAggFunctionExpr   = aggregatableExpr aggregateWith [ aggregateFrom ]
+                        / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
+                        / aggregateCount [ aggregateFrom ]
+                        / aggregateCustom [ customFrom ]
 aggregateFunctionExpr   = aggregateFunExpr aggregateWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                         / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
