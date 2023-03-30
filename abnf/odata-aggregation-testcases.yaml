@@ -505,6 +505,12 @@ TestCases:
     Rule: queryOptions
     Input: $apply=topcount(2,Amount)
 
+  - Name: aggregate - topcount with $count
+    Rule: queryOptions
+    Input: $apply=topcount($count div 10,Amount)
+    Expect:
+      - currCollectionExpr:$count
+
   - Name: aggregate - topsum
     Rule: queryOptions
     Input: $apply=topsum(15,Amount)
@@ -746,6 +752,12 @@ TestCases:
   - Name: "aggregate - isdefined: get totals last"
     Rule: queryOptions
     Input: $orderby=isdefined(Product) desc,Product asc
+
+  - Name: $count after navigation path
+    Rule: queryOptions
+    Input: $filter=Sales/$count gt 3
+    Expect:
+      - collectionPathExpr:/$count
 
   - Name: aggregate function - arithmetic expression
     Rule: queryOptions

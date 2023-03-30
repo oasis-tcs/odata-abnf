@@ -71,9 +71,9 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ customAggregate
 
-propertyPathExpr =/ curColAggMethodCallExpr
+propertyPathExpr =/ currCollectionExpr
 
-collectionPathExpr =/ "/" aggregateMethodCallExpr
+collectionPathExpr =/ "/" pathCollectionExpr
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
@@ -124,8 +124,8 @@ aggregateMethod = %s"sum"
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
 aggregateCount  = %s"$count"
-                / [ aggrCastPath "/" ] aggrPrimPath %s"/$count"
-                / ( aggrPathPrefix / aggrCastPath ) %s"/$count"
+                / [ aggrCastPath "/" ] aggrPrimPath count
+                / ( aggrPathPrefix / aggrCastPath ) count
 
 aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
 
@@ -271,16 +271,18 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
-curColAggMethodCallExpr = %s"aggregate" OPEN BWS curColAggFunctionExpr BWS CLOSE
-aggregateMethodCallExpr = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
-curColAggFunctionExpr   = aggregatableExpr aggregateWith [ aggregateFrom ]
-                        / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                        / aggregateCount [ aggregateFrom ]
-                        / aggregateCustom [ customFrom ]
-aggregateFunctionExpr   = aggregateFunExpr aggregateWith [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
-                        / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
+currCollectionExpr    = %s"aggregate" OPEN BWS curColAggFunctionExpr BWS CLOSE
+                      / %s"$count"
+pathCollectionExpr    = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
+; /$count after a navigation path is already allowed as a collectionPathExpr
+curColAggFunctionExpr = aggregatableExpr aggregateWith [ aggregateFrom ]
+                      / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
+                      / aggregateCount [ aggregateFrom ]
+                      / aggregateCustom [ customFrom ]
+aggregateFunctionExpr = aggregateFunExpr aggregateWith [ aggregateFrom ]
+                      / [ inscopeVariableExpr "/" ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
+                      / [ inscopeVariableExpr "/" ] aggregateCount [ aggregateFrom ]
+                      / [ inscopeVariableExpr "/" ] aggregateCustom [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
