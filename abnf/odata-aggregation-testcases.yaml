@@ -623,9 +623,10 @@ TestCases:
         $root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
         descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 'EMEA')))),
       aggregate(Amount with sum as Total))/traverse($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
-      preorder,Name desc)
+      preorder,Name desc,ID)
     Expect:
       - orderbyItem:Name desc
+      - orderbyItem:ID
 
   - Name: aggregate - groupby rollup recursive sub-hierarchy with filter
     Rule: queryOptions
