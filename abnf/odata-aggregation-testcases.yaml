@@ -172,6 +172,8 @@ Constraints:
   keyPropertyAlias: []
   lambdaVariableExpr:
     - p
+    - s
+    - t
   namespacePart:
     - Aggregation
     - Core
@@ -765,6 +767,12 @@ TestCases:
     Expect:
       - aggregateFunFactor:TaxRate
       - aggregateFunFactor:p/Amount
+
+  - Name: aggregate function - lambda operators
+    Rule: queryOptions
+    Input: $filter=Products/all(p:p/Sales/any(s:s/Amount gt p/Sales/aggregate(t:t/Amount with average) mul 2))
+    Expect:
+      - aggregateFunExpr:t/Amount
 
   - Name: aggregate function - function expression
     Rule: queryOptions
