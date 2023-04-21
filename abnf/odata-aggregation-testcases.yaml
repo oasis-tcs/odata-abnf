@@ -284,6 +284,10 @@ TestCases:
     Rule: odataRelativeUri
     Input: $metadata#Sales(Total)
 
+  - Name: aggregate - alias - context URL after concat
+    Rule: odataRelativeUri
+    Input: $metadata#Sales(@odata.any)
+
   - Name: aggregate - property requires alias
     Rule: queryOptions
     FailAt: 32

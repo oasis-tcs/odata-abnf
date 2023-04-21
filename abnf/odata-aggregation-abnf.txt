@@ -75,6 +75,8 @@ propertyPathExpr =/ %s"$these" "/" aggregateMethodCallExpr  ; use of $these is r
 
 collectionPathExpr =/ "/" aggregateMethodCallExpr
 
+selectList =/ OPEN %s"@odata.any" CLOSE
+
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
 ;------------------------------------------------------------------------------
