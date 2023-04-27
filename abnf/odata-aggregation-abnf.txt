@@ -137,7 +137,7 @@ customAggregate = odataIdentifier
 ; Three flavors of data aggregation paths are defined now:
 ; - one for use in aggregate, whose segments can be single- or collection-valued (rules with prefix aggr)
 ; - one for use in groupby, whose segments must be single-valued (rules with prefix sngl)
-; - one for use in computenested, without entity-valued segments (rule with prefix nest)
+; - one for use in addnested, without entity-valued segments (rule with prefix nest)
 ; Term casts are not allowed in data aggregation paths.
 aggrPropStep = ( complexProperty / complexColProperty / entityNavigationProperty / entityColNavigationProperty )
                [ "/" aggrCastPath ]
@@ -179,7 +179,7 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonE
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
 nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
-                / %s"computenested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
 nestPath        = [ aggrCastPath "/" ]
                   ( [ nestPropPath "/" ] navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
                   / nestPropPath

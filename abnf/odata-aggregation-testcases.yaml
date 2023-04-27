@@ -262,7 +262,7 @@ TestCases:
 
   - Name: aggregate - allowed arithmetic on collection
     Rule: queryOptions
-    Input: $apply=computenested(Sales,compute(Amount sub Cost as Profit) as
+    Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
       Profits)/aggregate(Profits/Profit with sum as TotalAmount)
     Expect:
       - aggregatableExpr:Profits/Profit
@@ -640,13 +640,13 @@ TestCases:
     Expect:
       - searchExpr-incomplete:')/top(1'
 
-  - Name: aggregate - computenested
+  - Name: aggregate - addnested
     Rule: queryOptions
-    Input: $apply=computenested(Sales,filter(Amount gt 3) as FilteredSales)
+    Input: $apply=addnested(Sales,filter(Amount gt 3) as FilteredSales)
 
-  - Name: aggregate - computenested with filter on $this
+  - Name: aggregate - addnested with filter on $this
     Rule: queryOptions
-    Input: $apply=computenested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
+    Input: $apply=addnested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
 
   - Name: aggregate - filter on $root
     Rule: queryOptions
@@ -654,33 +654,33 @@ TestCases:
 
   - Name: aggregate - nesting complex property
     Rule: queryOptions
-    Input: $apply=computenested(ShipTo,identity as Stuff)
+    Input: $apply=addnested(ShipTo,identity as Stuff)
 
   - Name: aggregate - nesting collection-valued complex property
     Rule: queryOptions
-    Input: $apply=computenested(Details,filter(Cost gt 1000) as Stuff)
+    Input: $apply=addnested(Details,filter(Cost gt 1000) as Stuff)
 
   - Name: aggregate - multi-level nest
     Rule: queryOptions
-    Input: $apply=computenested(Products,computenested(Sales,filter(Amount gt 3) as FilteredSales) as FilteredSales)
+    Input: $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as FilteredSales)
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
     Input:
-      $apply=computenested(Products,computenested(Sales,filter(Amount gt 3) as FilteredSales) as
-      FilteredSales,computenested(Suppliers,computenested(Products,filter(true) as Stuff) as Stuff) as
+      $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as
+      FilteredSales,addnested(Suppliers,addnested(Products,filter(true) as Stuff) as Stuff) as
       FilteredSuppliers)
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
-    FailAt: 134
+    FailAt: 122
     Input:
-      $apply=computenested(Products,computenested(Sales,filter(Amount gt 3) as FilteredSales) as
-      Stuff,computenested(Suppliers,nest(Products)))
+      $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as
+      Stuff,addnested(Suppliers,nest(Products)))
 
   - Name: aggregate - nest with filter on $this
     Rule: queryOptions
-    Input: $apply=computenested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
+    Input: $apply=addnested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
 
   - Name: aggregate - nest without path
     Rule: queryOptions
@@ -1138,7 +1138,7 @@ TestCases:
   - Name: transformation sequences - filter and nest
     Rule: queryOptions
     Input:
-      $apply=filter(Status eq 'incomplete')/computenested(Items,filter(not
+      $apply=filter(Status eq 'incomplete')/addnested(Items,filter(not
       Shipped) as Stuff)/groupby((Customer/Country),aggregate(Amount with sum as
       ItemAmount))
 
@@ -1170,7 +1170,7 @@ TestCases:
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
-    Input: $apply=computenested(Sales,filter(Product/Name eq
+    Input: $apply=addnested(Sales,filter(Product/Name eq
       'Paper') as FilteredSales)/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
       aggregate(Sales/$count as PaperSalesCount))
 
