@@ -506,6 +506,8 @@ TestCases:
   - Name: aggregate - topcount
     Rule: queryOptions
     Input: $apply=topcount(2,Amount)
+    Expect:
+      - collectionExpr:2
 
   - Name: aggregate - topcount with $count
     Rule: queryOptions

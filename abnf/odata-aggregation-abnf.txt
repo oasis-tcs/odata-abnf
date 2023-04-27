@@ -71,7 +71,7 @@ boolMethodCallExpr =/ isdefinedExpr
 
 primitiveProperty =/ customAggregate
 
-propertyPathExpr =/ currCollectionExpr
+firstMemberExpr =/ currCollectionExpr
 
 collectionPathExpr =/ "/" pathCollectionExpr
 
@@ -186,12 +186,15 @@ aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
+; Expressions evaluable on a collection
+collectionExpr  = commonExpr ; but where every firstMemberExpr must be a currCollectionExpr
+
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
                            
-bottomcountTrafo   = %s"bottomcount"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-bottompercentTrafo = %s"bottompercent" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-bottomsumTrafo     = %s"bottomsum"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+bottomcountTrafo   = %s"bottomcount"   OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
+bottompercentTrafo = %s"bottompercent" OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
+bottomsumTrafo     = %s"bottomsum"     OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
@@ -253,9 +256,9 @@ rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy 
 
 identityTrafo   = %s"identity"
 
-topcountTrafo   = %s"topcount"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-toppercentTrafo = %s"toppercent" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-topsumTrafo     = %s"topsum"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+topcountTrafo   = %s"topcount"   OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
+toppercentTrafo = %s"toppercent" OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
+topsumTrafo     = %s"topsum"     OPEN BWS collectionExpr BWS COMMA BWS commonExpr BWS CLOSE
 
 topTrafo        = %s"top" OPEN BWS 1*DIGIT BWS CLOSE
 skipTrafo       = %s"skip" OPEN BWS 1*DIGIT BWS CLOSE
