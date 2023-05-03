@@ -112,6 +112,7 @@ Constraints:
     - TotalPlannedRevenue
     - TotalPopulation
     - TotalSales
+    - WeightedAmount
     - WeekDay
   complexAnnotationInQuery:
     - '@Core.GeometryFeature'
@@ -198,6 +199,7 @@ Constraints:
     - rollupnode
     - Rating
     - sqrt
+    - Weight
   primitiveFunctionImport: []
   primitiveKeyProperty:
     - Code
@@ -232,6 +234,7 @@ Constraints:
     - Street
     - TaxRate
     - Total # dynamic
+    - WeightedAmount # dynamic
     - Year
   streamProperty:
     - Image
@@ -1230,6 +1233,17 @@ TestCases:
           keep start)
       )),
       aggregate(Amount with sum as Total))
+
+  - Name: multi-parent hierarchy with weighted edges
+     (ns.SalesOrganization@Aggregation.RecursiveHierarchy#SalesOrgHierarchy/ParentPropertyPath = Edges/Parent)
+    Rule: queryOptions
+    Input: $apply=groupby(
+      (rolluprecursive(
+        $root/SalesOrganizations,
+        SalesOrgHierarchy,
+        SalesOrganization/ID)),
+      compute(Amount mul Self.Weight(Ancestor=Aggregation.rollupnode()) as
+        WeightedAmount)/aggregate(WeightedAmount with sum as TotalAmount))
 
   - Name: aggregation with 1:n hierarchy assignment
     Rule: queryOptions
