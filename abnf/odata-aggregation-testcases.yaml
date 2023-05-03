@@ -139,7 +139,8 @@ Constraints:
     - Sales
     - SalesPlan
     - Suppliers
-  entityFunction: []
+  entityFunction:
+    - TopProduct
   entityFunctionImport: []
   entityNavigationProperty:
     - Category
@@ -780,6 +781,10 @@ TestCases:
     Rule: queryOptions
     FailAt: 31
     Input: $filter=Sales/aggregate(p:Sales/Amount with sum) gt 5
+
+  - Name: aggregate function after function
+    Rule: commonExpr
+    Input: Self.TopProduct()/Sales/aggregate(p:p/Amount with sum)
 
   - Name: aggregate function - function expression
     Rule: queryOptions
