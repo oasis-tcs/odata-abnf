@@ -1234,6 +1234,22 @@ TestCases:
       )),
       aggregate(Amount with sum as Total))
 
+  - Name: two hierarchies in one transformation sequence - alternative
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive(
+      $root/SalesOrganizations,SalesOrgHierarchy,
+      SalesOrganization/ID,
+      ancestors(
+        $root/SalesOrganizations,SalesOrgHierarchy,
+        ID,
+        descendants(
+          $root/ProductCategories,ProductCategoryHierarchy,
+          ProductCategories/ID,
+          filter(ProductCategories/any(p:p/Name eq 'Car')),
+          keep start))
+      )),
+      aggregate(Amount with sum as Total))
+
   - Name: multi-parent hierarchy with weighted edges
      (ns.SalesOrganization@Aggregation.RecursiveHierarchy#SalesOrgHierarchy/ParentPropertyPath = Edges/Parent)
     Rule: queryOptions
@@ -1242,7 +1258,7 @@ TestCases:
         $root/SalesOrganizations,
         SalesOrgHierarchy,
         SalesOrganization/ID)),
-      compute(Amount mul Self.Weight(Ancestor=Aggregation.rollupnode()) as
+      compute(Amount mul SalesOrganization/Self.Weight(Ancestor=Aggregation.rollupnode()) as
         WeightedAmount)/aggregate(WeightedAmount with sum as TotalAmount))
 
   - Name: aggregation with 1:n hierarchy assignment
