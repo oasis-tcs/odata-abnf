@@ -195,7 +195,7 @@ Constraints:
     - isancestor
     - issibling
     - isdescendant
-    - excludingdescendants
+    - rollupnode
     - Rating
     - sqrt
   primitiveFunctionImport: []
@@ -1241,7 +1241,7 @@ TestCases:
   - Name: traverserecursive
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID)),
-      filter(Aggregation.excludingdescendants()))
+      filter(SalesOrganization eq Aggregation.rollupnode()))
 
   - Name: restricted hierarchical measure
     Rule: queryOptions
@@ -1253,7 +1253,7 @@ TestCases:
         descendants($root/SalesOrganizations,
                     SalesOrgHierarchy,
                     ID, filter(ID eq 'US'), keep start))),
-      compute(case(Aggregation.excludingdescendants():Amount) as AmountExcl)/aggregate(
+      compute(case(SalesOrganization eq Aggregation.rollupnode():Amount) as AmountExcl)/aggregate(
         Amount with sum as TotalAmount,
         AmountExcl with sum as TotalAmountExcl))
 
