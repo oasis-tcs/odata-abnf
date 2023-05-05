@@ -867,6 +867,12 @@ TestCases:
     Rule: queryOptions
     Input: $filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 10)
 
+  - Name: aggregate function - aggregate within any (non-preferred)
+    Rule: queryOptions
+    Input: $filter=Products/any(p:p/Sales/aggregate(s:s/Amount with sum) gt 10)
+    Expect:
+      - aggregatableArith:s/Amount # unwanted arithmetic
+
   - Name: aggregate function - countdistinct with navigation property
     Rule: queryOptions
     Input: $filter=aggregate(Products/Sales with countdistinct) gt 3
