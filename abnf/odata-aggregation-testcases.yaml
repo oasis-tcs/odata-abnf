@@ -233,6 +233,7 @@ Constraints:
   streamProperty:
     - Image
   termName:
+    - AnyStructure
     - ISOCurrency
     - GeometryFeature
     - MediaType
@@ -291,6 +292,10 @@ TestCases:
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
     Input: $metadata#Sales(Total)
+
+  - Name: aggregate - alias - context URL after concat
+    Rule: odataRelativeUri
+    Input: $metadata#Sales(@Core.AnyStructure)
 
   - Name: aggregate - property requires alias
     Rule: queryOptions
