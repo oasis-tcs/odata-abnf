@@ -69,6 +69,7 @@ Constraints:
   actionImport: []
   expressionAlias:
     - Actual
+    - AmountExcl
     - AverageAmount
     - AveragePrice
     - AvgAmt
@@ -107,9 +108,11 @@ Constraints:
     - Tax
     - Total
     - TotalAmount
+    - TotalAmountExcl
     - TotalPlannedRevenue
     - TotalPopulation
     - TotalSales
+    - WeightedAmount
     - WeekDay
   complexAnnotationInQuery:
     - '@Core.GeometryFeature'
@@ -135,6 +138,7 @@ Constraints:
     - Nodes
     - Orders
     - Products
+    - ProductCategories
     - Profits # dynamic
     - Sales
     - SalesPlan
@@ -160,6 +164,7 @@ Constraints:
     - Customers
     - Products
     - Products_cj
+    - ProductCategories
     - Sales
     - Sales_cj
     - SalesOrganizations
@@ -194,8 +199,10 @@ Constraints:
     - isancestor
     - issibling
     - isdescendant
+    - rollupnode
     - Rating
     - sqrt
+    - Weight
   primitiveFunctionImport: []
   primitiveKeyProperty:
     - Code
@@ -203,6 +210,7 @@ Constraints:
     - ID
   primitiveNonKeyProperty:
     - Amount
+    - AmountExcl # dynamic
     - City
     - Cost
     - CountryCode
@@ -229,6 +237,7 @@ Constraints:
     - Street
     - TaxRate
     - Total # dynamic
+    - WeightedAmount # dynamic
     - Year
   streamProperty:
     - Image
@@ -635,17 +644,25 @@ TestCases:
   - Name: aggregate - groupby rollup recursive sub-hierarchy
     Rule: queryOptions
     Input: $apply=groupby((rolluprecursive(
-        $root/SalesOrganizations/$filter(Aggregation.isdescendant(
-          HierarchyNodes=$root/SalesOrganizations,
-          HierarchyQualifier='SalesOrgHierarchy',
-          Node=ID,
-          Ancestor='EMEA',
-          MaxDistance=2,
-          IncludeSelf=true)),
-        SalesOrgHierarchy,
-        SalesOrganization/ID)),
-      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse($root/SalesOrganizations,
-        SalesOrgHierarchy,SalesOrganization/ID,preorder)
+        $root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+        descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 'EMEA')))),
+      aggregate(Amount with sum as Total))/traverse($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+      preorder,Name desc,ID)
+    Expect:
+      - orderbyItem:Name desc
+      - orderbyItem:ID
+
+  - Name: aggregate - groupby rollup recursive sub-hierarchy with filter
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive(
+        $root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
+        descendants($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(ID eq 'EMEA'),2,keep start)/ancestors(
+        $root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name, 'Central')),keep start))),
+      aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse(
+      $root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,preorder)
+    Expect:
+      - preservingTrafos:filter(ID eq 'EMEA')
+      - preservingTrafos:filter(contains(Name, 'Central'))
 
   - Name: aggregate - filter
     Rule: queryOptions
@@ -957,7 +974,8 @@ TestCases:
   - Name: hierarchy transformations - ancestors processing non-hierarchical input set; node values via navigation property
     Rule: odataRelativeUri
     Input: Sales?$apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,
-      filter(contains(SalesOrganization/Name,'East') or contains(SalesOrganization/Name,'Central')), 2, keep start)
+      filter(contains(SalesOrganization/Name,'East') or
+      contains(SalesOrganization/Name,'Central')), 2, keep start)
 
   - Name: hierarchy transformations - descendants
     Rule: queryOptions
@@ -1224,6 +1242,81 @@ TestCases:
     Input: $apply=addnested(Sales,filter(Product/Name eq
       'Paper') as FilteredSales)/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
       aggregate(Sales/$count as PaperSalesCount))
+
+  - Name: two hierarchies in one transformation sequence
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive(
+      $root/SalesOrganizations,SalesOrgHierarchy,
+      SalesOrganization/ID,
+      ancestors(
+        $root/SalesOrganizations,SalesOrgHierarchy,
+        ID,
+        traverse(
+          $root/ProductCategories,
+          ProductCategoryHierarchy,
+          ProductCategories/ID,
+          preorder,
+          descendants(
+            $root/ProductCategories,ProductCategoryHierarchy,
+            ID,
+            filter(Name eq 'Car'),
+            keep start)),
+          keep start)
+      )),
+      aggregate(Amount with sum as Total))
+
+  - Name: two hierarchies in one transformation sequence - alternative
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive(
+      $root/SalesOrganizations,SalesOrgHierarchy,
+      SalesOrganization/ID,
+      ancestors(
+        $root/SalesOrganizations,SalesOrgHierarchy,
+        ID,
+        descendants(
+          $root/ProductCategories,ProductCategoryHierarchy,
+          ProductCategories/ID,
+          filter(ProductCategories/any(p:p/Name eq 'Car')),
+          keep start))
+      )),
+      aggregate(Amount with sum as Total))
+
+  - Name: multi-parent hierarchy with weighted edges
+     (ns.SalesOrganization@Aggregation.RecursiveHierarchy#SalesOrgHierarchy/ParentPropertyPath = Edges/Parent)
+    Rule: queryOptions
+    Input: $apply=groupby(
+      (rolluprecursive(
+        $root/SalesOrganizations,
+        SalesOrgHierarchy,
+        SalesOrganization/ID)),
+      compute(Amount mul SalesOrganization/Self.Weight(Ancestor=Aggregation.rollupnode()) as
+        WeightedAmount)/aggregate(WeightedAmount with sum as TotalAmount))
+
+  - Name: aggregation with 1:n hierarchy assignment
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,Suppliers/SalesOrganization/ID)),
+      aggregate(Amount with sum as Total))
+    Expect:
+      - recHierPropertyPath:Suppliers/SalesOrganization/ID
+
+  - Name: traverserecursive
+    Rule: queryOptions
+    Input: $apply=groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID)),
+      filter(SalesOrganization eq Aggregation.rollupnode()))
+
+  - Name: restricted hierarchical measure
+    Rule: queryOptions
+    Input: $apply=groupby(
+      (rolluprecursive(
+        $root/SalesOrganizations,
+        SalesOrgHierarchy,
+        SalesOrganization/ID,
+        descendants($root/SalesOrganizations,
+                    SalesOrgHierarchy,
+                    ID, filter(ID eq 'US'), keep start))),
+      compute(case(SalesOrganization eq Aggregation.rollupnode():Amount) as AmountExcl)/aggregate(
+        Amount with sum as TotalAmount,
+        AmountExcl with sum as TotalAmountExcl))
 
   - Name: aggregate in $expand
     Rule: odataRelativeUri

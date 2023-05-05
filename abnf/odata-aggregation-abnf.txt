@@ -82,16 +82,14 @@ collectionPathExpr =/ "/" pathCollectionExpr
 apply      = ( "$apply" / "apply" ) EQ applyExpr
 applyExpr  = applyTrafo *( "/" applyTrafo )
 applyTrafo = aggregateTrafo
-           / ancestorsTrafo
            / computeTrafo
            / concatTrafo
-           / descendantsTrafo
            / groupbyTrafo
            / joinTrafo
            / nestTrafo
            / outerjoinTrafo
-           / traverseTrafo
            / preservingTrafo
+           / hierarchyTrafo
 preservingTrafo = bottomcountTrafo
                 / bottompercentTrafo
                 / bottomsumTrafo
@@ -104,8 +102,13 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
-                / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
+                / hierarchyTrafo
+hierarchyTrafo  = ancestorsTrafo
+                / descendantsTrafo
+                / traverseTrafo
+                / customFunction ; custom functions could be hierarchical, hence are allowed in hierarchyTrafos
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
+hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
 aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
@@ -213,31 +216,34 @@ joinProperty    = ( complexColProperty
                   / entityAnnotationInQuery  ; must be collection-valued
                   )
 
-ancestorsTrafo  = %s"ancestors" OPEN 
-                  BWS recHierReference BWS 
+ancestorsTrafo  = %s"ancestors" OPEN BWS
+                  recHierReference BWS
                   COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
 
-descendantsTrafo = %s"descendants" OPEN 
-                 BWS recHierReference BWS 
-                 COMMA BWS preservingTrafos BWS
-                 [ COMMA BWS 1*DIGIT BWS ]
-                 [ COMMA BWS %s"keep start" BWS ]
-                 CLOSE
+descendantsTrafo = %s"descendants" OPEN BWS
+                  recHierReference BWS
+                  COMMA BWS preservingTrafos BWS
+                  [ COMMA BWS preservingTrafos BWS ]
+                  [ COMMA BWS 1*DIGIT BWS ]
+                  [ COMMA BWS %s"keep start" BWS ]
+                  CLOSE
 
-traverseTrafo   = %s"traverse" OPEN 
-                  BWS recHierReference BWS 
-                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS 
+traverseTrafo   = %s"traverse" OPEN BWS
+                  recHierReference BWS
+                  COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
+                  [ COMMA BWS preservingTrafos BWS ]
+                  [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
                   CLOSE 
 
 recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
-                   BWS COMMA
-                   BWS recHierQualifier BWS COMMA
-                   BWS recHierPropertyPath
+                   BWS COMMA BWS recHierQualifier
+                   BWS COMMA BWS recHierPropertyPath
 recHierQualifier = odataIdentifier
-recHierPropertyPath = *( ( complexProperty / entityNavigationProperty ) "/" ) primitiveProperty
+recHierPropertyPath = [ aggrCastPath "/" ] aggrPrimPath
 
 filterTrafo     = %s"filter" OPEN BWS boolCommonExpr BWS CLOSE
 
@@ -248,7 +254,11 @@ groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS 
 groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS recHierReference BWS CLOSE
+rollupRecursive   = %s"rolluprecursive" OPEN BWS
+                    recHierReference BWS
+                    [ COMMA BWS hierarchyTrafos BWS ]
+                    CLOSE
+
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
 rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
@@ -261,7 +271,7 @@ topsumTrafo     = %s"topsum"     OPEN BWS collectionExpr BWS COMMA BWS commonExp
 topTrafo        = %s"top" OPEN BWS 1*DIGIT BWS CLOSE
 skipTrafo       = %s"skip" OPEN BWS 1*DIGIT BWS CLOSE
 
-orderbyTrafo    = %s"orderby" OPEN orderbyItem *( COMMA orderbyItem ) CLOSE
+orderbyTrafo    = %s"orderby" OPEN orderbyItem *( BWS COMMA BWS orderbyItem ) CLOSE
 
 customFunction  = namespace "." ( entityColFunction / complexColFunction / primitiveColFunction ) functionExprParameters
 
