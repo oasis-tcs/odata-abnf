@@ -314,8 +314,8 @@ filter = ( "$filter" / "filter" ) EQ boolCommonExpr
 orderby     = ( "$orderby" / "orderby" ) EQ orderbyItem *( COMMA orderbyItem )
 orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]
 
-skip = ( "$skip" / "skip" ) EQ 1*DIGIT
-top  = ( "$top"  / "top"  ) EQ 1*DIGIT
+skip = ( "$skip" / "skip" ) EQ collectionExpr
+top  = ( "$top"  / "top"  ) EQ collectionExpr
 
 index  = ( "$index" / "index" ) EQ [ "-" ] 1*DIGIT
 
