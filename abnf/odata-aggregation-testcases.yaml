@@ -859,13 +859,18 @@ TestCases:
 
   - Name: aggregate function - within filter and lambda
     Rule: queryOptions
+    FailAt: 36
     Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
+
+  - Name: aggregate function - within filter without lambda
+    Rule: queryOptions
+    Input: $filter=aggregate(Products/Sales/Amount with sum) gt 3
     Expect:
-      - pathCollectionExpr:aggregate(p:p/Sales/Amount with sum)
+      - currCollectionExpr:aggregate(Products/Sales/Amount with sum)
 
   - Name: aggregate function - countdistinct with navigation property
     Rule: queryOptions
-    Input: $filter=Products/aggregate(p:p/Sales with countdistinct) gt 3
+    Input: $filter=aggregate(Products/Sales with countdistinct) gt 3
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri

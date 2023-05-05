@@ -171,7 +171,7 @@ aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS a
 aggregatableExpr   = aggregatableArith
                    / [ aggrCastPath "/" ] aggrPrimPath
 
-; aggregateFunExpr is analogous to aggregatableExpr but appears in aggregateFunctionExpr and allows inscopeVariableExpr
+; aggregateFun* is analogous to aggregatable* but appears in aggregateFunctionExpr and allows inscopeVariableExpr
 aggregateFunFactor = aggregatableValue
                    / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath
                    / [ namespace "." ] primitiveFunction OPEN
@@ -182,7 +182,6 @@ aggregateFunParam  = aggregateFunArith
                    / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
 aggregateFunTerm   = aggregateFunFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregateFunFactor )
 aggregateFunArith  = [ "-" BWS ] aggregateFunTerm *( RWS ( "add" / "sub" ) RWS aggregateFunTerm )
-aggregateFunExpr   = [ aggrCastPath "/" ] aggrPrimPath
 
 aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
@@ -291,10 +290,6 @@ curColAggFunctionExpr = aggregatableExpr aggregateWith [ aggregateFrom ]
                       / aggregateCount [ aggregateFrom ]
                       / aggregateCustom [ customFrom ]
 aggregateFunctionExpr = aggregateFunArith aggregateWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateFunExpr aggregateWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateCount [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateCustom [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
