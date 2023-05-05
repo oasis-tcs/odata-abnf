@@ -640,27 +640,13 @@ TestCases:
     Expect:
       - searchExpr-incomplete:')/top(1'
 
-  - Name: aggregate - transformnested
-    Rule: queryOptions
-    Input: $apply=transformnested(Sales,filter(Amount gt 3))
-
-  - Name: aggregate - transformnested with alias
-    Rule: queryOptions
-    FailAt: 49
-    Input: $apply=transformnested(Sales,filter(Amount gt 3) as FilteredSales)
-
-  - Name: aggregate - transformnested multiple
-    Rule: queryOptions
-    FailAt: 48
-    Input: $apply=transformnested(Sales,filter(Amount gt 3),filter(Amount lt 3))
-
   - Name: aggregate - addnested
     Rule: queryOptions
     Input: $apply=addnested(Sales,filter(Amount gt 3) as FilteredSales)
 
-  - Name: aggregate - transformnested with filter on $this
+  - Name: aggregate - addnested with filter on $this
     Rule: queryOptions
-    Input: $apply=transformnested(Sales,filter($this/Customer/City eq ShipTo/City))
+    Input: $apply=addnested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
 
   - Name: aggregate - filter on $root
     Rule: queryOptions
@@ -668,39 +654,33 @@ TestCases:
 
   - Name: aggregate - nesting complex property
     Rule: queryOptions
-    Input: $apply=transformnested(ShipTo,identity)
+    Input: $apply=addnested(ShipTo,identity as Stuff)
 
   - Name: aggregate - nesting collection-valued complex property
     Rule: queryOptions
-    Input: $apply=transformnested(Details,filter(Cost gt 1000))
+    Input: $apply=addnested(Details,filter(Cost gt 1000) as Stuff)
 
   - Name: aggregate - multi-level nest
     Rule: queryOptions
-    Input: $apply=transformnested(Products,transformnested(Sales,filter(Amount gt 3)))
+    Input: $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as FilteredSales)
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
     Input:
-      $apply=addnested(Products,transformnested(Sales,filter(Amount gt 3)) as
-      FilteredSales,transformnested(Suppliers,transformnested(Products,filter(true))) as
+      $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as
+      FilteredSales,addnested(Suppliers,addnested(Products,filter(true) as Stuff) as Stuff) as
       FilteredSuppliers)
 
   - Name: aggregate - multi-level nest with branches
     Rule: queryOptions
-    FailAt: 68
-    Input: $apply=addnested(Products,transformnested(Sales,filter(Amount gt
-      3)),transformnested(Suppliers,filter(true),nest(Products)))
-
-  - Name: aggregate - multi-level nest with branches
-    Rule: queryOptions
-    FailAt: 125
+    FailAt: 122
     Input:
-      $apply=addnested(Products,transformnested(Sales,filter(Amount gt 3)) as
-      FilteredSales,transformnested(Suppliers,nest(Products)))
+      $apply=addnested(Products,addnested(Sales,filter(Amount gt 3) as FilteredSales) as
+      Stuff,addnested(Suppliers,nest(Products)))
 
   - Name: aggregate - nest with filter on $this
     Rule: queryOptions
-    Input: $apply=transformnested(Sales,filter($this/Customer/City eq ShipTo/City))
+    Input: $apply=addnested(Sales,filter($this/Customer/City eq ShipTo/City) as FilteredSales)
 
   - Name: aggregate - nest without path
     Rule: queryOptions
@@ -1158,8 +1138,8 @@ TestCases:
   - Name: transformation sequences - filter and nest
     Rule: queryOptions
     Input:
-      $apply=filter(Status eq 'incomplete')/transformnested(Items,filter(not
-      Shipped))/groupby((Customer/Country),aggregate(Amount with sum as
+      $apply=filter(Status eq 'incomplete')/addnested(Items,filter(not
+      Shipped) as Stuff)/groupby((Customer/Country),aggregate(Amount with sum as
       ItemAmount))
 
   - Name: transformation sequences - paging with skip and top
@@ -1190,8 +1170,8 @@ TestCases:
 
   - Name: transformation sequences - aggregation along hierarchy
     Rule: queryOptions
-    Input: $apply=transformnested(Sales,filter(Product/Name eq
-      'Paper'))/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
+    Input: $apply=addnested(Sales,filter(Product/Name eq
+      'Paper') as FilteredSales)/groupby((rolluprecursive($root/SalesOrganizations,SalesOrgHierarchy,ID)),
       aggregate(Sales/$count as PaperSalesCount))
 
   - Name: aggregate in $expand
