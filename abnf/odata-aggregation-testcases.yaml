@@ -264,11 +264,6 @@ TestCases:
       - aggregatableFactor:(Amount sub Cost)
       - aggregatableFactor:TaxRate
 
-  - Name: aggregate - arithmetic expression with forbidden lambda variable
-    Rule: queryOptions
-    FailAt: 18
-    Input: $apply=aggregate(p/Amount mul TaxRate with sum as Tax)
-
   - Name: aggregate - arithmetic expression with literals
     Rule: queryOptions
     Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
@@ -770,14 +765,14 @@ TestCases:
     Rule: queryOptions
     Input: $filter=Sales/aggregate(p:TaxRate mul p/Amount with sum) gt 5
     Expect:
-      - aggregateFunFactor:TaxRate
-      - aggregateFunFactor:p/Amount
+      - aggregatableFactor:TaxRate
+      - aggregatableFactor:p/Amount
 
   - Name: aggregate function - lambda operators
     Rule: queryOptions
     Input: $filter=Products/all(p:p/Sales/any(s:s/Amount gt p/Sales/aggregate(t:t/Amount with average) mul 2))
     Expect:
-      - aggregateFunArith:t/Amount
+      - aggregatableArith:t/Amount
 
   - Name: aggregate function - omit lambda variable only in type 2
     Rule: queryOptions
@@ -792,7 +787,7 @@ TestCases:
     Rule: queryOptions
     Input: $filter=Sales/aggregate(p:Custom.Rating(Article=p/Product) with average) gt 5
     Expect:
-      - aggregateFunParam:p/Product
+      - aggregatableParam:p/Product
 
   - Name: aggregate function - function expression on current collection
     Rule: queryOptions
@@ -867,6 +862,10 @@ TestCases:
     Input: $filter=aggregate(Products/Sales/Amount with sum) gt 3
     Expect:
       - currCollectionExpr:aggregate(Products/Sales/Amount with sum)
+
+  - Name: aggregate function - aggregate within any
+    Rule: queryOptions
+    Input: $filter=Products/any(p:aggregate(p/Sales/Amount with sum) gt 10)
 
   - Name: aggregate function - countdistinct with navigation property
     Rule: queryOptions
