@@ -159,17 +159,32 @@ aggregatableValue  = decimalValue / doubleValue / singleValue / sbyteValue
                    / byteValue    / int16Value  / int32Value  / int64Value
                    / duration
 aggregatableFactor = aggregatableValue
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
+                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
                    / [ namespace "." ] primitiveFunction OPEN
                      [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
                      BWS CLOSE
                    / OPEN BWS aggregatableArith BWS CLOSE
 aggregatableParam  = aggregatableArith
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
+                   / [ aggrCastPath "/" ] snglPropPath
 aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
 aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
 aggregatableExpr   = aggregatableArith
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] aggrPrimPath
+                   / [ aggrCastPath "/" ] aggrPrimPath
+
+; aggregateFunExpr is analogous to aggregatableExpr but appears in aggregateFunctionExpr and allows aggregateFunPrefix
+aggregateFunPrefix = ( inscopeVariableExpr / %s"$it" ) "/"
+aggregateFunFactor = aggregatableValue
+                   / [ aggregateFunPrefix ] [ aggrCastPath "/" ] snglPrimPath
+                   / [ namespace "." ] primitiveFunction OPEN
+                     [ BWS parameterName EQ aggregateFunParam *( BWS COMMA BWS parameterName EQ aggregateFunParam ) ]
+                     BWS CLOSE
+                   / OPEN BWS aggregatableArith BWS CLOSE
+aggregateFunParam  = aggregateFunArith
+                   / [ aggregateFunPrefix ] [ aggrCastPath "/" ] snglPropPath
+aggregateFunTerm   = aggregateFunFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregateFunFactor )
+aggregateFunArith  = [ "-" BWS ] aggregateFunTerm *( RWS ( "add" / "sub" ) RWS aggregateFunTerm )
+aggregateFunExpr   = aggregateFunArith 
+                   / [ aggregateFunPrefix ] [ aggrCastPath "/" ] aggrPrimPath
 
 aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
@@ -273,11 +288,11 @@ currCollectionExpr    = %s"aggregate" OPEN BWS aggregateFunctionExpr BWS CLOSE
                       / %s"$count"
 pathCollectionExpr    = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggrArithFunctionExpr BWS CLOSE
 ; /$count after a navigation path is already allowed as a collectionPathExpr
-aggregateFunctionExpr = aggregatableExpr aggregateWith [ aggregateFrom ]
-                      / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                      / aggregateCount [ aggregateFrom ]
-                      / aggregateCustom [ customFrom ]
-aggrArithFunctionExpr = aggregatableArith aggregateWith [ aggregateFrom ]
+aggregateFunctionExpr = aggregateFunExpr aggregateWith [ aggregateFrom ]
+                      / [ aggregateFunPrefix ] aggrPathPrefix nonprimAggWith [ aggregateFrom ]
+                      / [ aggregateFunPrefix ] aggregateCount [ aggregateFrom ]
+                      / [ aggregateFunPrefix ] aggregateCustom [ customFrom ]
+aggrArithFunctionExpr = aggregateFunArith aggregateWith [ aggregateFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
