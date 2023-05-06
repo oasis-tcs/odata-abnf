@@ -773,6 +773,13 @@ TestCases:
       - aggregateFunFactor:TaxRate
       - aggregateFunFactor:p/Amount
 
+  - Name: aggregate function - compute with $it
+    Rule: queryOptions
+    Input: $compute=aggregate($it/Sales/Amount with sum) as Total
+    Expect:
+      - aggregateFunPrefix:$it/
+      - aggrPrimPath:Sales/Amount
+
   - Name: aggregate function - lambda operators
     Rule: queryOptions
     Input: $filter=Products/all(p:p/Sales/any(s:s/Amount gt p/Sales/aggregate(t:t/Amount with average) mul 2))
