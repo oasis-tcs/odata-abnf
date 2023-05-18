@@ -265,9 +265,10 @@ TestCases:
     Rule: queryOptions
     Input: $apply=aggregate((TaxRate sub 1) mul 'P1D' with average as Stuff)
 
-#  - Name: aggregate - forbidden arithmetic on collection
-#    Rule: queryOptions
-#    Input: $apply=aggregate(Sales/Amount sub Sales/Cost with sum as TotalAmount)
+  - Name: aggregate - forbidden arithmetic on collection
+    Rule: queryOptions
+    FailAt: 30
+    Input: $apply=aggregate(Sales/Amount sub Sales/Cost with sum as TotalAmount)
 
   - Name: aggregate - arithmetic with $it
     Rule: queryOptions
@@ -278,9 +279,11 @@ TestCases:
     Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
       Profits)/aggregate(Profits/Profit with sum as TotalAmount)
 
-#  - Name: aggregate - forbidden arithmetic
-#    Rule: queryOptions
-#    Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
+  - Name: aggregate - forbidden arithmetic
+    Rule: queryOptions
+    Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
+    Expect:
+      - aggregatableExpr:Amount sub Discounts # but actually it is not
 
   - Name: aggregate - functional expression
     Rule: queryOptions
@@ -759,6 +762,8 @@ TestCases:
   - Name: aggregate function - arithmetic expression
     Rule: queryOptions
     Input: $filter=Sales/aggregate(TaxRate mul $it/Amount with sum) gt 5
+    Expect:
+      - aggregatableExpr:TaxRate mul $it/Amount
 
   - Name: aggregate function - $compute
     Rule: queryOptions
