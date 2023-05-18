@@ -115,8 +115,8 @@ aggregateExpr    = ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateF
                  / aggregatableExpW [ aggregateFrom ] asAlias
                  / aggregateCount [ aggregateFrom ] asAlias
                  / aggregateCustom [ [ customFrom ] asAlias ]
-aggregatableExpW = commonExpr ; resulting in an aggregatable value
-                   aggregateWith
+aggregatableExpr = commonExpr ; resulting in an aggregatable value
+aggregatableExpW = aggregatableExpr aggregateWith
                  / [ aggrCastPath "/" ] aggrPrimPath aggregateWith
 aggrPathPrefix   = [ aggrCastPath "/" ] aggrPropPath
 aggregateWith    = RWS %s"with" RWS aggregateMethod
