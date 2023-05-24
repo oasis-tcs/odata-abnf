@@ -179,7 +179,6 @@ Constraints:
   lambdaVariableExpr:
     - p
     - s
-    - t
   namespacePart:
     - Aggregation
     - Core
@@ -761,9 +760,9 @@ TestCases:
 
   - Name: aggregate function - arithmetic expression
     Rule: queryOptions
-    Input: $filter=Sales/aggregate(TaxRate mul $it/Amount with sum) gt 5
+    Input: $filter=Sales/aggregate($it/TaxRate mul Amount with sum) gt 5
     Expect:
-      - aggregatableExpr:TaxRate mul $it/Amount
+      - aggregatableExpr:$it/TaxRate mul Amount
 
   - Name: aggregate function - $compute
     Rule: queryOptions
@@ -846,11 +845,12 @@ TestCases:
     Rule: queryOptions
     Input: $filter=Products/aggregate(Sales/Amount with sum) gt 3
 
-  - Name: aggregate function - within filter on current collection
-    Rule: queryOptions
-    Input: $filter=$these/aggregate(Products/Sales/Amount with sum) gt 3
+  - Name: aggregate function - within filter within groupby
+    Rule: odataRelativeUri
+    Input: Products?$apply=groupby((Category),
+      filter($these/aggregate(Sales/Amount with sum) gt 3))
     Expect:
-      - currCollectionExpr:$these/aggregate(Products/Sales/Amount with sum)
+      - currCollectionExpr:$these/aggregate(Sales/Amount with sum)
 
   - Name: aggregate function - aggregate within any
     Rule: queryOptions
