@@ -73,7 +73,7 @@ primitiveProperty =/ customAggregate
 
 firstMemberExpr =/ currCollectionExpr
 
-collectionPathExpr =/ "/" pathCollectionExpr
+collectionPathExpr =/ %s"/aggregate" OPEN BWS aggregateFunctionExpr BWS CLOSE
 
 ;------------------------------------------------------------------------------
 ; 2. System Query Option $apply
@@ -110,25 +110,29 @@ hierarchyTrafo  = ancestorsTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
-aggregateTrafo  = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
-aggregateExpr   = aggregatableExpr aggregateWith [ aggregateFrom ] asAlias
-                / ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
-                / aggregateCount [ aggregateFrom ] asAlias
-                / aggregateCustom [ [ customFrom ] asAlias ]
-aggregateWith   = RWS %s"with" RWS aggregateMethod
-nonprimAggWith  = RWS %s"with" RWS nonprimAggMethod
-aggregateFrom   = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
-customFrom      = RWS %s"from" RWS groupingProperties [ aggregateWith ] [ customFrom ]
-aggregateMethod = %s"sum"
-                / %s"min"
-                / %s"max"
-                / %s"average"
-                / nonprimAggMethod
+aggregateTrafo   = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
+aggregateExpr    = ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
+                 / aggregatableExpW [ aggregateFrom ] asAlias
+                 / aggregateCount [ aggregateFrom ] asAlias
+                 / aggregateCustom [ [ customFrom ] asAlias ]
+aggregatableExpr = commonExpr ; resulting in an aggregatable value
+aggregatableExpW = aggregatableExpr aggregateWith
+                 / [ aggrCastPath "/" ] aggrPrimPath aggregateWith
+aggrPathPrefix   = [ aggrCastPath "/" ] aggrPropPath
+aggregateWith    = RWS %s"with" RWS aggregateMethod
+nonprimAggWith   = RWS %s"with" RWS nonprimAggMethod
+aggregateFrom    = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
+customFrom       = RWS %s"from" RWS groupingProperties [ aggregateWith ] [ customFrom ]
+aggregateMethod  = %s"sum"
+                 / %s"min"
+                 / %s"max"
+                 / %s"average"
+                 / nonprimAggMethod
 nonprimAggMethod = %s"countdistinct"
                  / namespace "." odataIdentifier ; custom aggregation methods may work on non-primitive values
-aggregateCount  = %s"$count"
-                / [ aggrCastPath "/" ] aggrPrimPath count
-                / ( aggrPathPrefix / aggrCastPath ) count
+aggregateCount   = %s"$count"
+                 / [ aggrCastPath "/" ] aggrPrimPath count
+                 / ( aggrPathPrefix / aggrCastPath ) count
 
 aggregateCustom = [ ( aggrPathPrefix / aggrCastPath ) "/" ] customAggregate
 
@@ -155,41 +159,12 @@ snglPropPath = ( complexProperty / entityNavigationProperty ) [ [ "/" aggrCastPa
 snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPath ] "/" snglPrimPath
              / primitiveProperty / streamProperty
 
-aggregatableValue  = decimalValue / doubleValue / singleValue / sbyteValue
-                   / byteValue    / int16Value  / int32Value  / int64Value
-                   / duration
-aggregatableFactor = aggregatableValue
-                   / [ aggrCastPath "/" ] snglPrimPath ; arithmetic only with single-valued segments
-                   / [ namespace "." ] primitiveFunction OPEN
-                     [ BWS parameterName EQ aggregatableParam *( BWS COMMA BWS parameterName EQ aggregatableParam ) ]
-                     BWS CLOSE
-                   / OPEN BWS aggregatableArith BWS CLOSE
-aggregatableParam  = aggregatableArith
-                   / [ aggrCastPath "/" ] snglPropPath
-aggregatableTerm   = aggregatableFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregatableFactor )
-aggregatableArith  = [ "-" BWS ] aggregatableTerm *( RWS ( "add" / "sub" ) RWS aggregatableTerm )
-aggregatableExpr   = aggregatableArith
-                   / [ aggrCastPath "/" ] aggrPrimPath
-
-; aggregateFunExpr is analogous to aggregatableExpr but appears in aggregateFunctionExpr and allows inscopeVariableExpr
-aggregateFunFactor = aggregatableValue
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPrimPath
-                   / [ namespace "." ] primitiveFunction OPEN
-                     [ BWS parameterName EQ aggregateFunParam *( BWS COMMA BWS parameterName EQ aggregateFunParam ) ]
-                     BWS CLOSE
-                   / OPEN BWS aggregatableArith BWS CLOSE
-aggregateFunParam  = aggregateFunArith
-                   / [ inscopeVariableExpr "/" ] [ aggrCastPath "/" ] snglPropPath
-aggregateFunTerm   = aggregateFunFactor *( RWS ( "mul" / "div" / "divby" / "mod" ) RWS aggregateFunFactor )
-aggregateFunArith  = [ "-" BWS ] aggregateFunTerm *( RWS ( "add" / "sub" ) RWS aggregateFunTerm )
-aggregateFunExpr   = [ aggrCastPath "/" ] aggrPrimPath
-
-aggrPathPrefix     = [ aggrCastPath "/" ] aggrPropPath
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
 groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
 ; Expressions evaluable on a collection
-collectionExpr  = commonExpr ; but where every firstMemberExpr must be a currCollectionExpr
+collectionExpr     = commonExpr ; but where every firstMemberExpr must be a currCollectionExpr
+currCollectionExpr = %s"$these" collectionPathExpr
 
 computeTrafo    = %s"compute" OPEN BWS computeExpr *( BWS COMMA BWS computeExpr ) BWS CLOSE
 computeExpr     = commonExpr asAlias             
@@ -282,19 +257,10 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
-currCollectionExpr    = %s"aggregate" OPEN BWS curColAggFunctionExpr BWS CLOSE
-                      / %s"$count"
-pathCollectionExpr    = %s"aggregate" OPEN BWS lambdaVariableExpr BWS COLON BWS aggregateFunctionExpr BWS CLOSE
-; /$count after a navigation path is already allowed as a collectionPathExpr
-curColAggFunctionExpr = aggregatableExpr aggregateWith [ aggregateFrom ]
+aggregateFunctionExpr = aggregatableExpW [ aggregateFrom ]
                       / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
                       / aggregateCount [ aggregateFrom ]
                       / aggregateCustom [ customFrom ]
-aggregateFunctionExpr = aggregateFunArith aggregateWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateFunExpr aggregateWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateCount [ aggregateFrom ]
-                      / inscopeVariableExpr "/" aggregateCustom [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf

@@ -179,7 +179,6 @@ Constraints:
   lambdaVariableExpr:
     - p
     - s
-    - t
   namespacePart:
     - Aggregation
     - Core
@@ -260,14 +259,6 @@ TestCases:
   - Name: aggregate - arithmetic expression
     Rule: queryOptions
     Input: $apply=aggregate((Amount sub Cost) mul TaxRate with sum as Tax)
-    Expect:
-      - aggregatableFactor:(Amount sub Cost)
-      - aggregatableFactor:TaxRate
-
-  - Name: aggregate - arithmetic expression with forbidden lambda variable
-    Rule: queryOptions
-    FailAt: 18
-    Input: $apply=aggregate(p/Amount mul TaxRate with sum as Tax)
 
   - Name: aggregate - arithmetic expression with literals
     Rule: queryOptions
@@ -278,17 +269,20 @@ TestCases:
     FailAt: 30
     Input: $apply=aggregate(Sales/Amount sub Sales/Cost with sum as TotalAmount)
 
+  - Name: aggregate - arithmetic with $it
+    Rule: queryOptions
+    Input: $apply=aggregate(Amount sub $it/Cost with sum as TotalAmount)
+
   - Name: aggregate - allowed arithmetic on collection
     Rule: queryOptions
     Input: $apply=addnested(Sales,compute(Amount sub Cost as Profit) as
       Profits)/aggregate(Profits/Profit with sum as TotalAmount)
-    Expect:
-      - aggregatableExpr:Profits/Profit
 
   - Name: aggregate - forbidden arithmetic
     Rule: queryOptions
-    FailAt: 37
     Input: $apply=aggregate(Amount sub Discounts with sum as TotalAmount)
+    Expect:
+      - aggregatableExpr:Amount sub Discounts # but actually it is not
 
   - Name: aggregate - functional expression
     Rule: queryOptions
@@ -327,13 +321,14 @@ TestCases:
 
   - Name: aggregate - no expression after path - this feature from CS02 has been removed
     Rule: queryOptions
-    FailAt: 22
+    FailAt: 29
     Input: $apply=aggregate(Sales(Amount mul Product/TaxRate with sum as Tax))
 
   - Name: aggregate - aggregate annotations
     Rule: queryOptions
-    FailAt: 22 # no term casts in data aggregation paths
     Input: $apply=aggregate(Price/@Measures.ISOCurrency with min as MinCurrency)
+    Expect:
+      - annotationExpr:@Measures.ISOCurrency # no term casts in data aggregation paths
 
   - Name: aggregate - alias - context URL
     Rule: odataRelativeUri
@@ -354,8 +349,6 @@ TestCases:
   - Name: aggregate - custom aggregation method
     Rule: queryOptions
     Input: $apply=aggregate(Product/Name with Custom.concat as ProductNames)
-    Expect:
-      - aggregatableFactor:Product/Name
 
   - Name: aggregate - custom aggregation method with type cast
     Rule: queryOptions
@@ -388,11 +381,6 @@ TestCases:
   - Name: aggregate - countdistinct with navigation property
     Rule: queryOptions
     Input: $apply=aggregate(Product with countdistinct as DistinctProducts)
-
-  - Name: aggregate - forbidden sum with navigation property
-    Rule: queryOptions
-    FailAt: 33
-    Input: $apply=aggregate(Product with sum as Stuff)
 
   - Name: aggregate - from
     Rule: queryOptions
@@ -481,7 +469,6 @@ TestCases:
 
   - Name: aggregate - path with key segment
     Rule: queryOptions
-    FailAt: 34
     Input: $apply=aggregate(Product/SalesPlan('2015')/PlannedRevenue with sum as
       TotalPlannedRevenue)
 
@@ -526,9 +513,9 @@ TestCases:
 
   - Name: aggregate - topcount with $count
     Rule: queryOptions
-    Input: $apply=topcount($count div 10,Amount)
+    Input: $apply=topcount($these/$count div 10,Amount)
     Expect:
-      - currCollectionExpr:$count
+      - currCollectionExpr:$these/$count
 
   - Name: aggregate - topsum
     Rule: queryOptions
@@ -766,106 +753,112 @@ TestCases:
     Expect:
       - collectionPathExpr:/$count
 
+  - Name: aggregate function - prefix required
+    Rule: queryOptions
+    FailAt: 17
+    Input: $filter=aggregate(Amount with sum) gt 5
+
   - Name: aggregate function - arithmetic expression
     Rule: queryOptions
-    Input: $filter=Sales/aggregate(p:TaxRate mul p/Amount with sum) gt 5
+    Input: $filter=Sales/aggregate($it/TaxRate mul Amount with sum) gt 5
     Expect:
-      - aggregateFunFactor:TaxRate
-      - aggregateFunFactor:p/Amount
+      - aggregatableExpr:$it/TaxRate mul Amount
+
+  - Name: aggregate function - $compute
+    Rule: queryOptions
+    Input: $compute=Sales/aggregate(Amount with sum) as Total
 
   - Name: aggregate function - lambda operators
     Rule: queryOptions
-    Input: $filter=Products/all(p:p/Sales/any(s:s/Amount gt p/Sales/aggregate(t:t/Amount with average) mul 2))
-    Expect:
-      - aggregateFunArith:t/Amount
-
-  - Name: aggregate function - omit lambda variable only in type 2
-    Rule: queryOptions
-    FailAt: 31
-    Input: $filter=Sales/aggregate(p:Sales/Amount with sum) gt 5
+    Input: $filter=Products/all(p:p/Sales/any(s:s/Amount gt p/Sales/aggregate(Amount with average) mul 2))
 
   - Name: aggregate function after function
     Rule: commonExpr
-    Input: Self.TopProduct()/Sales/aggregate(p:p/Amount with sum)
+    Input: Self.TopProduct()/Sales/aggregate(Amount with sum)
 
   - Name: aggregate function - function expression
     Rule: queryOptions
-    Input: $filter=Sales/aggregate(p:Custom.Rating(Article=p/Product) with average) gt 5
-    Expect:
-      - aggregateFunParam:p/Product
+    Input: $filter=Sales/aggregate(Custom.Rating(Article=Product) with average) gt 5
 
   - Name: aggregate function - function expression on current collection
     Rule: queryOptions
-    Input: $filter=aggregate(Custom.Rating(Article=Product) with average) gt 5
-    Expect:
-      - aggregatableParam:Product
+    Input: $filter=$these/aggregate(Custom.Rating(Article=Product) with average) gt 5
 
   - Name: aggregate function - after grouping
     Rule: queryOptions
     Input: $apply=groupby((Customer),aggregate(Amount with sum as
-      CustomerAmount))/compute(CustomerAmount div aggregate(CustomerAmount with
+      CustomerAmount))/compute(CustomerAmount div $these/aggregate(CustomerAmount with
       sum) as RevenueContribution)
 
   - Name: aggregate function - within a group
     Rule: queryOptions
     Input: $apply=groupby((Customer,Year),aggregate(Amount with sum as
       CustomerYearAmount))/groupby((Customer),compute(CustomerYearAmount div
-      aggregate(CustomerYearAmount with sum) as RevenueTrend))
+      $these/aggregate(CustomerYearAmount with sum) as RevenueTrend))
 
   - Name: aggregate function - across input set
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Amount with average) as
+    Input: $apply=compute(Amount div $these/aggregate(Amount with average) as
       RelativeOrderSize)
 
   - Name: aggregate function - across input set with custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Budget) as RelativeAmount)
+    Input: $apply=compute(Amount div $these/aggregate(Budget) as RelativeAmount)
 
   - Name: aggregate function - across input set with related custom aggregate
     Rule: queryOptions
-    Input: $apply=compute(Amount div aggregate(Product/Budget) as
+    Input: $apply=compute(Amount div $these/aggregate(Product/Budget) as
       RelativeAmount)
 
   - Name: aggregate function - across input set with from
     Rule: queryOptions
     Input:
-      $apply=compute(Amount div aggregate(Amount with sum from Time
+      $apply=compute(Amount div $these/aggregate(Amount with sum from Time
       with average) as RelativeAmount)
 
   - Name: aggregate function - across input set with $count and from
     Rule: queryOptions
-    Input: $apply=compute(aggregate($count from Product with max) as SalesCount)
+    Input: $apply=compute($these/aggregate($count from Product with max) as SalesCount)
 
   - Name: aggregate function - across input set with $count
     Rule: queryOptions
-    Input: $apply=groupby((Customer),compute(aggregate($count) as
+    Input: $apply=groupby((Customer),compute($these/aggregate($count) as
       SalesCount))/filter(SalesCount ge 2)/aggregate(Amount with sum as
       TotalAmount)
 
   - Name: aggregate function - within a group - ...
     Rule: queryOptions
-    Input: $apply=groupby((Region),compute(aggregate(SalesNumber with
+    Input: $apply=groupby((Region),compute($these/aggregate(SalesNumber with
       average) as RegionAmount))/filter(RegionAmount gt
       150)/concat(groupby((Region),aggregate(SalesNumber with average as
       RegionAmount)),aggregate(SalesNumber with average as TotalAmount))
 
   - Name: aggregate function - in $compute option
     Rule: queryOptions
-    Input: $compute=Amount div aggregate(Amount with sum) as RelativeAmount
+    Input: $compute=Amount div $these/aggregate(Amount with sum) as RelativeAmount
 
   - Name: aggregate function - in $compute option with custom aggregate
     Rule: queryOptions
-    Input: $compute=Amount div aggregate(Budget) as RelativeAmount
+    Input: $compute=Amount div $these/aggregate(Budget) as RelativeAmount
 
-  - Name: aggregate function - within filter and lambda
+  - Name: aggregate function - within filter after navigation property
     Rule: queryOptions
-    Input: $filter=Products/aggregate(p:p/Sales/Amount with sum) gt 3
+    Input: $filter=Products/aggregate(Sales/Amount with sum) gt 3
+
+  - Name: aggregate function - within filter within groupby
+    Rule: odataRelativeUri
+    Input: Products?$apply=groupby((Category),
+      filter($these/aggregate(Sales/Amount with sum) gt 3))
     Expect:
-      - pathCollectionExpr:aggregate(p:p/Sales/Amount with sum)
+      - currCollectionExpr:$these/aggregate(Sales/Amount with sum)
+
+  - Name: aggregate function - aggregate within any
+    Rule: queryOptions
+    Input: $filter=Products/any(p:p/Sales/aggregate(Amount with sum) gt 10)
 
   - Name: aggregate function - countdistinct with navigation property
     Rule: queryOptions
-    Input: $filter=Products/aggregate(p:p/Sales with countdistinct) gt 3
+    Input: $filter=$these/aggregate(Products/Sales with countdistinct) gt 3
 
   - Name: aggregate - crossjoin
     Rule: odataRelativeUri
@@ -1048,7 +1041,7 @@ TestCases:
       aggregation methods - $count only allowed on top level, not nested within
       path
     Rule: queryOptions
-    FailAt: 37
+    FailAt: 38
     Input: $apply=groupby((Name),aggregate(Sales($count as SalesCount)))
 
   - Name: collection-valued path
