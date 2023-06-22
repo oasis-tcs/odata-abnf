@@ -89,7 +89,6 @@ applyTrafo = aggregateTrafo
            / nestTrafo
            / outerjoinTrafo
            / preservingTrafo
-           / hierarchyTrafo
 preservingTrafo = bottomcountTrafo
                 / bottompercentTrafo
                 / bottomsumTrafo
@@ -102,13 +101,11 @@ preservingTrafo = bottomcountTrafo
                 / topcountTrafo
                 / toppercentTrafo
                 / topsumTrafo
-                / hierarchyTrafo
-hierarchyTrafo  = ancestorsTrafo
+                / ancestorsTrafo
                 / descendantsTrafo
                 / traverseTrafo
-                / customFunction ; custom functions could be hierarchical, hence are allowed in hierarchyTrafos
+                / customFunction ; custom functions could be preserving, hence are allowed in preservingTrafos
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
-hierarchyTrafos  = hierarchyTrafo *( "/" hierarchyTrafo )
 
 aggregateTrafo   = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
 aggregateExpr    = ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
@@ -194,7 +191,6 @@ joinProperty    = ( complexColProperty
 ancestorsTrafo  = %s"ancestors" OPEN BWS
                   recHierReference BWS
                   COMMA BWS preservingTrafos BWS
-                  [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
@@ -202,7 +198,6 @@ ancestorsTrafo  = %s"ancestors" OPEN BWS
 descendantsTrafo = %s"descendants" OPEN BWS
                   recHierReference BWS
                   COMMA BWS preservingTrafos BWS
-                  [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS 1*DIGIT BWS ]
                   [ COMMA BWS %s"keep start" BWS ]
                   CLOSE
@@ -212,7 +207,7 @@ traverseTrafo   = %s"traverse" OPEN BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
                   [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
-                  CLOSE 
+                  CLOSE
 
 recHierReference = rootExpr ; must have type Collection(Edm.EntityType)
                    BWS COMMA BWS recHierQualifier
@@ -231,7 +226,7 @@ groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
 rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
 rollupRecursive   = %s"rolluprecursive" OPEN BWS
                     recHierReference BWS
-                    [ COMMA BWS hierarchyTrafos BWS ]
+                    [ COMMA BWS preservingTrafos BWS ]
                     CLOSE
 
 rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
