@@ -1252,12 +1252,7 @@ TestCases:
           ProductCategoryHierarchy,
           ProductCategories/ID,
           preorder,
-          descendants(
-            $root/ProductCategories,ProductCategoryHierarchy,
-            ID,
-            filter(Name eq 'Car'),
-            keep start)),
-          keep start)
+          filter(Name eq 'Cereals')))
       )),
       aggregate(Amount with sum as Total))
 
@@ -1272,7 +1267,7 @@ TestCases:
         descendants(
           $root/ProductCategories,ProductCategoryHierarchy,
           ProductCategories/ID,
-          filter(ProductCategories/any(p:p/Name eq 'Car')),
+          filter(ProductCategories/any(p:p/Name eq 'Cereals')),
           keep start))
       )),
       aggregate(Amount with sum as Total))
