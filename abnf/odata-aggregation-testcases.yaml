@@ -647,9 +647,6 @@ TestCases:
         $root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name, 'Central')),keep start))),
       aggregate(Amount with sum as Total))/orderby(SalesOrganization/Name)/traverse(
       $root/SalesOrganizations,SalesOrgHierarchy,SalesOrganization/ID,preorder)
-    Expect:
-      - preservingTrafos:filter(ID eq 'EMEA')
-      - preservingTrafos:filter(contains(Name, 'Central'))
 
   - Name: aggregate - filter
     Rule: queryOptions
@@ -959,6 +956,12 @@ TestCases:
     Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
       contains(Name,'Central')), 2)
 
+  - Name: hierarchy transformations - ancestors with forbidden fifth parameter
+    Rule: queryOptions
+    FailAt: 94
+    Input: $apply=ancestors($root/SalesOrganizations,SalesOrgHierarchy,ID,filter(contains(Name,'East')),
+      filter(contains(Name,'Central')), 2)
+
   - Name: hierarchy transformations - ancestors hierarchy directory
     Rule: queryOptions
     Input: $apply=ancestors($root/SalesOrgHierarchies('DEFAULT')/Nodes,SalesOrgHierarchy,ID,filter(contains(Name,'East') or
@@ -1249,12 +1252,7 @@ TestCases:
           ProductCategoryHierarchy,
           ProductCategories/ID,
           preorder,
-          descendants(
-            $root/ProductCategories,ProductCategoryHierarchy,
-            ID,
-            filter(Name eq 'Car'),
-            keep start)),
-          keep start)
+          filter(Name eq 'Cereals')))
       )),
       aggregate(Amount with sum as Total))
 
@@ -1269,7 +1267,7 @@ TestCases:
         descendants(
           $root/ProductCategories,ProductCategoryHierarchy,
           ProductCategories/ID,
-          filter(ProductCategories/any(p:p/Name eq 'Car')),
+          filter(ProductCategories/any(p:p/Name eq 'Cereals')),
           keep start))
       )),
       aggregate(Amount with sum as Total))
