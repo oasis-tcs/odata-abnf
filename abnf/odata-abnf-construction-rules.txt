@@ -1065,7 +1065,7 @@ header = asyncresult
        / odata-version
        / prefer
 
-asyncresult = "AsyncResult" ":" OWS 1*3DIGIT 
+asyncresult = "AsyncResult" ":" OWS 3DIGIT 
 content-id  = "Content-ID" ":" OWS request-id
 isolation   = [ "OData-" ] "Isolation" ":" OWS "snapshot"
 request-id  = 1*unreserved
