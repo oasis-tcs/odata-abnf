@@ -3451,6 +3451,10 @@ TestCases:
     Rule: context
     Input: "#Orders/$deletedLink"
 
+  - Name: Header - AsyncResult
+    Rule: header
+    Input: "AsyncResult: 200"
+
   - Name: Header - content-id
     Rule: header
     Input: "content-id: 1"
