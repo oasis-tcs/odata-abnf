@@ -2076,6 +2076,12 @@ TestCases:
     FailAt: 3
     Input: any()
 
+  - Name: 5.1.1.13.1 any() - collection with type cast
+    Rule: commonExpr
+    Input: DirectReports/Sales.Manager/any()
+    Expect:
+      - collectionNavigationExpr:/Sales.Manager/any()
+
   - Name: 5.1.1.13.1 any()
     Rule: commonExpr
     Input: Supplier/Products/any(lambda:true)
@@ -3456,6 +3462,10 @@ TestCases:
   - Name: Context URL - Delta - deleted link
     Rule: context
     Input: "#Orders/$deletedLink"
+
+  - Name: Header - AsyncResult
+    Rule: header
+    Input: "AsyncResult: 200"
 
   - Name: Header - content-id
     Rule: header
