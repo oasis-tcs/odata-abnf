@@ -1059,7 +1059,8 @@ geometryPrefix  = "geometry"
 ; 8. Header values
 ;------------------------------------------------------------------------------
 
-header = content-id
+header = asyncresult
+       / content-id
        / isolation
        / odata-entityid 
        / odata-error
@@ -1067,9 +1068,10 @@ header = content-id
        / odata-version
        / prefer
 
-content-id = "Content-ID" ":" OWS request-id
-isolation  = [ "OData-" ] "Isolation" ":" OWS "snapshot"
-request-id = 1*unreserved
+asyncresult = "AsyncResult" ":" OWS 3DIGIT 
+content-id  = "Content-ID" ":" OWS request-id
+isolation   = [ "OData-" ] "Isolation" ":" OWS "snapshot"
+request-id  = 1*unreserved
        
 odata-entityid   = "OData-EntityID"   ":" OWS IRI-in-header
 
