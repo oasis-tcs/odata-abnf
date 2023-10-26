@@ -2695,6 +2695,19 @@ TestCases:
     Rule: queryOptions
     Input: $search=blue%20green
 
+  - Name: 5.1.7 Search - leading space
+    Rule: queryOptions
+    Input: $search=%20blue
+    Expect:
+      - searchWord:blue
+
+  - Name: 5.1.7 Search - trailing space
+    Rule: queryOptions
+    Input: $search=blue%20&!special
+    Expect:
+      - searchWord:blue
+      - customQueryOption:!special
+
   - Name: 5.1.7 Search - AND
     Rule: queryOptions
     Input: $search=blue AND green
