@@ -2708,6 +2708,13 @@ TestCases:
       - searchWord:blue
       - customQueryOption:!special
 
+  - Name: 5.1.7 Search - space in search phrase
+    Rule: queryOptions
+    Input: $search=%20"%20"%20-%20
+    Expect:
+      - searchPhrase:"%20"
+      - searchWord:-
+
   - Name: 5.1.7 Search - AND
     Rule: queryOptions
     Input: $search=blue AND green
