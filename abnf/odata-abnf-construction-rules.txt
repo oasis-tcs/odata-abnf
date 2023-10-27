@@ -19,7 +19,7 @@
 ;   - Michael Pizzo (mikep@microsoft.com), Microsoft
 ;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
 ;
-; Additional artifacts: 
+; Additional artifacts:
 ;   This grammar is one component of a Work Product which consists of:
 ;   - OData Version 4.01 Part 1: Protocol
 ;   - OData Version 4.01 Part 2: URL Conventions
@@ -37,27 +37,27 @@
 ; Abstract:
 ;   The Open Data Protocol (OData) enables the creation of REST-based data
 ;   services, which allow resources, identified using Uniform Resource
-;   Identifiers (URLs) and defined in a data model, to be published and 
+;   Identifiers (URLs) and defined in a data model, to be published and
 ;   edited by Web clients using simple HTTP messages. This document defines
-;   the URL syntax for requests and the serialization format for primitive 
+;   the URL syntax for requests and the serialization format for primitive
 ;   literals in request and response payloads.
 ;
 ; Overview:
-;   This grammar uses the ABNF defined in RFC5234 and RFC7405. 
+;   This grammar uses the ABNF defined in RFC5234 and RFC7405.
 ;
 ;   The following rules assume that URIs have been percent-encoding normalized
-;   as described in section 6.2.2.2 of RFC3986 
+;   as described in section 6.2.2.2 of RFC3986
 ;   (http://tools.ietf.org/html/rfc3986#section-6.2.2.2)
-;   before applying the grammar to them, i.e. all characters in the unreserved 
+;   before applying the grammar to them, i.e. all characters in the unreserved
 ;   set (see rule "unreserved" below) are plain literals and NOT
-;   percent-encoded. 
+;   percent-encoded.
 ;
-;   For characters outside the unreserved set the rules explicitly state 
+;   For characters outside the unreserved set the rules explicitly state
 ;   whether the percent-encoded representation is treated identical to the
 ;   plain literal representation.
-; 
-;   One prominent example is the single quote that delimits OData primitive  
-;   type literals: %27 and ' are treated identically, so a single quote within 
+;
+;   One prominent example is the single quote that delimits OData primitive
+;   type literals: %27 and ' are treated identically, so a single quote within
 ;   a string literal is "encoded" as two consecutive single quotes in either
 ;   literal or percent-encoded representation.
 ;
@@ -78,16 +78,16 @@
 ;
 ;------------------------------------------------------------------------------
 
-odataUri = serviceRoot [ odataRelativeUri ]  
+odataUri = serviceRoot [ odataRelativeUri ]
 
-serviceRoot = ( "https" / "http" )                    ; Note: case-insensitive 
+serviceRoot = ( "https" / "http" )                    ; Note: case-insensitive
               "://" host [ ":" port ]
               "/" *( segment-nz "/" )
 
 ; Note: dollar-prefixed path segments are case-sensitive!
 odataRelativeUri = %s"$batch"  [ "?" batchOptions ]
-                 / %s"$entity" "?" entityOptions  
-                 / %s"$entity" "/" optionallyQualifiedEntityTypeName "?" entityCastOptions  
+                 / %s"$entity" "?" entityOptions
+                 / %s"$entity" "/" optionallyQualifiedEntityTypeName "?" entityCastOptions
                  / %s"$metadata" [ "?" metadataOptions ] [ context ]
                  / resourcePath [ "?" [ queryOptions ] ]
 
@@ -96,15 +96,15 @@ odataRelativeUri = %s"$batch"  [ "?" batchOptions ]
 ; 1. Resource Path
 ;------------------------------------------------------------------------------
 
-resourcePath = entitySetName                  [ collectionNavigation ] 
+resourcePath = entitySetName                  [ collectionNavigation ]
              / singletonEntity                [ singleNavigation ]
-             / actionImportCall 
-             / entityColFunctionImportCall    [ collectionNavigation ] 
-             / entityFunctionImportCall       [ singleNavigation ] 
-             / complexColFunctionImportCall   [ complexColPath ] 
-             / complexFunctionImportCall      [ complexPath ] 
-             / primitiveColFunctionImportCall [ collectionPath ] 
-             / primitiveFunctionImportCall    [ primitivePath ] 
+             / actionImportCall
+             / entityColFunctionImportCall    [ collectionNavigation ]
+             / entityFunctionImportCall       [ singleNavigation ]
+             / complexColFunctionImportCall   [ complexColPath ]
+             / complexFunctionImportCall      [ complexPath ]
+             / primitiveColFunctionImportCall [ collectionPath ]
+             / primitiveFunctionImportCall    [ primitivePath ]
              / functionImportCallNoParens     [ querySegment ]
              / crossjoin                      [ querySegment ]
              / %s"$all"                         [ "/" optionallyQualifiedEntityTypeName ]
@@ -134,8 +134,8 @@ singleNavigation = singleNavPath
 
 singleNavPath = "/" propertyPath
               / boundOperation
-              / ref 
-              / value  ; request the media resource of a media entity 
+              / ref
+              / value  ; request the media resource of a media entity
               / querySegment
 
 propertyPath = entityColNavigationProperty [ collectionNavigation ]
@@ -150,16 +150,16 @@ collectionPath = count / boundOperation / ordinalIndex / querySegment
 
 primitivePath  = value / boundOperation / querySegment
 
-complexColPath = collectionPath 
+complexColPath = collectionPath
                / "/" optionallyQualifiedComplexTypeName [ collectionPath ]
 
-complexPath = complexNavPath 
+complexPath = complexNavPath
             / "/" optionallyQualifiedComplexTypeName [ complexNavPath ]
 
-complexNavPath = "/" propertyPath 
+complexNavPath = "/" propertyPath
                / boundOperation
                / querySegment
-                 
+
 filterInPath = %s"/$filter" OPEN boolCommonExpr CLOSE
 
 each  = %s"/$each"
@@ -171,16 +171,16 @@ querySegment = %s"/$query"
 
 ordinalIndex = "/" [ "-" ] 1*DIGIT
 
-; boundOperation segments can only be composed if the type of the previous segment 
+; boundOperation segments can only be composed if the type of the previous segment
 ; matches the type of the first parameter of the action or function being called.
 ; Note that the rule name reflects the return type of the function.
 boundOperation = "/" ( boundActionCall
-                     / boundEntityColFunctionCall    [ collectionNavigation ] 
+                     / boundEntityColFunctionCall    [ collectionNavigation ]
                      / boundEntityFunctionCall       [ singleNavigation ]
-                     / boundComplexColFunctionCall   [ complexColPath ] 
+                     / boundComplexColFunctionCall   [ complexColPath ]
                      / boundComplexFunctionCall      [ complexPath ]
-                     / boundPrimitiveColFunctionCall [ collectionPath ] 
-                     / boundPrimitiveFunctionCall    [ primitivePath ] 
+                     / boundPrimitiveColFunctionCall [ collectionPath ]
+                     / boundPrimitiveFunctionCall    [ primitivePath ]
                      / boundFunctionCallNoParens     [ querySegment ]
                      )
 
@@ -190,8 +190,8 @@ boundActionCall  = [ namespace "." ] action
                    ; and is specified by reference using the URI immediately preceding (to the left) of the boundActionCall
 
 ; The following boundXxxFunctionCall rules have the added restrictions that
-;  - the function MUST support binding, and 
-;  - the binding parameter type MUST match the type of resource identified by the 
+;  - the function MUST support binding, and
+;  - the binding parameter type MUST match the type of resource identified by the
 ;    URI immediately preceding (to the left) of the boundXxxFunctionCall, and
 ;  - the functionParameters MUST NOT include the bindingParameter.
 boundEntityFunctionCall       = [ namespace "." ] entityFunction       functionParameters
@@ -225,7 +225,7 @@ functionImportCallNoParens     = entityFunctionImport
 functionParameters = OPEN [ BWS functionParameter *( BWS COMMA BWS functionParameter ) ] BWS CLOSE
 functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )
 parameterName      = odataIdentifier
-parameterAlias     = AT odataIdentifier 
+parameterAlias     = AT odataIdentifier
 
 crossjoin = %s"$crossjoin" OPEN
             entitySetName *( COMMA entitySetName )
@@ -236,77 +236,77 @@ crossjoin = %s"$crossjoin" OPEN
 ; 2. Query Options
 ;------------------------------------------------------------------------------
 
-queryOptions = queryOption *( "&" queryOption )        
-queryOption  = systemQueryOption  
-             / aliasAndValue 
+queryOptions = queryOption *( "&" queryOption )
+queryOption  = systemQueryOption
+             / aliasAndValue
              / nameAndValue
-             / customQueryOption  
+             / customQueryOption
 
-batchOptions = batchOption *( "&" batchOption )   
+batchOptions = batchOption *( "&" batchOption )
 batchOption  = format
-             / customQueryOption   
-             
-metadataOptions = metadataOption *( "&" metadataOption )   
+             / customQueryOption
+
+metadataOptions = metadataOption *( "&" metadataOption )
 metadataOption  = format
-                / customQueryOption   
+                / customQueryOption
 
 entityOptions  = *( entityIdOption "&" ) id *( "&" entityIdOption )
 entityIdOption = format
                / customQueryOption
 entityCastOptions = *( entityCastOption "&" ) id *( "&" entityCastOption )
 entityCastOption  = entityIdOption
-                  / expand 
+                  / expand
                   / select
 
-id = ( "$id" / "id" ) EQ IRI-in-query       
+id = ( "$id" / "id" ) EQ IRI-in-query
 
 systemQueryOption = compute
                   / deltatoken
-                  / expand 
-                  / filter 
-                  / format 
+                  / expand
+                  / filter
+                  / format
                   / id
-                  / inlinecount 
-                  / orderby 
+                  / inlinecount
+                  / orderby
                   / schemaversion
                   / search
-                  / select 
-                  / skip 
+                  / select
+                  / skip
                   / skiptoken
-                  / top 
+                  / top
                   / index
 
 compute          = ( "$compute" / "compute" ) EQ computeItem *( COMMA computeItem )
 computeItem      = commonExpr RWS "as" RWS computedProperty
-computedProperty = odataIdentifier         
+computedProperty = odataIdentifier
 
 expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ] 
+                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
                       / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
-                      /         OPEN expandOption      *( SEMI expandOption      ) CLOSE 
-                      ]    
-                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" expandPath              
-                    / streamProperty 
+                      /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
+                      ]
+                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" expandPath
+                    / streamProperty
                     )
 expandCountOption = filter
                   / search
 expandRefOption   = expandCountOption
                   / orderby
-                  / skip 
-                  / top 
+                  / skip
+                  / top
                   / inlinecount
 expandOption      = expandRefOption
-                  / select 
+                  / select
                   / expand
                   / compute
                   / levels
                   / aliasAndValue
-                
+
 levels = ( "$levels" / "levels" ) EQ ( oneToNine *DIGIT / "max" )
 
 filter = ( "$filter" / "filter" ) EQ boolCommonExpr
@@ -321,12 +321,12 @@ index  = ( "$index" / "index" ) EQ indexExpr
 
 format = ( "$format" / "format" ) EQ
          ( "atom"
-         / "json" 
+         / "json"
          / "xml"
          / 1*pchar "/" 1*pchar ; <a data service specific value indicating a
          )                     ; format specific to the specific data service> or
                                ; <An IANA-defined [IANA-MMT] content type>
-                          
+
 inlinecount = ( "$count" / "count" ) EQ booleanValue
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
@@ -336,7 +336,7 @@ search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplet
 searchExpr = ( searchParenExpr
              / searchNegateExpr
              / searchPhrase
-             / searchWord 
+             / searchWord
              ) [ searchOrExpr
                / searchAndExpr
                ]
@@ -351,7 +351,7 @@ searchAndExpr = RWS [ %s"AND" RWS ] searchExpr
 
 searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 
-; A searchWord is a sequence of one or more non-whitespace characters, excluding 
+; A searchWord is a sequence of one or more non-whitespace characters, excluding
 ; - literal or percent-encoded parentheses "(", "%28", "%29", ")"
 ; - literal or percent-encoded double-quotes '"' and "%22"
 ; - the semicolon ";"
@@ -366,34 +366,34 @@ searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quota
 
 select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
-               / allOperationsInSchema 
+               / allOperationsInSchema
                / selectProperty
-               / optionallyQualifiedActionName  
-               / optionallyQualifiedFunctionName  
-               / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) 
+               / optionallyQualifiedActionName
+               / optionallyQualifiedFunctionName
+               / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName )
                  "/" ( selectProperty
-                     / optionallyQualifiedActionName   
-                     / optionallyQualifiedFunctionName  
+                     / optionallyQualifiedActionName
+                     / optionallyQualifiedFunctionName
                      )
 selectProperty = primitiveProperty / primitiveAnnotationInQuery
                / ( primitiveColProperty / primitiveColAnnotationInQuery ) [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]
                / navigationProperty
                / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
-                            / "/" selectProperty 
+                            / "/" selectProperty
                             ]
-selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ] 
-selectOptionPC = filter / search / inlinecount / orderby / skip / top 
+selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectOptionPC = filter / search / inlinecount / orderby / skip / top
 selectOption   = selectOptionPC
                / compute / select / aliasAndValue
 
-allOperationsInSchema = namespace "." STAR                 
+allOperationsInSchema = namespace "." STAR
 
 ; The parameterNames uniquely identify the bound function overload
 ; Necessary only if it has overloads
 optionallyQualifiedActionName   = [ namespace "." ] action
 optionallyQualifiedFunctionName = [ namespace "." ] function [ OPEN parameterNames CLOSE ]
 
-; The names of all non-binding parameters, separated by commas 
+; The names of all non-binding parameters, separated by commas
 parameterNames = parameterName *( COMMA parameterName )
 
 deltatoken = "$deltatoken" EQ 1*( qchar-no-AMP )
@@ -408,7 +408,7 @@ parameterValue = arrayOrObject
                / commonExpr
 
 customQueryOption = customName [ EQ customValue ]
-customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ ) 
+customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ )
 customValue       = *( qchar-no-AMP )
 
 complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
@@ -416,7 +416,7 @@ entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
 
 primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
 primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
-     
+
 ;------------------------------------------------------------------------------
 ; 3. Context URL Fragments
 ;------------------------------------------------------------------------------
@@ -433,20 +433,20 @@ contextFragment = %s"Collection($ref)"
                 / entitySet [ selectList ] [ %s"/$entity" / %s"/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
-            
+
 containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation
-navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty   
+navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
 
 selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE
 selectListItem     = STAR ; all structural properties
-                   / allOperationsInSchema 
-                   / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ] 
+                   / allOperationsInSchema
+                   / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
                      ( qualifiedActionName
-                     / qualifiedFunctionName 
+                     / qualifiedFunctionName
                      / selectListProperty
                      )
-selectListProperty = primitiveProperty  
-                   / primitiveColProperty 
+selectListProperty = primitiveProperty
+                   / primitiveColProperty
                    / ( navigationProperty / entityAnnotationInFragment ) [ "+" ] [ selectList ]
                    / ( complexProperty / complexColProperty / complexAnnotationInFragment ) [ "/" qualifiedComplexTypeName ] [ "/" selectListProperty ]
 
@@ -457,7 +457,7 @@ contextPropertyPath = primitiveProperty
 
 qualifiedActionName   = namespace "." action
 qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
-                
+
 complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
 entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
 
@@ -465,38 +465,38 @@ entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
 ; 4. Expressions
 ;------------------------------------------------------------------------------
 
-; Note: a boolCommonExpr is also a commonExpr, e.g. sort by Boolean 
+; Note: a boolCommonExpr is also a commonExpr, e.g. sort by Boolean
 commonExpr = ( primitiveLiteral
              / arrayOrObject
              / rootExpr
              / functionExpr
-             / negateExpr 
-             / methodCallExpr 
-             / parenExpr 
-             / castExpr 
+             / negateExpr
+             / methodCallExpr
+             / parenExpr
+             / castExpr
              / isofExpr
              / notExpr
              / firstMemberExpr
-             ) 
-             [ addExpr 
-             / subExpr 
-             / mulExpr 
+             )
+             [ addExpr
+             / subExpr
+             / mulExpr
              / divExpr
-             / divbyExpr 
+             / divbyExpr
              / modExpr
-             ]  
-             [ eqExpr 
-             / neExpr 
-             / ltExpr  
-             / leExpr  
-             / gtExpr 
-             / geExpr 
-             / hasExpr 
-             / inExpr 
              ]
-             [ andExpr 
-             / orExpr 
-             ] 
+             [ eqExpr
+             / neExpr
+             / ltExpr
+             / leExpr
+             / gtExpr
+             / geExpr
+             / hasExpr
+             / inExpr
+             ]
+             [ andExpr
+             / orExpr
+             ]
 
 boolCommonExpr = commonExpr ; resulting in a Boolean
 
@@ -515,32 +515,32 @@ firstMemberExpr = memberExpr
 
 memberExpr = directMemberExpr
            / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr
-             
+
 directMemberExpr = propertyPathExpr
-                 / boundFunctionExpr 
+                 / boundFunctionExpr
                  / annotationExpr
-             
-propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ] 
-                   / entityNavigationProperty    [ singleNavigationExpr ] 
+
+propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ]
+                   / entityNavigationProperty    [ singleNavigationExpr ]
                    / complexColProperty          [ complexColPathExpr ]
-                   / complexProperty             [ complexPathExpr ] 
+                   / complexProperty             [ complexPathExpr ]
                    / primitiveColProperty        [ collectionPathExpr ]
                    / primitiveProperty           [ primitivePathExpr ]
                    / streamProperty              [ primitivePathExpr ]
                    )
-                   
+
 annotationExpr = annotationInQuery
                  [ collectionPathExpr
                  / singleNavigationExpr
                  / complexPathExpr
                  / primitivePathExpr
                  ]
-                 
+
 annotationInQuery    = AT [ namespace "." ] termName [ HASH annotationQualifier ]
 annotationInFragment = AT [ namespace "." ] termName [ "#"  annotationQualifier ]
-annotationQualifier  = odataIdentifier                
-                   
-inscopeVariableExpr  = implicitVariableExpr 
+annotationQualifier  = odataIdentifier
+
+inscopeVariableExpr  = implicitVariableExpr
                      / parameterAlias
                      / lambdaVariableExpr ; only allowed inside a lambdaPredicateExpr
 implicitVariableExpr = %s"$it"              ; the current instance of the resource identified by the resource path
@@ -560,15 +560,15 @@ filterExpr = %s"/$filter" OPEN boolCommonExpr CLOSE
 
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]
- 
+
 collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
                    / filterExpr [ collectionPathExpr ]
                    / "/" anyExpr
                    / "/" allExpr
                    / "/" boundFunctionExpr
                    / "/" annotationExpr
-                   / "/" indexExpr [ complexPathExpr ] 
- 
+                   / "/" indexExpr [ complexPathExpr ]
+
 complexPathExpr = "/" directMemberExpr
                 / "/" optionallyQualifiedComplexTypeName [ "/" directMemberExpr ]
 
@@ -576,16 +576,16 @@ primitivePathExpr = "/" [ annotationExpr / boundFunctionExpr ]
 
 indexExpr = [ "-" ] 1*DIGIT
 
-boundFunctionExpr = functionExpr ; boundFunction segments can only be composed if the type of the    
+boundFunctionExpr = functionExpr ; boundFunction segments can only be composed if the type of the
                                  ; previous segment matches the type of the first function parameter
-                                     
+
 functionExpr = [ namespace "." ]
-               ( entityColFunction    functionExprParameters [ collectionNavigationExpr ] 
-               / entityFunction       functionExprParameters [ singleNavigationExpr ] 
+               ( entityColFunction    functionExprParameters [ collectionNavigationExpr ]
+               / entityFunction       functionExprParameters [ singleNavigationExpr ]
                / complexColFunction   functionExprParameters [ complexColPathExpr ]
-               / complexFunction      functionExprParameters [ complexPathExpr ] 
-               / primitiveColFunction functionExprParameters [ collectionPathExpr ] 
-               / primitiveFunction    functionExprParameters [ primitivePathExpr ] 
+               / complexFunction      functionExprParameters [ complexPathExpr ]
+               / primitiveColFunction functionExprParameters [ collectionPathExpr ]
+               / primitiveFunction    functionExprParameters [ primitivePathExpr ]
                )
 
 functionExprParameters = OPEN [ BWS functionExprParameter *( BWS COMMA BWS functionExprParameter ) ] BWS CLOSE
@@ -595,29 +595,29 @@ anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr 
 allExpr = "all" OPEN BWS   lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr   BWS CLOSE
 lambdaPredicateExpr = boolCommonExpr ; containing at least one lambdaVariableExpr
 
-methodCallExpr = indexOfMethodCallExpr 
-               / toLowerMethodCallExpr 
-               / toUpperMethodCallExpr  
-               / trimMethodCallExpr 
-               / substringMethodCallExpr 
-               / concatMethodCallExpr 
-               / lengthMethodCallExpr 
+methodCallExpr = indexOfMethodCallExpr
+               / toLowerMethodCallExpr
+               / toUpperMethodCallExpr
+               / trimMethodCallExpr
+               / substringMethodCallExpr
+               / concatMethodCallExpr
+               / lengthMethodCallExpr
                / matchesPatternMethodCallExpr
-               / yearMethodCallExpr 
-               / monthMethodCallExpr 
-               / dayMethodCallExpr 
-               / hourMethodCallExpr 
-               / minuteMethodCallExpr 
-               / secondMethodCallExpr 
+               / yearMethodCallExpr
+               / monthMethodCallExpr
+               / dayMethodCallExpr
+               / hourMethodCallExpr
+               / minuteMethodCallExpr
+               / secondMethodCallExpr
                / fractionalsecondsMethodCallExpr
                / totalsecondsMethodCallExpr
-               / dateMethodCallExpr 
-               / timeMethodCallExpr 
-               / roundMethodCallExpr 
-               / floorMethodCallExpr 
-               / ceilingMethodCallExpr 
-               / distanceMethodCallExpr 
-               / geoLengthMethodCallExpr 
+               / dateMethodCallExpr
+               / timeMethodCallExpr
+               / roundMethodCallExpr
+               / floorMethodCallExpr
+               / ceilingMethodCallExpr
+               / distanceMethodCallExpr
+               / geoLengthMethodCallExpr
                / totalOffsetMinutesMethodCallExpr
                / minDateTimeMethodCallExpr
                / maxDateTimeMethodCallExpr
@@ -625,10 +625,10 @@ methodCallExpr = indexOfMethodCallExpr
                / caseMethodCallExpr
                / boolMethodCallExpr
 
-boolMethodCallExpr = endsWithMethodCallExpr 
-                   / startsWithMethodCallExpr 
-                   / containsMethodCallExpr                                          
-                   / intersectsMethodCallExpr 
+boolMethodCallExpr = endsWithMethodCallExpr
+                   / startsWithMethodCallExpr
+                   / containsMethodCallExpr
+                   / intersectsMethodCallExpr
                    / hasSubsetMethodCallExpr
                    / hasSubsequenceMethodCallExpr
 
@@ -654,7 +654,7 @@ fractionalsecondsMethodCallExpr  = "fractionalseconds"  OPEN BWS commonExpr BWS 
 totalsecondsMethodCallExpr       = "totalseconds"       OPEN BWS commonExpr BWS CLOSE
 dateMethodCallExpr               = "date"               OPEN BWS commonExpr BWS CLOSE
 timeMethodCallExpr               = "time"               OPEN BWS commonExpr BWS CLOSE
-totalOffsetMinutesMethodCallExpr = "totaloffsetminutes" OPEN BWS commonExpr BWS CLOSE 
+totalOffsetMinutesMethodCallExpr = "totaloffsetminutes" OPEN BWS commonExpr BWS CLOSE
 
 minDateTimeMethodCallExpr = "mindatetime" OPEN BWS CLOSE
 maxDateTimeMethodCallExpr = "maxdatetime" OPEN BWS CLOSE
@@ -671,7 +671,7 @@ intersectsMethodCallExpr = "geo.intersects" OPEN BWS commonExpr BWS COMMA BWS co
 hasSubsetMethodCallExpr      = "hassubset"      OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 hasSubsequenceMethodCallExpr = "hassubsequence" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 
-caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS 
+caseMethodCallExpr = "case" OPEN BWS boolCommonExpr BWS COLON BWS commonExpr BWS
                         *( COMMA BWS boolCommonExpr BWS COLON BWS commonExpr BWS ) CLOSE
 
 parenExpr = OPEN BWS commonExpr BWS CLOSE
@@ -680,7 +680,7 @@ listExpr  = OPEN BWS [ primitiveLiteral BWS *( COMMA BWS primitiveLiteral BWS ) 
 andExpr = RWS "and" RWS boolCommonExpr
 orExpr  = RWS "or"  RWS boolCommonExpr
 
-eqExpr = RWS "eq" RWS commonExpr     
+eqExpr = RWS "eq" RWS commonExpr
 neExpr = RWS "ne" RWS commonExpr
 ltExpr = RWS "lt" RWS commonExpr
 leExpr = RWS "le" RWS commonExpr
@@ -715,8 +715,8 @@ castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] optionallyQualifiedTypeN
 arrayOrObject = array
               / object
 
-array = begin-array 
-        [ valueInUrl *( value-separator valueInUrl ) ] 
+array = begin-array
+        [ valueInUrl *( value-separator valueInUrl ) ]
         end-array
 
 object = begin-object
@@ -726,13 +726,13 @@ object = begin-object
 member = stringInUrl name-separator valueInUrl
 
 valueInUrl = stringInUrl
-           / commonExpr            
+           / commonExpr
 
-; JSON syntax: adapted to URI restrictions from [RFC8259]                 
+; JSON syntax: adapted to URI restrictions from [RFC8259]
 begin-object = BWS ( "{" / "%7B" ) BWS
 end-object   = BWS ( "}" / "%7D" )
 
-begin-array = BWS ( "[" / "%5B" ) BWS 
+begin-array = BWS ( "[" / "%5B" ) BWS
 end-array   = BWS ( "]" / "%5D" )
 
 quotation-mark  = DQUOTE / "%22"
@@ -741,12 +741,12 @@ value-separator = BWS COMMA BWS
 
 stringInUrl = quotation-mark *charInJSON quotation-mark
 
-charInJSON   = qchar-unescaped  
-             / qchar-JSON-special    
-             / escape ( quotation-mark 
+charInJSON   = qchar-unescaped
+             / qchar-JSON-special
+             / escape ( quotation-mark
                       / escape
                       / ( "/" / "%2F" ) ; solidus         U+002F - literal form is allowed in the query part of a URL
-                      / %s"b"             ; backspace       U+0008                
+                      / %s"b"             ; backspace       U+0008
                       / %s"f"             ; form feed       U+000C
                       / %s"n"             ; line feed       U+000A
                       / %s"r"             ; carriage return U+000D
@@ -763,28 +763,28 @@ escape = "\" / "%5C"     ; reverse solidus U+005C
 ; 6. Names and identifiers
 ;------------------------------------------------------------------------------
 
-qualifiedTypeName = singleQualifiedTypeName                  
+qualifiedTypeName = singleQualifiedTypeName
                   / %s"Collection" OPEN singleQualifiedTypeName CLOSE
 
-optionallyQualifiedTypeName = singleQualifiedTypeName                  
+optionallyQualifiedTypeName = singleQualifiedTypeName
                             / %s"Collection" OPEN singleQualifiedTypeName CLOSE
                             / singleTypeName
                             / %s"Collection" OPEN singleTypeName CLOSE
 
-singleQualifiedTypeName = qualifiedEntityTypeName 
+singleQualifiedTypeName = qualifiedEntityTypeName
                         / qualifiedComplexTypeName
                         / qualifiedTypeDefinitionName
                         / qualifiedEnumTypeName
-                        / primitiveTypeName 
-                        
-singleTypeName = entityTypeName 
-               / complexTypeName 
-               / typeDefinitionName 
-               / enumerationTypeName                         
-                  
+                        / primitiveTypeName
+
+singleTypeName = entityTypeName
+               / complexTypeName
+               / typeDefinitionName
+               / enumerationTypeName
+
 qualifiedEntityTypeName     = namespace "." entityTypeName
 qualifiedComplexTypeName    = namespace "." complexTypeName
-qualifiedTypeDefinitionName = namespace "." typeDefinitionName 
+qualifiedTypeDefinitionName = namespace "." typeDefinitionName
 qualifiedEnumTypeName       = namespace "." enumerationTypeName
 
 optionallyQualifiedEntityTypeName     = [ namespace "." ] entityTypeName
@@ -795,10 +795,10 @@ namespace     = namespacePart *( "." namespacePart )
 namespacePart = odataIdentifier
 
 entitySetName       = odataIdentifier
-singletonEntity     = odataIdentifier          
+singletonEntity     = odataIdentifier
 entityTypeName      = odataIdentifier
 complexTypeName     = odataIdentifier
-typeDefinitionName  = odataIdentifier 
+typeDefinitionName  = odataIdentifier
 enumerationTypeName = odataIdentifier
 enumerationMember   = odataIdentifier
 termName            = odataIdentifier
@@ -811,12 +811,12 @@ identifierCharacter         = ALPHA / "_" / DIGIT ; plus percent-encoded Unicode
 primitiveTypeName = %s"Edm." ( %s"Binary"
                            / %s"Boolean"
                            / %s"Byte"
-                           / %s"Date" 
+                           / %s"Date"
                            / %s"DateTimeOffset"
                            / %s"Decimal"
                            / %s"Double"
-                           / %s"Duration" 
-                           / %s"Guid" 
+                           / %s"Duration"
+                           / %s"Guid"
                            / %s"Int16"
                            / %s"Int32"
                            / %s"Int64"
@@ -825,7 +825,7 @@ primitiveTypeName = %s"Edm." ( %s"Binary"
                            / %s"Stream"
                            / %s"String"
                            / %s"TimeOfDay"
-                           / abstractSpatialTypeName [ concreteSpatialTypeName ] 
+                           / abstractSpatialTypeName [ concreteSpatialTypeName ]
                            )
 abstractSpatialTypeName = %s"Geography"
                         / %s"Geometry"
@@ -845,20 +845,20 @@ complexProperty         = odataIdentifier
 complexColProperty      = odataIdentifier
 streamProperty          = odataIdentifier
 
-navigationProperty          = entityNavigationProperty / entityColNavigationProperty  
+navigationProperty          = entityNavigationProperty / entityColNavigationProperty
 entityNavigationProperty    = odataIdentifier
 entityColNavigationProperty = odataIdentifier
 
 action       = odataIdentifier
 actionImport = odataIdentifier
 
-function = entityFunction 
-         / entityColFunction 
-         / complexFunction 
-         / complexColFunction 
-         / primitiveFunction 
+function = entityFunction
+         / entityColFunction
+         / complexFunction
+         / complexColFunction
+         / primitiveFunction
          / primitiveColFunction
-         
+
 entityFunction       = odataIdentifier
 entityColFunction    = odataIdentifier
 complexFunction      = odataIdentifier
@@ -880,43 +880,43 @@ primitiveColFunctionImport = odataIdentifier
 
 ; in URLs
 primitiveLiteral = nullValue                  ; plain values up to int64Value
-                 / booleanValue 
-                 / guidValue 
-                 / dateTimeOffsetValueInUrl 
+                 / booleanValue
+                 / guidValue
+                 / dateTimeOffsetValueInUrl
                  / dateValue
                  / timeOfDayValueInUrl
-                 / decimalValue 
-                 / doubleValue 
-                 / singleValue 
-                 / sbyteValue 
+                 / decimalValue
+                 / doubleValue
+                 / singleValue
+                 / sbyteValue
                  / byteValue
-                 / int16Value 
-                 / int32Value 
-                 / int64Value 
+                 / int16Value
+                 / int32Value
+                 / int64Value
                  / string                     ; single-quoted
                  / duration
                  / enum
-                 / binary                     ; all others are quoted and prefixed 
-                 / geographyCollection 
-                 / geographyLineString 
-                 / geographyMultiLineString 
-                 / geographyMultiPoint 
-                 / geographyMultiPolygon 
-                 / geographyPoint 
-                 / geographyPolygon 
-                 / geometryCollection 
-                 / geometryLineString 
-                 / geometryMultiLineString 
-                 / geometryMultiPoint 
-                 / geometryMultiPolygon 
-                 / geometryPoint 
+                 / binary                     ; all others are quoted and prefixed
+                 / geographyCollection
+                 / geographyLineString
+                 / geographyMultiLineString
+                 / geographyMultiPoint
+                 / geographyMultiPolygon
+                 / geographyPoint
+                 / geographyPolygon
+                 / geometryCollection
+                 / geometryLineString
+                 / geometryMultiLineString
+                 / geometryMultiPoint
+                 / geometryMultiPolygon
+                 / geometryPoint
                  / geometryPolygon
-         
-; in Atom and JSON message bodies and CSDL DefaultValue attributes                 
+
+; in Atom and JSON message bodies and CSDL DefaultValue attributes
 primitiveValue = booleanValue
                / guidValue
                / durationValue
-               / dateTimeOffsetValue 
+               / dateTimeOffsetValue
                / dateValue
                / timeOfDayValue
                / enumValue
@@ -927,22 +927,22 @@ primitiveValue = booleanValue
                / fullMultiPolygonLiteral
                / fullPointLiteral
                / fullPolygonLiteral
-               / decimalValue 
-               / doubleValue 
-               / singleValue 
-               / sbyteValue 
+               / decimalValue
+               / doubleValue
+               / singleValue
+               / sbyteValue
                / byteValue
-               / int16Value 
-               / int32Value 
-               / int64Value 
-               / binaryValue 
+               / int16Value
+               / int32Value
+               / int64Value
+               / binaryValue
                ; also valid are:
                ; - any XML string for strings in Atom and CSDL documents
-               ; - any JSON string for JSON documents 
+               ; - any JSON string for JSON documents
 
-nullValue = %s"null" 
+nullValue = %s"null"
 
-; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5                                             
+; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5
 binary      = "binary" SQUOTE binaryValue SQUOTE
 binaryValue = *(4base64char) [ base64b16  / base64b8 ]
 base64b16   = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s"Y" / %s"c" / %s"g" / %s"k" / %s"o" / %s"s" / %s"w" / %s"0" / %s"4" / %s"8" )   [ "=" ]
@@ -956,11 +956,11 @@ doubleValue  = decimalValue ; IEEE 754 binary64 floating-point number (15-17 dec
 singleValue  = decimalValue ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
 nanInfinity  = %s"NaN" / %s"-INF" / %s"INF"
 
-guidValue = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG 
+guidValue = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
 
 byteValue  = 1*3DIGIT           ; numbers in the range from 0 to 255
 sbyteValue = [ SIGN ] 1*3DIGIT  ; numbers in the range from -128 to 127
-int16Value = [ SIGN ] 1*5DIGIT  ; numbers in the range from -32768 to 32767        
+int16Value = [ SIGN ] 1*5DIGIT  ; numbers in the range from -32768 to 32767
 int32Value = [ SIGN ] 1*10DIGIT ; numbers in the range from -2147483648 to 2147483647
 int64Value = [ SIGN ] 1*19DIGIT ; numbers in the range from -9223372036854775808 to 9223372036854775807
 
@@ -979,8 +979,8 @@ durationValue = [ SIGN ] "P" [ 1*DIGIT "D" ] [ "T" [ 1*DIGIT "H" ] [ 1*DIGIT "M"
 
 timeOfDayValue      = hour ":"   minute [ ":"   second [ "." fractionalSeconds ] ]
 timeOfDayValueInUrl = hour COLON minute [ COLON second [ "." fractionalSeconds ] ]
- 
-oneToNine       = "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9" 
+
+oneToNine       = "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
 zeroToFiftyNine = ( "0" / "1" / "2" / "3" / "4" / "5" ) DIGIT
 year  = [ "-" ] ( "0" 3DIGIT / oneToNine 3*DIGIT )
 month = "0" oneToNine
@@ -989,7 +989,7 @@ day   = "0" oneToNine
       / ( "1" / "2" ) DIGIT
       / "3" ( "0" / "1" )
 hour   = ( "0" / "1" ) DIGIT
-       / "2" ( "0" / "1" / "2" / "3" ) 
+       / "2" ( "0" / "1" / "2" / "3" )
 minute = zeroToFiftyNine
 second = zeroToFiftyNine / "60" ; for leap seconds
 fractionalSeconds = 1*12DIGIT
@@ -1040,7 +1040,7 @@ polygonLiteral     = "Polygon" polygonData
 polygonData        = OPEN ringLiteral *( COMMA ringLiteral ) CLOSE
 ringLiteral        = OPEN positionLiteral *( COMMA positionLiteral ) CLOSE
                    ; Within each ringLiteral, the first and last positionLiteral elements MUST be an exact syntactic match to each other.
-                   ; Within the polygonData, the ringLiterals MUST specify their points in appropriate winding order. 
+                   ; Within the polygonData, the ringLiterals MUST specify their points in appropriate winding order.
                    ; In order of traversal, points to the left side of the ring are interpreted as being in the polygon.
 
 geometryCollection      = geometryPrefix SQUOTE fullCollectionLiteral      SQUOTE
@@ -1052,7 +1052,7 @@ geometryPoint           = geometryPrefix SQUOTE fullPointLiteral           SQUOT
 geometryPolygon         = geometryPrefix SQUOTE fullPolygonLiteral         SQUOTE
 
 geographyPrefix = "geography"
-geometryPrefix  = "geometry" 
+geometryPrefix  = "geometry"
 
 
 ;------------------------------------------------------------------------------
@@ -1062,26 +1062,26 @@ geometryPrefix  = "geometry"
 header = asyncresult
        / content-id
        / isolation
-       / odata-entityid 
+       / odata-entityid
        / odata-error
        / odata-maxversion
        / odata-version
        / prefer
 
-asyncresult = "AsyncResult" ":" OWS 3DIGIT 
+asyncresult = "AsyncResult" ":" OWS 3DIGIT
 content-id  = "Content-ID" ":" OWS request-id
 isolation   = [ "OData-" ] "Isolation" ":" OWS "snapshot"
 request-id  = 1*unreserved
-       
+
 odata-entityid   = "OData-EntityID"   ":" OWS IRI-in-header
 
 ; Note: the header value is a JSON object restricted to characters allowed in a header
 odata-error      = "OData-Error"      ":" OWS "{" DQUOTE %s"code" DQUOTE ":" *( VCHAR / SP )
 
-odata-maxversion = "OData-MaxVersion" ":" OWS 1*DIGIT "." 1*DIGIT     
+odata-maxversion = "OData-MaxVersion" ":" OWS 1*DIGIT "." 1*DIGIT
 odata-version    = "OData-Version"    ":" OWS "4.0" [ oneToNine ]
-      
-prefer     = "Prefer" ":" OWS preference *( OWS "," OWS preference )       
+
+prefer     = "Prefer" ":" OWS preference *( OWS "," OWS preference )
 preference = allowEntityReferencesPreference
            / callbackPreference
            / continueOnErrorPreference
@@ -1094,25 +1094,25 @@ preference = allowEntityReferencesPreference
            / waitPreference
            ; and everything allowed by https://tools.ietf.org/html/rfc7240
            ; / ( parameter / token ) *( OWS ";" [ OWS ( parameter / token ) ] )
-           
+
 allowEntityReferencesPreference = [ "odata." ] "allow-entityreferences"
 
 callbackPreference = [ "odata." ] "callback" OWS ";" OWS "url" EQ-h DQUOTE URI DQUOTE
 
-continueOnErrorPreference = [ "odata." ] "continue-on-error" [ EQ-h booleanValue ]   
-           
+continueOnErrorPreference = [ "odata." ] "continue-on-error" [ EQ-h booleanValue ]
+
 includeAnnotationsPreference = [ "odata." ] "include-annotations" EQ-h DQUOTE annotationsList DQUOTE
 annotationsList      = annotationIdentifier *("," annotationIdentifier)
 annotationIdentifier = [ excludeOperator ]
-                       ( STAR 
-                       / namespace "." ( termName / STAR ) 
-                       ) 
+                       ( STAR
+                       / namespace "." ( termName / STAR )
+                       )
                        [ "#" odataIdentifier ]
 excludeOperator      = "-"
-           
-maxpagesizePreference = [ "odata." ] "maxpagesize" EQ-h oneToNine *DIGIT   
 
-omitValuesPreference = "omit-values" EQ-h ( "nulls" / "defaults" )      
+maxpagesizePreference = [ "odata." ] "maxpagesize" EQ-h oneToNine *DIGIT
+
+omitValuesPreference = "omit-values" EQ-h ( "nulls" / "defaults" )
 
 respondAsyncPreference = "respond-async"
 
@@ -1132,17 +1132,17 @@ waitPreference = "wait" EQ-h 1*DIGIT
 obs-text       = %x80-FF
 ;quoted-pair    = "\" ( HTAB / SP / VCHAR / obs-text )
 
-OWS   = *( SP / HTAB )  ; "optional" whitespace 
-BWS-h = *( SP / HTAB )  ; "bad" whitespace in header values 
-EQ-h  = BWS-h EQ BWS-h 
+OWS   = *( SP / HTAB )  ; "optional" whitespace
+BWS-h = *( SP / HTAB )  ; "bad" whitespace in header values
+EQ-h  = BWS-h EQ BWS-h
 
 
 ;------------------------------------------------------------------------------
 ; 9. Punctuation
 ;------------------------------------------------------------------------------
 
-RWS = 1*( SP / HTAB / "%20" / "%09" )  ; "required" whitespace 
-BWS =  *( SP / HTAB / "%20" / "%09" )  ; "bad" whitespace 
+RWS = 1*( SP / HTAB / "%20" / "%09" )  ; "required" whitespace
+BWS =  *( SP / HTAB / "%20" / "%09" )  ; "bad" whitespace
 
 AT     = "@" / "%40"
 COLON  = ":" / "%3A"
@@ -1224,7 +1224,7 @@ sub-delims     =       "$" / "&" / "'" /                                     "="
 other-delims   = "!" /                   "(" / ")" / "*" / "+" / "," / ";"
 
 pchar-no-SQUOTE       = unreserved / pct-encoded-no-SQUOTE / other-delims / "$" / "&" / "=" / ":" / "@"
-pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG 
+pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG
                       / "%" "2" ( "0" / "1" / "2" / "3" / "4" / "5" / "6" /   "8" / "9" / A-to-F )
 
 qchar-no-AMP              = unreserved / pct-encoded           / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
@@ -1234,14 +1234,14 @@ qchar-no-AMP-SQUOTE       = unreserved / pct-encoded           / other-delims / 
 qchar-no-AMP-DQUOTE       = unreserved / pct-encoded-no-DQUOTE / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
 
 qchar-unescaped       = unreserved / pct-encoded-unescaped / other-delims / ":" / "@" / "/" / "?" / "$" / "'" / "="
-pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" / A-to-F ) HEXDIG 
-                      / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) 
+pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
+                      / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
                       / "%" "5" ( DIGIT / "A" / "B" /   "D" / "E" / "F" )
 
-pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG 
-                      / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) 
-              
-                 
+pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
+                      / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
+
+
 ;------------------------------------------------------------------------------
 ; B. IRI syntax [RFC3987]
 ;------------------------------------------------------------------------------
@@ -1251,27 +1251,27 @@ pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / 
 IRI-in-header = 1*( VCHAR / obs-text )
 IRI-in-query  = 1*qchar-no-AMP
 
-                      
+
 ;------------------------------------------------------------------------------
 ; C. ABNF core definitions [RFC5234]
 ;------------------------------------------------------------------------------
 
-ALPHA  = %x41-5A / %x61-7A 
-DIGIT  = %x30-39 
+ALPHA  = %x41-5A / %x61-7A
+DIGIT  = %x30-39
 HEXDIG = DIGIT / A-to-F
-A-to-F = "A" / "B" / "C" / "D" / "E" / "F" 
+A-to-F = "A" / "B" / "C" / "D" / "E" / "F"
 DQUOTE = %x22
-SP     = %x20 
-HTAB   = %x09 
-;WSP    = SP / HTAB 
-;LWSP = *(WSP / CRLF WSP) 
-VCHAR = %x21-7E 
+SP     = %x20
+HTAB   = %x09
+;WSP    = SP / HTAB
+;LWSP = *(WSP / CRLF WSP)
+VCHAR = %x21-7E
 ;CHAR = %x01-7F
-;LOCTET = %x00-FF 
-;CR     = %x0D 
-;LF     = %x0A 
+;LOCTET = %x00-FF
+;CR     = %x0D
+;LF     = %x0A
 ;CRLF   = CR LF
-;BIT = "0" / "1" 
+;BIT = "0" / "1"
 
 
 ;------------------------------------------------------------------------------
