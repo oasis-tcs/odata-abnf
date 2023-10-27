@@ -909,7 +909,7 @@ primitiveLiteral = null
                  / geometryPoint
                  / geometryPolygon
 
-; in Atom and JSON message bodies and CSDL DefaultValue attributes
+; in CSDL XML DefaultValue attributes
 primitiveValue = boolean
                / guid
                / durationValue
@@ -933,9 +933,6 @@ primitiveValue = boolean
                / int32Value
                / int64Value
                / binaryValue
-               ; also valid are:
-               ; - any XML string for strings in Atom and CSDL XML documents
-               ; - any JSON string for JSON documents
 
 null = %s"null"
 
