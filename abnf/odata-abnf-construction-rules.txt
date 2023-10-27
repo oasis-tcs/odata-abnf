@@ -340,7 +340,7 @@ format = ( "$format" / "format" ) EQ
          )                     ; format specific to the specific data service> or
                                ; <An IANA-defined [IANA-MMT] content type>
 
-inlinecount = ( "$count" / "count" ) EQ booleanValue
+inlinecount = ( "$count" / "count" ) EQ boolean
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
@@ -698,7 +698,7 @@ gtExpr = RWS "gt" RWS commonExpr
 geExpr = RWS "ge" RWS commonExpr
 inExpr = RWS "in" RWS ( listExpr / commonExpr )
 
-hasExpr = RWS "has" RWS enum
+hasExpr = RWS "has" RWS enumLiteral
 
 addExpr   = RWS "add"   RWS commonExpr
 subExpr   = RWS "sub"   RWS commonExpr
@@ -889,24 +889,24 @@ primitiveColFunctionImport = odataIdentifier
 ;------------------------------------------------------------------------------
 
 ; in URLs
-primitiveLiteral = nullValue                  ; plain values up to int64Value
-                 / booleanValue
-                 / guidValue
-                 / dateTimeOffsetValueInUrl
-                 / dateValue
-                 / timeOfDayValueInUrl
-                 / decimalValue
-                 / doubleValue
-                 / singleValue
-                 / sbyteValue
-                 / byteValue
-                 / int16Value
-                 / int32Value
-                 / int64Value
-                 / string                     ; single-quoted
-                 / duration
-                 / enum
-                 / binary                     ; all others are quoted and prefixed
+primitiveLiteral = null
+                 / boolean
+                 / guid
+                 / dateTimeOffsetLiteral
+                 / date
+                 / timeOfDayLiteral
+                 / decimalLiteral
+                 / doubleLiteral
+                 / singleLiteral
+                 / sbyteLiteral
+                 / byte
+                 / int16Literal
+                 / int32Literal
+                 / int64Literal
+                 / stringLiteral              ; single-quoted
+                 / durationLiteral
+                 / enumLiteral
+                 / binaryLiteral              ; all others are quoted and prefixed
                  / geographyCollection
                  / geographyLineString
                  / geographyMultiLineString
@@ -922,12 +922,12 @@ primitiveLiteral = nullValue                  ; plain values up to int64Value
                  / geometryPoint
                  / geometryPolygon
 
-; in Atom and JSON message bodies and CSDL DefaultValue attributes
-primitiveValue = booleanValue
-               / guidValue
+; in CSDL XML DefaultValue attributes
+primitiveValue = boolean
+               / guid
                / durationValue
                / dateTimeOffsetValue
-               / dateValue
+               / date
                / timeOfDayValue
                / enumValue
                / fullCollectionLiteral
@@ -941,54 +941,58 @@ primitiveValue = booleanValue
                / doubleValue
                / singleValue
                / sbyteValue
-               / byteValue
+               / byte
                / int16Value
                / int32Value
                / int64Value
                / binaryValue
-               ; also valid are:
-               ; - any XML string for strings in Atom and CSDL documents
-               ; - any JSON string for JSON documents
 
-nullValue = %s"null"
+null = %s"null"
 
 ; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5
-binary      = "binary" SQUOTE binaryValue SQUOTE
-binaryValue = *(4base64char) [ base64b16  / base64b8 ]
-base64b16   = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s"Y" / %s"c" / %s"g" / %s"k" / %s"o" / %s"s" / %s"w" / %s"0" / %s"4" / %s"8" )   [ "=" ]
-base64b8    = base64char ( %s"A" / %s"Q" / %s"g" / %s"w" ) [ "==" ]
-base64char  = ALPHA / DIGIT / "-" / "_"
+binaryLiteral = "binary" SQUOTE binaryValue SQUOTE
+binaryValue   = *(4base64char) [ base64b16  / base64b8 ]
+base64b16     = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s"Y" / %s"c" / %s"g" / %s"k" / %s"o" / %s"s" / %s"w" / %s"0" / %s"4" / %s"8" )   [ "=" ]
+base64b8      = base64char ( %s"A" / %s"Q" / %s"g" / %s"w" ) [ "==" ]
+base64char    = ALPHA / DIGIT / "-" / "_"
 
-booleanValue = "true" / "false"
+boolean = "true" / "false"
 
-decimalValue = [ SIGN ] 1*DIGIT [ "." 1*DIGIT ] [ "e" [ SIGN ] 1*DIGIT ] / nanInfinity
-doubleValue  = decimalValue ; IEEE 754 binary64 floating-point number (15-17 decimal digits)
-singleValue  = decimalValue ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
-nanInfinity  = %s"NaN" / %s"-INF" / %s"INF"
+decimalLiteral = [ SIGN ]  1*DIGIT [ "." 1*DIGIT ] [ "e" [ SIGN ]  1*DIGIT ] / nanInfinity
+decimalValue   = ["+"/"-"] 1*DIGIT [ "." 1*DIGIT ] [ "e" ["+"/"-"] 1*DIGIT ] / nanInfinity
+doubleLiteral  = decimalLiteral ; IEEE 754 binary64 floating-point number (15-17 decimal digits)
+doubleValue    = decimalValue   ; IEEE 754 binary64 floating-point number (15-17 decimal digits)
+singleLiteral  = decimalLiteral ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
+singleValue    = decimalValue   ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
+nanInfinity    = %s"NaN" / %s"-INF" / %s"INF"
 
-guidValue = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
+guid = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
 
-byteValue  = 1*3DIGIT           ; numbers in the range from 0 to 255
-sbyteValue = [ SIGN ] 1*3DIGIT  ; numbers in the range from -128 to 127
-int16Value = [ SIGN ] 1*5DIGIT  ; numbers in the range from -32768 to 32767
-int32Value = [ SIGN ] 1*10DIGIT ; numbers in the range from -2147483648 to 2147483647
-int64Value = [ SIGN ] 1*19DIGIT ; numbers in the range from -9223372036854775808 to 9223372036854775807
+byte         = 1*3DIGIT            ; numbers in the range from 0 to 255
+sbyteLiteral = [ SIGN ]  1*3DIGIT  ; numbers in the range from -128 to 127
+sbyteValue   = ["+"/"-"] 1*3DIGIT  ; numbers in the range from -128 to 127
+int16Literal = [ SIGN ]  1*5DIGIT  ; numbers in the range from -32768 to 32767
+int16Value   = ["+"/"-"] 1*5DIGIT  ; numbers in the range from -32768 to 32767
+int32Literal = [ SIGN ]  1*10DIGIT ; numbers in the range from -2147483648 to 2147483647
+int32Value   = ["+"/"-"] 1*10DIGIT ; numbers in the range from -2147483648 to 2147483647
+int64Literal = [ SIGN ]  1*19DIGIT ; numbers in the range from -9223372036854775808 to 9223372036854775807
+int64Value   = ["+"/"-"] 1*19DIGIT ; numbers in the range from -9223372036854775808 to 9223372036854775807
 
-string           = SQUOTE *( SQUOTE-in-string / pchar-no-SQUOTE ) SQUOTE
+stringLiteral    = SQUOTE *( SQUOTE-in-string / pchar-no-SQUOTE ) SQUOTE
 SQUOTE-in-string = SQUOTE SQUOTE ; two consecutive single quotes represent one within a string literal
 
-dateValue = year "-" month "-" day
+date = year "-" month "-" day
 
-dateTimeOffsetValue      = year "-" month "-" day "T" timeOfDayValue      ( "Z" / SIGN hour ":"   minute )
-dateTimeOffsetValueInUrl = year "-" month "-" day "T" timeOfDayValueInUrl ( "Z" / SIGN hour COLON minute )
+dateTimeOffsetLiteral = date "T" timeOfDayLiteral ( "Z" / SIGN      hour COLON minute )
+dateTimeOffsetValue   = date "T" timeOfDayValue   ( "Z" / ("+"/"-") hour ":"   minute )
 
-duration      = [ "duration" ] SQUOTE durationValue SQUOTE
-durationValue = [ SIGN ] "P" [ 1*DIGIT "D" ] [ "T" [ 1*DIGIT "H" ] [ 1*DIGIT "M" ] [ 1*DIGIT [ "." 1*DIGIT ] "S" ] ]
+durationLiteral = [ "duration" ] SQUOTE durationValue SQUOTE
+durationValue = [ "-" ] "P" [ 1*DIGIT "D" ] [ "T" [ 1*DIGIT "H" ] [ 1*DIGIT "M" ] [ 1*DIGIT [ "." 1*DIGIT ] "S" ] ]
      ; the above is an approximation of the rules for an xml dayTimeDuration.
      ; see the lexical representation for dayTimeDuration in http://www.w3.org/TR/xmlschema11-2#dayTimeDuration for more information
 
-timeOfDayValue      = hour ":"   minute [ ":"   second [ "." fractionalSeconds ] ]
-timeOfDayValueInUrl = hour COLON minute [ COLON second [ "." fractionalSeconds ] ]
+timeOfDayLiteral = hour COLON minute [ COLON second [ "." fractionalSeconds ] ]
+timeOfDayValue   = hour ":"   minute [ ":"   second [ "." fractionalSeconds ] ]
 
 oneToNine       = "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
 zeroToFiftyNine = ( "0" / "1" / "2" / "3" / "4" / "5" ) DIGIT
@@ -1004,7 +1008,7 @@ minute = zeroToFiftyNine
 second = zeroToFiftyNine / "60" ; for leap seconds
 fractionalSeconds = 1*12DIGIT
 
-enum            = [ qualifiedEnumTypeName ] SQUOTE enumValue SQUOTE
+enumLiteral     = [ qualifiedEnumTypeName ] SQUOTE enumValue SQUOTE
 enumValue       = singleEnumValue *( COMMA singleEnumValue )
 singleEnumValue = enumerationMember / enumMemberValue
 enumMemberValue = int64Value
@@ -1109,7 +1113,7 @@ allowEntityReferencesPreference = [ "odata." ] "allow-entityreferences"
 
 callbackPreference = [ "odata." ] "callback" OWS ";" OWS "url" EQ-h DQUOTE URI DQUOTE
 
-continueOnErrorPreference = [ "odata." ] "continue-on-error" [ EQ-h booleanValue ]
+continueOnErrorPreference = [ "odata." ] "continue-on-error" [ EQ-h boolean ]
 
 includeAnnotationsPreference = [ "odata." ] "include-annotations" EQ-h DQUOTE annotationsList DQUOTE
 annotationsList      = annotationIdentifier *("," annotationIdentifier)
@@ -1159,7 +1163,7 @@ COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
-SIGN   = "+" / "%2B" / "-"
+SIGN   = "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"
