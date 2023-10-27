@@ -446,7 +446,7 @@ contextFragment = %s"Collection($ref)"
                 / entitySet [ selectList ] [ %s"/$entity" / %s"/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
-            
+
 containmentNavigation = contextKeyPredicate [ "/" qualifiedEntityTypeName ] navigation
 navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
 
