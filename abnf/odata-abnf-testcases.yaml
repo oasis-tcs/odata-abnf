@@ -102,6 +102,7 @@ Constraints:
     - ProductsByCustomer
     - ProductsOrderedBy
   entityColNavigationProperty:
+    - Details
     - DirectReports
     - Items
     - Orders
@@ -3375,9 +3376,17 @@ TestCases:
     Rule: context
     Input: "#Customers('ALFKI')/Orders"
 
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('ALF/KI')/Orders"
+
   - Name: Context URL - containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders/$entity"
+
+  - Name: Context URL - containment - multi-part key
+    Rule: context
+    Input: "#OrderItems(OrderID=1,ItemID='a')/Details/$entity"
 
   - Name: Context URL - collection with containment - multi-level
     Rule: context

@@ -124,10 +124,23 @@ keyPredicate     = simpleKey / compoundKey / keyPathSegments
 simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE
 compoundKey      = OPEN keyValuePair *( COMMA keyValuePair ) CLOSE
 keyValuePair     = ( primitiveKeyProperty / keyPropertyAlias  ) EQ ( parameterAlias / keyPropertyValue )
-keyPropertyValue = primitiveLiteral
 keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
+keyPropertyValue = booleanValue
+                 / guidValue
+                 / dateTimeOffsetValueInUrl
+                 / dateValue
+                 / timeOfDayValueInUrl
+                 / decimalValue
+                 / sbyteValue
+                 / byteValue
+                 / int16Value
+                 / int32Value
+                 / int64Value
+                 / string                     ; single-quoted
+                 / duration
+                 / enum
 
 singleNavigation = singleNavPath
                  / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
@@ -429,13 +442,30 @@ contextFragment = %s"Collection($ref)"
                 / singletonEntity [ navigation *( containmentNavigation ) [ "/" qualifiedEntityTypeName ] ] [ selectList ]
                 / qualifiedTypeName [ selectList ]
                 / entitySet ( %s"/$deletedEntity" / %s"/$link" / %s"/$deletedLink" )
-                / entitySet keyPredicate "/" contextPropertyPath [ selectList ]
+                / entitySet contextKeyPredicate "/" contextPropertyPath [ selectList ]
                 / entitySet [ selectList ] [ %s"/$entity" / %s"/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
             
-containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation
-navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty   
+containmentNavigation = contextKeyPredicate [ "/" qualifiedEntityTypeName ] navigation
+navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
+
+contextKeyPredicate = OPEN ( contextKeyValue / contextKeyValuePair *( COMMA contextKeyValuePair ) ) CLOSE
+contextKeyValuePair = ( primitiveKeyProperty / keyPropertyAlias  ) EQ contextKeyValue
+contextKeyValue  = booleanValue
+                 / guidValue
+                 / dateTimeOffsetValue ; TODO: no percent-encoding in SIGN
+                 / dateValue
+                 / timeOfDayValue
+                 / decimalValue        ; TODO: no percent-encoding in SIGN
+                 / sbyteValue          ; TODO: no percent-encoding in SIGN
+                 / byteValue
+                 / int16Value          ; TODO: no percent-encoding in SIGN
+                 / int32Value          ; TODO: no percent-encoding in SIGN
+                 / int64Value          ; TODO: no percent-encoding in SIGN
+                 / string              ; TODO: no percent-encoding
+                 / duration            ; TODO: no percent-encoding in SIGN
+                 / enum                ; TODO: no percent-encoding in SIGN
 
 selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE
 selectListItem     = STAR ; all structural properties
@@ -893,7 +923,7 @@ primitiveLiteral = nullValue                  ; plain values up to int64Value
                  / string                     ; single-quoted
                  / duration
                  / enum
-                 / binary                     ; all others are quoted and prefixed 
+                 / binary                     ; all others are quoted and prefixed
                  / geographyCollection 
                  / geographyLineString 
                  / geographyMultiLineString 
@@ -908,8 +938,8 @@ primitiveLiteral = nullValue                  ; plain values up to int64Value
                  / geometryMultiPolygon 
                  / geometryPoint 
                  / geometryPolygon
-         
-; in Atom and JSON message bodies and CSDL DefaultValue attributes                 
+
+; in Atom and JSON message bodies and CSDL DefaultValue attributes
 primitiveValue = booleanValue
                / guidValue
                / durationValue
@@ -937,9 +967,9 @@ primitiveValue = booleanValue
                ; - any XML string for strings in Atom and CSDL documents
                ; - any JSON string for JSON documents 
 
-nullValue = %s"null" 
+nullValue = %s"null"
 
-; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5                                             
+; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5
 binary      = "binary" SQUOTE binaryValue SQUOTE
 binaryValue = *(4base64char) [ base64b16  / base64b8 ]
 base64b16   = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s"Y" / %s"c" / %s"g" / %s"k" / %s"o" / %s"s" / %s"w" / %s"0" / %s"4" / %s"8" )   [ "=" ]
