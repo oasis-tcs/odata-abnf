@@ -127,20 +127,20 @@ keyValuePair     = ( primitiveKeyProperty / keyPropertyAlias  ) EQ ( parameterAl
 keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
-keyPropertyValue = booleanValue
-                 / guidValue
-                 / dateTimeOffsetValueInUrl
-                 / dateValue
-                 / timeOfDayValueInUrl
-                 / decimalValue
-                 / sbyteValue
-                 / byteValue
-                 / int16Value
-                 / int32Value
-                 / int64Value
-                 / string                     ; single-quoted
-                 / duration
-                 / enum
+keyPropertyValue = boolean
+                 / guid
+                 / dateTimeOffsetLiteral
+                 / date
+                 / timeOfDayLiteral
+                 / decimalLiteral
+                 / sbyteLiteral
+                 / byte
+                 / int16Literal
+                 / int32Literal
+                 / int64Literal
+                 / stringLiteral
+                 / durationLiteral
+                 / enumLiteral
 
 singleNavigation = singleNavPath
                  / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
