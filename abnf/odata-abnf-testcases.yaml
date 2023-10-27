@@ -3309,6 +3309,21 @@ TestCases:
     Rule: context
     Input: "#Customers(Address/Country)"
 
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2FStreet)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2COrders)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 10
+    Input: "#Customers%28Address,Orders)"
+
   - Name: Context URL - Entity set with $select and type-cast
     Rule: context
     Input: "#Customers(Address/Model.AddressWithLocation,Orders)"
@@ -3412,6 +3427,10 @@ TestCases:
   - Name: Context URL - collection with containment, key value without percent-encoding
     Rule: context
     Input: "#Customers('ALF/KI')/Orders"
+
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('%')/Orders"
 
   - Name: Context URL - containment
     Rule: context

@@ -450,7 +450,7 @@ entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeNa
 containmentNavigation = contextKeyPredicate [ "/" qualifiedEntityTypeName ] navigation
 navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
 
-contextKeyPredicate = OPEN ( contextKeyValue / contextKeyValuePair *( COMMA contextKeyValuePair ) ) CLOSE
+contextKeyPredicate = "(" ( contextKeyValue / contextKeyValuePair *( "," contextKeyValuePair ) ) ")"
 contextKeyValuePair = ( primitiveKeyProperty / keyPropertyAlias  ) EQ contextKeyValue
 contextKeyValue  = boolean
                  / guid
@@ -463,12 +463,13 @@ contextKeyValue  = boolean
                  / int16Value
                  / int32Value
                  / int64Value
-                 / stringLiteral              ; TODO: stringValue without percent-encoding
+                 / stringValue
                  / durationValue
                  / enumValue
+stringValue = %x27 *( %x00-26 / %x27 %x27 / %x28-FF) %x27 ; SQUOTE = %x27
 
-selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE
-selectListItem     = STAR ; all structural properties
+selectList         = "(" [ selectListItem *( "," selectListItem ) ] ")"
+selectListItem     = "*" ; all structural properties
                    / allOperationsInSchema
                    / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
                      ( qualifiedActionName
@@ -486,7 +487,7 @@ contextPropertyPath = primitiveProperty
                     / complexProperty [ [ "/" qualifiedComplexTypeName ] "/" contextPropertyPath ]
 
 qualifiedActionName   = namespace "." action
-qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
+qualifiedFunctionName = namespace "." function [ "(" parameterName *( "," parameterName ) ")" ]
 
 complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
 entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
