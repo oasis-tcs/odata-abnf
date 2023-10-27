@@ -1026,10 +1026,10 @@ minute = zeroToFiftyNine
 second = zeroToFiftyNine / "60" ; for leap seconds
 fractionalSeconds = 1*12DIGIT
 
-enumLiteral     = [ qualifiedEnumTypeName ] SQUOTE enumValue SQUOTE
-enumValue       = singleEnumValue *( COMMA singleEnumValue )
-singleEnumValue = enumerationMember / enumMemberValue
-enumMemberValue = int64Value
+enumLiteral     = [ qualifiedEnumTypeName ] SQUOTE singleEnumLiteral *( COMMA singleEnumLiteral ) SQUOTE
+singleEnumLiteral = enumerationMember / int64Literal
+enumValue         = singleEnumValue *( "," singleEnumValue )
+singleEnumValue   = enumerationMember / int64Value
 
 geographyCollection   = geographyPrefix SQUOTE fullCollectionLiteral SQUOTE
 fullCollectionLiteral = sridLiteral collectionLiteral
