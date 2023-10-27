@@ -359,7 +359,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord = searchChar *( searchChar / SQUOTE )
-searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
+searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" /"+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
@@ -966,7 +966,7 @@ SQUOTE-in-string = SQUOTE SQUOTE ; two consecutive single quotes represent one w
 
 dateValue = year "-" month "-" day
 
-dateTimeOffsetValue      = year "-" month "-" day "T" timeOfDayValue      ( "Z" / SIGN hour ":"   minute )
+dateTimeOffsetValue      = year "-" month "-" day "T" timeOfDayValue      ( "Z" / ( "+" / "-" ) hour ":"   minute )
 dateTimeOffsetValueInUrl = year "-" month "-" day "T" timeOfDayValueInUrl ( "Z" / SIGN hour COLON minute )
 
 duration      = [ "duration" ] SQUOTE durationValue SQUOTE
@@ -1146,7 +1146,7 @@ COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
-SIGN   = "+" / "%2B" / "-"
+SIGN   = "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"

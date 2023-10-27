@@ -431,7 +431,7 @@ TestCases:
 
   - Name: "DateTimeOffset: with percent-encoding"
     Rule: dateTimeOffsetValueInUrl
-    Input: 2012-09-03T23%3A59+01%3A00
+    Input: 2012-09-03T23%3A59%2B01%3A00
 
   - Name: Decimal
     Rule: decimalValue
@@ -479,14 +479,18 @@ TestCases:
     Rule: duration
     Input: "'P6DT23H59M59.9999S'"
 
-  - Name: "Decimal: integer"
+  - Name: Decimal - negative integer
     Rule: decimalValue
     Input: "-2"
 
-  - Name: "Decimal: integer"
+  - Name: Decimal - positive integer
     Rule: decimalValue
-    FailAt: 4
-    Input: "+42."
+    Input: "%2B42"
+
+  - Name: Decimal - trailing dot
+    Rule: decimalValue
+    FailAt: 3
+    Input: "42."
 
   - Name: "Decimal: no digit before decimal point"
     Rule: decimalValue
@@ -540,7 +544,11 @@ TestCases:
 
   - Name: Int16
     Rule: int16Value
-    Input: "+32000"
+    Input: "32000"
+
+  - Name: Int16
+    Rule: int16Value
+    Input: "%2B32000"
 
   - Name: Int32
     Rule: int32Value
