@@ -2978,45 +2978,63 @@ TestCases:
     Rule: odataRelativeUri
     Input: ProductsByCustomer(customer=@c)?@c={"Orders":[$root/Orders(1)]}
 
-  - Name: Enumeration value in URI
+  - Name: Enumeration literal in URI
     Rule: enumLiteral
     Input: Sales.Pattern'Yellow'
 
-  - Name: Enumeration value in URI - without prefix
+  - Name: Enumeration literal in URI - without prefix
     Rule: enumLiteral
     Input: "'Yellow'"
 
-  - Name: Enumeration value in URI - multiple flag values
+  - Name: Enumeration literal in URI - multiple flag values
     Rule: enumLiteral
     Input: Sales.Pattern'Solid,Yellow'
 
-  - Name: Enumeration value in URI - multiple flag values without prefix
+  - Name: Enumeration literal in URI - multiple flag values
     Rule: enumLiteral
-    Input: "'Solid,Yellow'"
+    Input: Sales.Pattern'Solid%2CYellow,%2B42'
 
-  - Name: Enumeration value - in filter
+  - Name: Enumeration literal in URI - multiple flag values without prefix
+    Rule: enumLiteral
+    Input: "'Solid,Yellow,-42'"
+
+  - Name: Enumeration literal - in filter
     Rule: filter
     Input: $filter=style eq Sales.Pattern'Yellow'
 
-  - Name: Enumeration value - in filter without prefix
+  - Name: Enumeration literal - in filter without prefix
     Rule: filter
     Input: $filter=style eq 'Yellow'
 
-  - Name: Enumeration value - in filter with has
+  - Name: Enumeration literal - in filter with has
     Rule: filter
     Input: $filter=style has Sales.Pattern'Yellow'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: filter
     Input: $filter=style has Sales.Pattern'32'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: odataRelativeUri
     Input: Products?$filter=style eq Sales.Pattern'Yellow,32'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: odataRelativeUri
     Input: Products?$filter=style eq cast(eyeColor,Sales.Pattern)
+
+  - Name: Enumeration value - multiple flag values
+    Rule: enumValue
+    Input: "Solid,Yellow,+42"
+
+  - Name: Enumeration value - no percent-encoding
+    Rule: enumValue
+    FailAt: 5
+    Input: Solid%2CYellow
+
+  - Name: Enumeration value - no percent-encoding
+    Rule: enumValue
+    FailAt: 0
+    Input: "%2B42"
 
   - Name: GeographyCollection
     Rule: geographyCollection
