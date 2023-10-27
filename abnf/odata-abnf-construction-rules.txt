@@ -124,10 +124,23 @@ keyPredicate     = simpleKey / compoundKey / keyPathSegments
 simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE
 compoundKey      = OPEN keyValuePair *( COMMA keyValuePair ) CLOSE
 keyValuePair     = ( primitiveKeyProperty / keyPropertyAlias  ) EQ ( parameterAlias / keyPropertyValue )
-keyPropertyValue = primitiveLiteral
 keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
+keyPropertyValue = booleanValue
+                 / guidValue
+                 / dateTimeOffsetValueInUrl
+                 / dateValue
+                 / timeOfDayValueInUrl
+                 / decimalValue
+                 / sbyteValue
+                 / byteValue
+                 / int16Value
+                 / int32Value
+                 / int64Value
+                 / string                     ; single-quoted
+                 / duration
+                 / enum
 
 singleNavigation = singleNavPath
                  / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
