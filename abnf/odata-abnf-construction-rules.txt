@@ -359,7 +359,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord = searchChar *( searchChar / SQUOTE )
-searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" /"+" / "," / ":" / "@" / "/" / "?" / "$" / "="
+searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
