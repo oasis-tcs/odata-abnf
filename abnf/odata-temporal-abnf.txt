@@ -20,7 +20,7 @@
 ;   - Michael Pizzo (mikep@microsoft.com), Microsoft
 ;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
 ;
-; Additional artifacts: 
+; Additional artifacts:
 ;   This grammar is one component of a Work Product which consists of:
 ;   - OData Extension for Temporal Data Version 4.0
 ;   - OData Temporal ABNF Construction Rules Version 4.0
@@ -48,13 +48,13 @@
 ;   using the Open Data Protocol (OData).
 ;
 ; Overview:
-;   This grammar uses the ABNF defined in RFC5234 and RFC7405. 
+;   This grammar uses the ABNF defined in RFC5234 and RFC7405.
 ;
 ;   It extends the OData ABNF Construction Rules Version 4.01
 ;
 ; Contents:
 ;   1. New alternatives for OData ABNF Construction Rules
-;   2. Temporal System Query Options 
+;   2. Temporal System Query Options
 ;
 ;------------------------------------------------------------------------------
 
@@ -67,8 +67,8 @@ systemQueryOption =/ temporalOption
 expandOption =/ temporalOption
 
 temporalOption = at-option
-               / from 
-               / to 
+               / from
+               / to
                / toInclusive
 
 
@@ -81,9 +81,9 @@ from        = "$from"        EQ temporalExpr
 to          = "$to"          EQ temporalExpr
 toInclusive = "$toInclusive" EQ temporalExpr
 
-temporalExpr = "min" 
-             / "max" 
-             / commonExpr ; evaluating to a dateValue or dateTimeOffsetValue 
+temporalExpr = "min"
+             / "max"
+             / commonExpr ; evaluating to a dateValue or dateTimeOffsetValue
 
 
 ;------------------------------------------------------------------------------
