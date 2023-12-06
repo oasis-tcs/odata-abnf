@@ -276,89 +276,89 @@ TestCases:
     Input: http//My.Org/
 
   - Name: Binary with X
-    Rule: binary
+    Rule: binaryLiteral
     FailAt: 0
     Input: X'1a2B3c4D'
 
   - Name: Binary - empty
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary''
 
   - Name: Binary - f
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zg=='
 
   - Name: Binary - f (pad character is optional)
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zg'
 
   - Name: Binary - fo
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm8='
 
   - Name: Binary - fo (pad character is optional)
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm8='
 
   - Name: Binary - foo
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm9v'
 
   - Name: Binary - foob
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm9vYg=='
 
   - Name: Binary - fooba
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm9vYmE='
 
   - Name: Binary - foobar
-    Rule: binary
+    Rule: binaryLiteral
     Input: binary'Zm9vYmFy'
 
   - Name: Boolean - true
-    Rule: booleanValue
+    Rule: boolean
     Input: "true"
 
   - Name: Boolean - false
-    Rule: booleanValue
+    Rule: boolean
     Input: "false"
 
   - Name: Boolean - literals are case-insensitive
-    Rule: booleanValue
+    Rule: boolean
     Input: tRUe
 
   - Name: Date in URL or body
-    Rule: dateValue
+    Rule: date
     Input: 2012-09-03
 
   - Name: Date
-    Rule: dateValue
+    Rule: date
     Input: 2012-09-10
 
   - Name: Date
-    Rule: dateValue
+    Rule: date
     Input: 2012-09-20
 
   - Name: Date
-    Rule: dateValue
+    Rule: date
     Input: 2012-09-03
 
   - Name: "Date: year zero"
-    Rule: dateValue
+    Rule: date
     Input: 0000-01-01
 
   - Name: "Date: negative"
-    Rule: dateValue
+    Rule: date
     Input: -10000-04-01
 
   - Name: "Date: negative Infinity"
-    Rule: dateValue
+    Rule: date
     FailAt: 1
     Input: -INF
 
   - Name: "Date: positive Infinity"
-    Rule: dateValue
+    Rule: date
     FailAt: 0
     Input: INF
 
@@ -430,8 +430,8 @@ TestCases:
     Input: 2012-09-03T23:59+01%3A00
 
   - Name: "DateTimeOffset: with percent-encoding"
-    Rule: dateTimeOffsetValueInUrl
-    Input: 2012-09-03T23%3A59+01%3A00
+    Rule: dateTimeOffsetLiteral
+    Input: 2012-09-03T23%3A59%2B01%3A00
 
   - Name: Decimal
     Rule: decimalValue
@@ -457,36 +457,49 @@ TestCases:
     Rule: decimalValue
     Input: NaN
 
-  - Name: Duration in body
+  - Name: Duration
     Rule: durationValue
-    Input: P6DT23H59M59.9999S
+    Input: -P6DT23H59M59.9999S
 
-  - Name: "Duration in body: no years allowed"
+  - Name: Duration - no plus allowed
+    Rule: durationValue
+    FailAt: 0
+    Input: +P6DT23H59M59.9999S
+
+  - Name: Duration in body - no years allowed
     Rule: durationValue
     FailAt: 2
     Input: P1Y6DT23H59M59.9999S
 
-  - Name: "Duration in body: no months allowed"
+  - Name: Duration in body - no months allowed
     Rule: durationValue
     FailAt: 2
     Input: P1M6DT23H59M59.9999S
 
   - Name: Duration in URL
-    Rule: duration
+    Rule: durationLiteral
     Input: duration'P6DT23H59M59.9999S'
 
   - Name: Duration in URL without prefix
-    Rule: duration
+    Rule: durationLiteral
     Input: "'P6DT23H59M59.9999S'"
 
-  - Name: "Decimal: integer"
+  - Name: Decimal - negative integer
     Rule: decimalValue
     Input: "-2"
 
-  - Name: "Decimal: integer"
+  - Name: Decimal - positive integer in URL
+    Rule: primitiveLiteral
+    Input: "%2B42"
+
+  - Name: Decimal - positive integer
     Rule: decimalValue
-    FailAt: 4
-    Input: "+42."
+    Input: "+42"
+
+  - Name: Decimal - trailing dot
+    Rule: decimalValue
+    FailAt: 3
+    Input: "42."
 
   - Name: "Decimal: no digit before decimal point"
     Rule: decimalValue
@@ -494,7 +507,7 @@ TestCases:
     Input: ".1"
 
   - Name: Decimal in URL
-    Rule: decimalValue
+    Rule: decimalLiteral
     Input: "3.14"
 
   - Name: Double
@@ -523,63 +536,83 @@ TestCases:
     Input: NaN
 
   - Name: Double in URL
-    Rule: doubleValue
+    Rule: doubleLiteral
     Input: "-0.314e1"
 
   - Name: Single in URL
+    Rule: singleLiteral
+    Input: "%2B0.314e%2B1"
+
+  - Name: Single
     Rule: singleValue
-    Input: "-0.314e1"
+    Input: "+0.314e+1"
 
   - Name: Byte
-    Rule: byteValue
+    Rule: byte
     Input: "255"
+
+  - Name: SByte in URL
+    Rule: sbyteLiteral
+    Input: "%2B128"
 
   - Name: SByte
     Rule: sbyteValue
     Input: "-128"
 
+  - Name: Int16 in URL
+    Rule: int16Literal
+    Input: "%2B32000"
+
   - Name: Int16
     Rule: int16Value
     Input: "+32000"
 
+  - Name: Int32 in URL
+    Rule: int32Literal
+    Input: "%2B2000000000"
+
   - Name: Int32
     Rule: int32Value
     Input: "-2000000000"
+
+  - Name: Int64 in URL
+    Rule: int64Literal
+    Input: "%2B1234567890123456789"
 
   - Name: Int64
     Rule: int64Value
     Input: "1234567890123456789"
 
   - Name: "Null: unqualified"
-    Rule: nullValue
+    Rule: "null"
     Input: "null"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     Input:
       "'ABCDEFGHIHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~!$&\
       ('')*+,;=:@'"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     Input: "'O''Neil'"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     Input: "%27O'%27Neil'"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     FailAt: 3
     Input: "'O'Neil'"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     FailAt: 5
     Input: "'O%27Neil'"
 
   - Name: String
-    Rule: string
+    Rule: stringLiteral
     Input: "'%26%28'"
 
   - Name: primitive value in request body - enumeration member
@@ -622,7 +655,7 @@ TestCases:
     Input: Categories(ID=1)
 
   - Name: Key
-    Rule: string
+    Rule: stringLiteral
     Input: "'Hugo''s%20Tavern'"
 
   - Name: Resource Path - Entity
@@ -630,16 +663,16 @@ TestCases:
     Input: Categories(ID=1,Size=5)
 
   - Name: Correct Guid
-    Rule: guidValue
+    Rule: guid
     Input: 01234567-89ab-cdef-0123-456789abcdef
 
   - Name: Guid with wrong character
-    Rule: guidValue
+    Rule: guid
     FailAt: 5
     Input: 01234g67-89ab-cdef-0123-456789abcdef
 
   - Name: Guid with less than 32 digits
-    Rule: guidValue
+    Rule: guid
     FailAt: 23
     Input: 01234567-89ab-cdef-456789abcdef
 
@@ -648,7 +681,7 @@ TestCases:
     Input: 11:22:33
 
   - Name: TimeOfDay - percent-encoded colon
-    Rule: timeOfDayValueInUrl
+    Rule: timeOfDayLiteral
     Input: 11%3A22%3a33
 
   - Name: TimeOfDay - no percent-encoding in payloads
@@ -1601,12 +1634,12 @@ TestCases:
     Input: true eq false
 
   - Name: 5.1.1.1.1 boolean - only true and false
-    Rule: booleanValue
+    Rule: boolean
     FailAt: 0
     Input: "0"
 
   - Name: 5.1.1.1.1 boolean - only true and false
-    Rule: booleanValue
+    Rule: boolean
     FailAt: 0
     Input: "1"
 
@@ -2945,45 +2978,63 @@ TestCases:
     Rule: odataRelativeUri
     Input: ProductsByCustomer(customer=@c)?@c={"Orders":[$root/Orders(1)]}
 
-  - Name: Enumeration value in URI
-    Rule: enum
+  - Name: Enumeration literal in URI
+    Rule: enumLiteral
     Input: Sales.Pattern'Yellow'
 
-  - Name: Enumeration value in URI - without prefix
-    Rule: enum
+  - Name: Enumeration literal in URI - without prefix
+    Rule: enumLiteral
     Input: "'Yellow'"
 
-  - Name: Enumeration value in URI - multiple flag values
-    Rule: enum
+  - Name: Enumeration literal in URI - multiple flag values
+    Rule: enumLiteral
     Input: Sales.Pattern'Solid,Yellow'
 
-  - Name: Enumeration value in URI - multiple flag values without prefix
-    Rule: enum
-    Input: "'Solid,Yellow'"
+  - Name: Enumeration literal in URI - multiple flag values
+    Rule: enumLiteral
+    Input: Sales.Pattern'Solid%2CYellow,%2B42'
 
-  - Name: Enumeration value - in filter
+  - Name: Enumeration literal in URI - multiple flag values without prefix
+    Rule: enumLiteral
+    Input: "'Solid,Yellow,-42'"
+
+  - Name: Enumeration literal - in filter
     Rule: filter
     Input: $filter=style eq Sales.Pattern'Yellow'
 
-  - Name: Enumeration value - in filter without prefix
+  - Name: Enumeration literal - in filter without prefix
     Rule: filter
     Input: $filter=style eq 'Yellow'
 
-  - Name: Enumeration value - in filter with has
+  - Name: Enumeration literal - in filter with has
     Rule: filter
     Input: $filter=style has Sales.Pattern'Yellow'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: filter
     Input: $filter=style has Sales.Pattern'32'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: odataRelativeUri
     Input: Products?$filter=style eq Sales.Pattern'Yellow,32'
 
-  - Name: Enumeration value - undefined value as numeric constant
+  - Name: Enumeration literal - undefined value as numeric constant
     Rule: odataRelativeUri
     Input: Products?$filter=style eq cast(eyeColor,Sales.Pattern)
+
+  - Name: Enumeration value - multiple flag values
+    Rule: enumValue
+    Input: "Solid,Yellow,+42"
+
+  - Name: Enumeration value - no percent-encoding
+    Rule: enumValue
+    FailAt: 5
+    Input: Solid%2CYellow
+
+  - Name: Enumeration value - no percent-encoding
+    Rule: enumValue
+    FailAt: 0
+    Input: "%2B42"
 
   - Name: GeographyCollection
     Rule: geographyCollection
