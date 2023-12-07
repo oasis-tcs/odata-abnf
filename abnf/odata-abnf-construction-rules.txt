@@ -923,11 +923,11 @@ primitiveLiteral = null
                  / geometryPolygon
 
 ; in CSDL XML DefaultValue attributes
-primitiveValue = boolean
-               / guid
+primitiveValue = booleanValue
+               / guidValue
                / durationValue
                / dateTimeOffsetValue
-               / date
+               / dateValue
                / timeOfDayValue
                / enumValue
                / fullCollectionLiteral
@@ -941,7 +941,7 @@ primitiveValue = boolean
                / doubleValue
                / singleValue
                / sbyteValue
-               / byte
+               / byteValue
                / int16Value
                / int32Value
                / int64Value
@@ -956,7 +956,8 @@ base64b16     = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s
 base64b8      = base64char ( %s"A" / %s"Q" / %s"g" / %s"w" ) [ "==" ]
 base64char    = ALPHA / DIGIT / "-" / "_"
 
-boolean = "true" / "false"
+boolean      = "true" / "false"
+booleanValue = %s"true" / %s"false"
 
 decimalLiteral = [ SIGN ]  1*DIGIT [ "." 1*DIGIT ] [ "e" [ SIGN ]  1*DIGIT ] / nanInfinity
 decimalValue   = ["+"/"-"] 1*DIGIT [ "." 1*DIGIT ] [ "e" ["+"/"-"] 1*DIGIT ] / nanInfinity
@@ -966,9 +967,11 @@ singleLiteral  = decimalLiteral ; IEEE 754 binary32 floating-point number (6-9 d
 singleValue    = decimalValue   ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
 nanInfinity    = %s"NaN" / %s"-INF" / %s"INF"
 
-guid = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
+guid      = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
+guidValue = guid
 
 byte         = 1*3DIGIT            ; numbers in the range from 0 to 255
+byteValue    = byte
 sbyteLiteral = [ SIGN ]  1*3DIGIT  ; numbers in the range from -128 to 127
 sbyteValue   = ["+"/"-"] 1*3DIGIT  ; numbers in the range from -128 to 127
 int16Literal = [ SIGN ]  1*5DIGIT  ; numbers in the range from -32768 to 32767
@@ -981,9 +984,11 @@ int64Value   = ["+"/"-"] 1*19DIGIT ; numbers in the range from -9223372036854775
 stringLiteral    = SQUOTE *( SQUOTE-in-string / pchar-no-SQUOTE ) SQUOTE
 SQUOTE-in-string = SQUOTE SQUOTE ; two consecutive single quotes represent one within a string literal
 
-date = year "-" month "-" day
+date      = year "-" month "-" day
+dateValue = date
 
 dateTimeOffsetLiteral = date "T" timeOfDayLiteral ( "Z" / SIGN      hour COLON minute )
+dateTimeOffsetValueInUrl = dateTimeOffsetLiteral ; legacy name referenced in Temporal spec
 dateTimeOffsetValue   = date "T" timeOfDayValue   ( "Z" / ("+"/"-") hour ":"   minute )
 
 durationLiteral = [ "duration" ] SQUOTE durationValue SQUOTE
