@@ -124,10 +124,23 @@ keyPredicate     = simpleKey / compoundKey / keyPathSegments
 simpleKey        = OPEN ( parameterAlias / keyPropertyValue ) CLOSE
 compoundKey      = OPEN keyValuePair *( COMMA keyValuePair ) CLOSE
 keyValuePair     = ( primitiveKeyProperty / keyPropertyAlias  ) EQ ( parameterAlias / keyPropertyValue )
-keyPropertyValue = primitiveLiteral
 keyPropertyAlias = odataIdentifier
 keyPathSegments  = 1*( "/" keyPathLiteral )
 keyPathLiteral   = *pchar
+keyPropertyValue = boolean
+                 / guid
+                 / dateTimeOffsetLiteral
+                 / date
+                 / timeOfDayLiteral
+                 / decimalLiteral
+                 / sbyteLiteral
+                 / byte
+                 / int16Literal
+                 / int32Literal
+                 / int64Literal
+                 / stringLiteral
+                 / durationLiteral
+                 / enumLiteral
 
 singleNavigation = singleNavPath
                  / "/" optionallyQualifiedEntityTypeName [ singleNavPath ]
@@ -331,7 +344,7 @@ inlinecount = ( "$count" / "count" ) EQ boolean
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete )
+search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete ) BWS
 
 searchExpr = ( searchParenExpr
              / searchNegateExpr
@@ -359,7 +372,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord = searchChar *( searchChar / SQUOTE )
-searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
+searchChar = unreserved / pct-encoded-no-SP-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
@@ -1241,6 +1254,9 @@ pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" 
 
 pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
                       / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
+
+pct-encoded-no-SP-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
+                         / "%" "2" (   "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
 
 
 ;------------------------------------------------------------------------------
