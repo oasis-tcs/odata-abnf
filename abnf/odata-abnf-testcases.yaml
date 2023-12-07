@@ -328,12 +328,21 @@ TestCases:
     Rule: boolean
     Input: tRUe
 
-  - Name: Date in URL or body
+  - Name: Boolean - payload values are lowercase
+    Rule: booleanValue
+    Input: tRUe
+    FailAt: 0
+
+  - Name: Boolean - payload values are lowercase
+    Rule: booleanValue
+    Input: "true"
+
+  - Name: Date in URL
     Rule: date
     Input: 2012-09-03
 
-  - Name: Date
-    Rule: date
+  - Name: Date in body or DefaultValue
+    Rule: dateValue
     Input: 2012-09-10
 
   - Name: Date
@@ -429,8 +438,12 @@ TestCases:
     FailAt: 19
     Input: 2012-09-03T23:59+01%3A00
 
-  - Name: "DateTimeOffset: with percent-encoding"
+  - Name: "DateTimeOffset: with percent-encoding in URLs"
     Rule: dateTimeOffsetLiteral
+    Input: 2012-09-03T23%3A59%2B01%3A00
+
+  - Name: DateTimeOffset - legacy rule name for Temporal spec
+    Rule: dateTimeOffsetValueInUrl
     Input: 2012-09-03T23%3A59%2B01%3A00
 
   - Name: Decimal
@@ -548,7 +561,7 @@ TestCases:
     Input: "+0.314e+1"
 
   - Name: Byte
-    Rule: byte
+    Rule: byteValue
     Input: "255"
 
   - Name: SByte in URL
