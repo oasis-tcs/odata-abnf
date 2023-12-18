@@ -1853,6 +1853,10 @@ TestCases:
     Rule: commonExpr
     Input: concat(concat(Street,'-'),City)
 
+  - Name: 5.1.1.5.1 concat
+    Rule: commonExpr
+    Input: concat(Street,'-',City)
+
   - Name: 5.1.1.5.2 contains
     Rule: boolCommonExpr
     Input: contains(CompanyName,'lfreds')

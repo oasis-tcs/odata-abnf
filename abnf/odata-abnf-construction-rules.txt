@@ -642,7 +642,7 @@ boolMethodCallExpr = endsWithMethodCallExpr
                    / hasSubsetMethodCallExpr
                    / hasSubsequenceMethodCallExpr
 
-concatMethodCallExpr         = "concat"         OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+concatMethodCallExpr         = "concat"         OPEN BWS commonExpr 1*(BWS COMMA BWS commonExpr) BWS CLOSE
 containsMethodCallExpr       = "contains"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 endsWithMethodCallExpr       = "endswith"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 indexOfMethodCallExpr        = "indexof"        OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
