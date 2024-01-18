@@ -1921,6 +1921,10 @@ TestCases:
     Rule: commonExpr
     Input: matchesPattern(CompanyName,'%5EA.*e$')
 
+  - Name: 5.1.1.7.1 matchesPattern ^A.*e$ case-insensitive
+    Rule: commonExpr
+    Input: matchesPattern(CompanyName,'%5EA.*e$','i')
+
   - Name: 5.1.1.7.2 tolower
     Rule: commonExpr
     Input: tolower(CompanyName)
