@@ -1,6 +1,6 @@
-#  OData ABNF Test Cases Version 4.01 and 4.0
+#  OData ABNF Test Cases Version 4.02, 4.01, and 4.0
 #
-#  17 September 2020
+#  05 February 2024
 #
 #  Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-testcases.yaml
 #
@@ -19,18 +19,18 @@
 #
 #  Additional artifacts:
 #  This test case document is one component of a Work Product which consists of:
-#  - OData Version 4.01 Part 1: Protocol
-#  - OData Version 4.01 Part 2: URL Conventions
-#  - OData ABNF Construction Rules Version 4.01
-#  - OData ABNF Test Cases Version 4.01 (this document)
+#  - OData Version 4.02 Part 1: Protocol
+#  - OData Version 4.02 Part 2: URL Conventions
+#  - OData ABNF Construction Rules Version 4.02
+#  - OData ABNF Test Cases Version 4.02 (this document)
 #
 #  Related work:
 #  This specification replaces or supersedes:
 #  - OData ABNF Test Cases Version 4.0
 #  This work product is related to
-#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
-#  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
-#  - OData JSON Format Version 4.01
+#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.02
+#  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.02
+#  - OData JSON Format Version 4.02
 #
 #  Abstract:
 #  The Open Data Protocol (OData) enables the creation of REST-based data
@@ -42,10 +42,10 @@
 #
 #  Overview:
 #  This document contains positive and negative test cases for the
-#  OData ABNF Construction Rules Version 4.01.
+#  OData ABNF Construction Rules Version 4.02.
 #  Positive test cases consist of the rule to test, the input string to parse,
 #  and a description of the test case, often starting with a section number
-#  referring to OData Version 4.01 Part 2: URL Conventions.
+#  referring to OData Version 4.02 Part 2: URL Conventions.
 #  Negative test cases in addition state the character position at which the
 #  invalid portion of input text starts, 0 meaning the whole input string.
 #
@@ -3577,25 +3577,33 @@ TestCases:
     Rule: header
     Input: isolation:sNapShoT
 
-  - Name: Header - odata-maxversion
+  - Name: Header - odata-maxversion 4.0
     Rule: header
     Input: "odata-maxversion: 4.0"
 
-  - Name: Header - odata-maxversion next
+  - Name: Header - odata-maxversion 4.01
     Rule: header
     Input: "odata-maxversion: 4.01"
 
-  - Name: Header - odata-maxversion
+  - Name: Header - odata-maxversion 4.02
+    Rule: header
+    Input: "odata-maxversion: 4.02"
+
+  - Name: Header - odata-maxversion weird
     Rule: header
     Input: odata-maxversion:06.2831852000
 
-  - Name: Header - odata-version
+  - Name: Header - odata-version 4.0
     Rule: header
     Input: "odata-version: 4.0"
 
-  - Name: Header - odata-version
+  - Name: Header - odata-version 4.01
     Rule: header
     Input: "odata-version: 4.01"
+
+  - Name: Header - odata-version 4.02
+    Rule: header
+    Input: "odata-version: 4.02"
 
   - Name: Preferences - allow entity references and maximum page size
     Rule: prefer
