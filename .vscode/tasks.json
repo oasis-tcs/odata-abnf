@@ -6,7 +6,7 @@
     {
       "label": "Check ABNF",
       "type": "shell",
-      "command": "./lib/check-abnf.ps1",
+      "command": "pwsh ./lib/check-abnf.ps1",
       "options": {
         "cwd": "."
       },
@@ -20,7 +20,7 @@
     {
       "label": "Check ABNF & watch",
       "type": "shell",
-      "command": "./lib/check-abnf.ps1 -watch",
+      "command": "pwsh ./lib/check-abnf.ps1 -watch",
       "options": {
         "cwd": "."
       },
