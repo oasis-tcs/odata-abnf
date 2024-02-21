@@ -1168,7 +1168,7 @@ COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
-SIGN   = "+" / "%2B" / "-"
+SIGN   = "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"
