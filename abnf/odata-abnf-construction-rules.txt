@@ -442,16 +442,34 @@ contextFragment = %s"Collection($ref)"
                 / singletonEntity [ navigation *( containmentNavigation ) [ "/" qualifiedEntityTypeName ] ] [ selectList ]
                 / qualifiedTypeName [ selectList ]
                 / entitySet ( %s"/$deletedEntity" / %s"/$link" / %s"/$deletedLink" )
-                / entitySet keyPredicate "/" contextPropertyPath [ selectList ]
+                / entitySet contextKeyPredicate "/" contextPropertyPath [ selectList ]
                 / entitySet [ selectList ] [ %s"/$entity" / %s"/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
 
-containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation
+containmentNavigation = contextKeyPredicate [ "/" qualifiedEntityTypeName ] navigation
 navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
 
-selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE
-selectListItem     = STAR ; all structural properties
+contextKeyPredicate = "(" ( contextKeyValue / contextKeyValuePair *( "," contextKeyValuePair ) ) ")"
+contextKeyValuePair = ( primitiveKeyProperty / keyPropertyAlias  ) EQ contextKeyValue
+contextKeyValue  = boolean
+                 / guid
+                 / dateTimeOffsetValue
+                 / date
+                 / timeOfDayValue
+                 / decimalValue
+                 / sbyteValue
+                 / byte
+                 / int16Value
+                 / int32Value
+                 / int64Value
+                 / stringValue
+                 / durationValue
+                 / enumValue
+stringValue = %x27 *( %x00-26 / %x27 %x27 / %x28-FF) %x27 ; SQUOTE = %x27
+
+selectList         = "(" [ selectListItem *( "," selectListItem ) ] ")"
+selectListItem     = "*" ; all structural properties
                    / allOperationsInSchema
                    / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
                      ( qualifiedActionName
@@ -469,7 +487,7 @@ contextPropertyPath = primitiveProperty
                     / complexProperty [ [ "/" qualifiedComplexTypeName ] "/" contextPropertyPath ]
 
 qualifiedActionName   = namespace "." action
-qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
+qualifiedFunctionName = namespace "." function [ "(" parameterName *( "," parameterName ) ")" ]
 
 complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
 entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
