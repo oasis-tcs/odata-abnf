@@ -2,3 +2,4 @@ coverage/
 grammar/
 node_modules/
 lib/grammar.js
+.DS_Store
