@@ -558,6 +558,7 @@ inscopeVariableExpr  = implicitVariableExpr
                      / lambdaVariableExpr ; only allowed inside a lambdaPredicateExpr
 implicitVariableExpr = %s"$it"              ; the current instance of the resource identified by the resource path
                      / %s"$this"            ; the instance on which the query option is evaluated
+                     / "$" request-id
 lambdaVariableExpr   = odataIdentifier
 
 collectionNavigationExpr = collectionNavNoCastExpr

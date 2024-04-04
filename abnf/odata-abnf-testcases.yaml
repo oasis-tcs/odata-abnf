@@ -250,6 +250,10 @@ Constraints:
     - Title
     - X
     - ZipCode
+  request-id:
+    - '1'
+    - First-Insert~Customer_1.1
+    - group1
   singletonEntity:
     - BestProductEverCreated
     - MainSupplier
@@ -2267,6 +2271,12 @@ TestCases:
   - Name: 5.1.1.14.6 $this
     Rule: odataRelativeUri
     Input: Customers?$select=Addresses(@a=$this;$filter=endswith(@a/Street,'gasse'))
+
+  - Name: request reference in $batch
+    Rule: commonExpr
+    Input: Customer eq $1
+    Expect:
+      - implicitVariableExpr:$1
 
   - Name: 5.1.1.15 Path expressions
     Rule: commonExpr
