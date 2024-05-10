@@ -525,6 +525,8 @@ rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
+                / "$" request-id [ "/" memberExpr ] ; reference to single-valued response of earlier request
+                / "$" request-id [ collectionNavigationExpr ] ; reference to collection-valued response of earlier request
 
 memberExpr = directMemberExpr
            / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr
@@ -558,7 +560,6 @@ inscopeVariableExpr  = implicitVariableExpr
                      / lambdaVariableExpr ; only allowed inside a lambdaPredicateExpr
 implicitVariableExpr = %s"$it"              ; the current instance of the resource identified by the resource path
                      / %s"$this"            ; the instance on which the query option is evaluated
-                     / "$" request-id
 lambdaVariableExpr   = odataIdentifier
 
 collectionNavigationExpr = collectionNavNoCastExpr

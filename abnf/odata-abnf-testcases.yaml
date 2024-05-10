@@ -2276,7 +2276,8 @@ TestCases:
     Rule: commonExpr
     Input: Customer eq $1
     Expect:
-      - implicitVariableExpr:$1
+      - firstMemberExpr:Customer
+      - firstMemberExpr:$1
 
   - Name: 5.1.1.15 Path expressions
     Rule: commonExpr
