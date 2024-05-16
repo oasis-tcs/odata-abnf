@@ -3475,6 +3475,11 @@ TestCases:
     Rule: context
     Input: "#SingletonEntity/Orders(3)/Items"
 
+  - Name: Context URL - Forbidden key-as-segment
+    Rule: context
+    FailAt: 8
+    Input: "#Orders/3/Items"
+
   - Name: Context URL - collection with containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders"
