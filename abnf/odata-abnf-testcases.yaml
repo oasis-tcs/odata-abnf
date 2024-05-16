@@ -3498,7 +3498,7 @@ TestCases:
 
   - Name: Context URL - containment - multi-part key
     Rule: context
-    Input: "#OrderItems(OrderID=1,ItemID='a')/Details/$entity"
+    Input: "#OrderItems(OrderID=1,ItemID='a/b')/Details/$entity"
 
   - Name: Context URL - collection with containment - multi-level
     Rule: context
