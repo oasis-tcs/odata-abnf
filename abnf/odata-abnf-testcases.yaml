@@ -2279,6 +2279,19 @@ TestCases:
       - firstMemberExpr:Customer
       - firstMemberExpr:$1
 
+  - Name: property reference in $batch
+    Rule: commonExpr
+    Input: Customer/Name eq $1/Name
+    Expect:
+      - memberExpr:Customer/Name
+      - memberExpr:Name
+
+  - Name: member reference in $batch
+    Rule: commonExpr
+    Input: Customer/Name eq $1('ALFKI')/Name
+    Expect:
+      - collectionNavigationExpr:('ALFKI')/Name
+
   - Name: 5.1.1.15 Path expressions
     Rule: commonExpr
     Input: Items
