@@ -102,6 +102,7 @@ Constraints:
     - ProductsByCustomer
     - ProductsOrderedBy
   entityColNavigationProperty:
+    - Details
     - DirectReports
     - Items
     - Orders
@@ -3363,6 +3364,21 @@ TestCases:
     Rule: context
     Input: "#Customers(Address/Country)"
 
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2FStreet)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2COrders)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 10
+    Input: "#Customers%28Address,Orders)"
+
   - Name: Context URL - Entity set with $select and type-cast
     Rule: context
     Input: "#Customers(Address/Model.AddressWithLocation,Orders)"
@@ -3459,13 +3475,30 @@ TestCases:
     Rule: context
     Input: "#SingletonEntity/Orders(3)/Items"
 
+  - Name: Context URL - Forbidden key-as-segment
+    Rule: context
+    FailAt: 8
+    Input: "#Orders/3/Items"
+
   - Name: Context URL - collection with containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders"
 
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('ALF/KI')/Orders"
+
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('%')/Orders"
+
   - Name: Context URL - containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders/$entity"
+
+  - Name: Context URL - containment - multi-part key
+    Rule: context
+    Input: "#OrderItems(OrderID=1,ItemID='a/b')/Details/$entity"
 
   - Name: Context URL - collection with containment - multi-level
     Rule: context
