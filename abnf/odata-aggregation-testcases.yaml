@@ -238,6 +238,8 @@ Constraints:
     - Total # dynamic
     - WeightedAmount # dynamic
     - Year
+  request-id:
+    - group1
   streamProperty:
     - Image
   termName:
