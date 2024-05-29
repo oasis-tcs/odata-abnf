@@ -543,6 +543,9 @@ rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
+                / "$" request-id "/" memberExpr ; reference to single-valued response of earlier request
+                / "$" request-id collectionNavigationExpr ; reference to collection-valued response of earlier request
+                / "$" request-id
 
 memberExpr = directMemberExpr
            / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr
