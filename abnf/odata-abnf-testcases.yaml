@@ -1,6 +1,6 @@
-#  OData ABNF Test Cases Version 4.01 and 4.0
+#  OData ABNF Test Cases Version 4.02, 4.01, and 4.0
 #
-#  17 September 2020
+#  05 February 2024
 #
 #  Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-testcases.yaml
 #
@@ -19,18 +19,18 @@
 #
 #  Additional artifacts:
 #  This test case document is one component of a Work Product which consists of:
-#  - OData Version 4.01 Part 1: Protocol
-#  - OData Version 4.01 Part 2: URL Conventions
-#  - OData ABNF Construction Rules Version 4.01
-#  - OData ABNF Test Cases Version 4.01 (this document)
+#  - OData Version 4.02 Part 1: Protocol
+#  - OData Version 4.02 Part 2: URL Conventions
+#  - OData ABNF Construction Rules Version 4.02
+#  - OData ABNF Test Cases Version 4.02 (this document)
 #
 #  Related work:
 #  This specification replaces or supersedes:
 #  - OData ABNF Test Cases Version 4.0
 #  This work product is related to
-#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
-#  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
-#  - OData JSON Format Version 4.01
+#  - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.02
+#  - OData Common Schema Definition Language (CSDL) XML Representation Version 4.02
+#  - OData JSON Format Version 4.02
 #
 #  Abstract:
 #  The Open Data Protocol (OData) enables the creation of REST-based data
@@ -42,10 +42,10 @@
 #
 #  Overview:
 #  This document contains positive and negative test cases for the
-#  OData ABNF Construction Rules Version 4.01.
+#  OData ABNF Construction Rules Version 4.02.
 #  Positive test cases consist of the rule to test, the input string to parse,
 #  and a description of the test case, often starting with a section number
-#  referring to OData Version 4.01 Part 2: URL Conventions.
+#  referring to OData Version 4.02 Part 2: URL Conventions.
 #  Negative test cases in addition state the character position at which the
 #  invalid portion of input text starts, 0 meaning the whole input string.
 #
@@ -102,6 +102,7 @@ Constraints:
     - ProductsByCustomer
     - ProductsOrderedBy
   entityColNavigationProperty:
+    - Details
     - DirectReports
     - Items
     - Orders
@@ -250,6 +251,10 @@ Constraints:
     - Title
     - X
     - ZipCode
+  request-id:
+    - '1'
+    - First-Insert~Customer_1.1
+    - group1
   singletonEntity:
     - BestProductEverCreated
     - MainSupplier
@@ -1925,6 +1930,10 @@ TestCases:
     Rule: commonExpr
     Input: matchesPattern(CompanyName,'%5EA.*e$')
 
+  - Name: 5.1.1.7.1 matchesPattern ^A.*e$ case-insensitive
+    Rule: commonExpr
+    Input: matchesPattern(CompanyName,'%5EA.*e$','i')
+
   - Name: 5.1.1.7.2 tolower
     Rule: commonExpr
     Input: tolower(CompanyName)
@@ -2267,6 +2276,26 @@ TestCases:
   - Name: 5.1.1.14.6 $this
     Rule: odataRelativeUri
     Input: Customers?$select=Addresses(@a=$this;$filter=endswith(@a/Street,'gasse'))
+
+  - Name: request reference in $batch
+    Rule: commonExpr
+    Input: Customer eq $1
+    Expect:
+      - firstMemberExpr:Customer
+      - firstMemberExpr:$1
+
+  - Name: property reference in $batch
+    Rule: commonExpr
+    Input: Customer/Name eq $1/Name
+    Expect:
+      - memberExpr:Customer/Name
+      - memberExpr:Name
+
+  - Name: member reference in $batch
+    Rule: commonExpr
+    Input: Customer/Name eq $1('ALFKI')/Name
+    Expect:
+      - collectionNavigationExpr:('ALFKI')/Name
 
   - Name: 5.1.1.15 Path expressions
     Rule: commonExpr
@@ -2744,6 +2773,26 @@ TestCases:
   - Name: 5.1.7 Search - implicit AND, encoded
     Rule: queryOptions
     Input: $search=blue%20green
+
+  - Name: 5.1.7 Search - leading space
+    Rule: queryOptions
+    Input: $search=%20blue
+    Expect:
+      - searchWord:blue
+
+  - Name: 5.1.7 Search - trailing space
+    Rule: queryOptions
+    Input: $search=blue%20&!special
+    Expect:
+      - searchWord:blue
+      - customQueryOption:!special
+
+  - Name: 5.1.7 Search - space in search phrase
+    Rule: queryOptions
+    Input: $search=%20"%20"%20-%20
+    Expect:
+      - searchPhrase:"%20"
+      - searchWord:-
 
   - Name: 5.1.7 Search - AND
     Rule: queryOptions
@@ -3343,6 +3392,21 @@ TestCases:
     Rule: context
     Input: "#Customers(Address/Country)"
 
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2FStreet)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 18
+    Input: "#Customers(Address%2COrders)"
+
+  - Name: Context URL - no percent-encoding allowed
+    Rule: context
+    FailAt: 10
+    Input: "#Customers%28Address,Orders)"
+
   - Name: Context URL - Entity set with $select and type-cast
     Rule: context
     Input: "#Customers(Address/Model.AddressWithLocation,Orders)"
@@ -3439,13 +3503,30 @@ TestCases:
     Rule: context
     Input: "#SingletonEntity/Orders(3)/Items"
 
+  - Name: Context URL - Forbidden key-as-segment
+    Rule: context
+    FailAt: 8
+    Input: "#Orders/3/Items"
+
   - Name: Context URL - collection with containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders"
 
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('ALF/KI')/Orders"
+
+  - Name: Context URL - collection with containment, key value without percent-encoding
+    Rule: context
+    Input: "#Customers('%')/Orders"
+
   - Name: Context URL - containment
     Rule: context
     Input: "#Customers('ALFKI')/Orders/$entity"
+
+  - Name: Context URL - containment - multi-part key
+    Rule: context
+    Input: "#OrderItems(OrderID=1,ItemID='a/b')/Details/$entity"
 
   - Name: Context URL - collection with containment - multi-level
     Rule: context
@@ -3561,25 +3642,33 @@ TestCases:
     Rule: header
     Input: isolation:sNapShoT
 
-  - Name: Header - odata-maxversion
+  - Name: Header - odata-maxversion 4.0
     Rule: header
     Input: "odata-maxversion: 4.0"
 
-  - Name: Header - odata-maxversion next
+  - Name: Header - odata-maxversion 4.01
     Rule: header
     Input: "odata-maxversion: 4.01"
 
-  - Name: Header - odata-maxversion
+  - Name: Header - odata-maxversion 4.02
+    Rule: header
+    Input: "odata-maxversion: 4.02"
+
+  - Name: Header - odata-maxversion weird
     Rule: header
     Input: odata-maxversion:06.2831852000
 
-  - Name: Header - odata-version
+  - Name: Header - odata-version 4.0
     Rule: header
     Input: "odata-version: 4.0"
 
-  - Name: Header - odata-version
+  - Name: Header - odata-version 4.01
     Rule: header
     Input: "odata-version: 4.01"
+
+  - Name: Header - odata-version 4.02
+    Rule: header
+    Input: "odata-version: 4.02"
 
   - Name: Preferences - allow entity references and maximum page size
     Rule: prefer
