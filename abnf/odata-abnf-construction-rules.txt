@@ -298,27 +298,33 @@ expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
-                      [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
-                      / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
-                      /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
+                    / entityNavigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+                      [ ref 
+                        / OPEN entityOption *( SEMI entityOption ) CLOSE
+                      ]
+                    / ( entityColNavigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                      [ ref   [ OPEN colOption   *( SEMI colOption   ) CLOSE ]
+                        / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                        /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
                       ]
                     / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" expandPath
                     / streamProperty
                     )
-expandCountOption = filter
+countOption       = filter
                   / search
-expandRefOption   = expandCountOption
+colOption         = countOption
                   / orderby
                   / skip
                   / top
                   / inlinecount
-expandOption      = expandRefOption
-                  / select
-                  / expand
+structOption      = select
                   / compute
-                  / levels
                   / aliasAndValue
+entityOption      = structOption
+                  / expand
+                  / levels
+expandOption      = colOption
+                  / entityOption
 
 levels = ( "$levels" / "levels" ) EQ ( oneToNine *DIGIT / "max" )
 
@@ -389,15 +395,21 @@ selectItem     = STAR
                      / optionallyQualifiedFunctionName
                      )
 selectProperty = primitiveProperty / primitiveAnnotationInQuery
-               / ( primitiveColProperty / primitiveColAnnotationInQuery ) [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]
+               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
+                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
+                   / [ OPEN colOption *( SEMI colOption ) CLOSE ] 
+                 ]
                / navigationProperty
-               / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
-                            / "/" selectProperty
+               / selectPath [ OPEN structOption *( SEMI structOption ) CLOSE
+                              / "/" selectProperty
                             ]
-selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectOptionPC = filter / search / inlinecount / orderby / skip / top
-selectOption   = selectOptionPC
-               / compute / select / aliasAndValue
+               / selectColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                              / OPEN selectOption *( SEMI selectOption ) CLOSE
+                              / "/" selectProperty
+                            ]
+selectPath     = ( complexProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectColPath  = complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
+selectOption   = colOption / structOption
 
 allOperationsInSchema = namespace "." STAR
 
@@ -574,7 +586,7 @@ filterExpr = %s"/$filter" OPEN boolCommonExpr CLOSE
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]
 
-collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
+collectionPathExpr = count [ OPEN countOption *( SEMI countOption ) CLOSE ]
                    / filterExpr [ collectionPathExpr ]
                    / "/" anyExpr
                    / "/" allExpr

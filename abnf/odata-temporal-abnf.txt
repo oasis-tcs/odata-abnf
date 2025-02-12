@@ -64,7 +64,7 @@
 
 systemQueryOption =/ temporalOption
 
-expandOption =/ temporalOption
+entityOption =/ temporalOption
 
 temporalOption = at-option
                / from

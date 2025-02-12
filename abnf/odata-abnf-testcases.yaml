@@ -258,6 +258,7 @@ Constraints:
     - Thumbnail
 
 TestCases:
+
   - Name: URI with IPv4 address, path and trailing slash
     Rule: odataUri
     Input: http://127.0.0.1:8080/MyService/
@@ -2351,12 +2352,12 @@ TestCases:
 
   - Name: 5.1.2 Expand - no $level after $ref
     Rule: expand
-    FailAt: 22
+    FailAt: 21
     Input: $expand=Customer/$ref($levels=4)
 
   - Name: 5.1.2 Expand - no $select after $ref
     Rule: expand
-    FailAt: 22
+    FailAt: 21
     Input: $expand=Customer/$ref($select=Name)
 
   - Name: 5.1.2 Expand - no $expand after $ref
@@ -2398,6 +2399,46 @@ TestCases:
   - Name: 5.1.2 Expand - multiple nested options
     Rule: expand
     Input: $expand=Items($select=Quantity;$expand=Product($select=Name,Price);@c=15)
+
+  - Name: 5.1.2 Expand - inline count on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer($count=true)
+
+  - Name: 5.1.2 Expand - $count on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer/$count
+
+  - Name: 5.1.2 Expand - $count with params on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer/$count($filter=Name eq 'Hugo')
+
+  - Name: 5.1.2 Expand - $filter on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer($filter=Name eq 'Hugo')
+
+  - Name: 5.1.2 Expand - $search on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer($search=Hugo)
+
+  - Name: 5.1.2 Expand - $orderby on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer($orderby=Name)
+
+  - Name: 5.1.2 Expand - $skip on singleton navigation property
+    Rule: expand
+    FailAt: 17
+    Input: $expand=Customer($skip=5)
+
+  - Name: 5.1.2 Expand - $top on singleton navigation property
+    Rule: expand
+    FailAt: 20
+    Input: $expand=Customer($top=5)
 
   - Name: 5.1.2 Expand - navigation property in complex type
     Rule: expand
@@ -2456,6 +2497,66 @@ TestCases:
     Rule: select
     Input: $select=*
 
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes($count=true)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Addresses($count=true)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes/$count
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Addresses/$count
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes/$count($filter=$it gt 5)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Addresses/$count($filter=startswith(City,'H'))
+
+  - Name: 5.1.3 Select - $count - no $ prefix for query options, still required for
+      path segment
+    Rule: select
+    Input: select=Sizes/$count(filter=$it gt 5)
+
+  - Name: 5.1.3 Select - $count - no $ prefix for query options, still required for
+      path segment
+    Rule: select
+    Input: select=Addresses/$count(filter=startswith(City,'H'))
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes/$count($search=Hugo)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Addresses/$count($search=Hugo)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: select=Sizes/$count(search=Hugo)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: select=Addresses/$count(search=Hugo)
+
+  - Name: 5.1.2 Select - no $count after $count
+    Rule: select
+    FailAt: 21
+    Input: $select=Sizes/$count($count=true)
+
+  - Name: 5.1.2 Select - no $count after $count
+    Rule: select
+    FailAt: 25
+    Input: $select=Addresses/$count($count=true)
+
   - Name: 5.1.3 Select - with property of complex property
     Rule: select
     Input: $select=Address/Street
@@ -2463,6 +2564,36 @@ TestCases:
   - Name: 5.1.3 Select - with property of complex property
     Rule: select
     Input: $select=Address/Country
+
+  - Name: 5.1.3 Select - filter with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($filter=City eq 'Berlin')
+
+  - Name: 5.1.3 Select - orderby with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($orderby=City)
+
+  - Name: 5.1.3 Select - top with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($top=5)
+
+  - Name: 5.1.3 Select - skip with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($skip=5)
+
+  - Name: 5.1.3 Select - search with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($search=Hugo)
+
+  - Name: 5.1.3 Select - inlineCount with single complex property
+    Rule: select
+    FailAt: 16
+    Input: $select=Address($inlineCount=true)
 
   - Name: 5.1.3 Select - with cast
     Rule: select
@@ -2520,7 +2651,7 @@ TestCases:
 
   - Name: 5.1.3 Select - nested filter etc.
     Rule: queryOptions
-    Input: $select=Addresses($filter=startswith(City,'H');$top=5;$skip=0;$count=true;$orderby=$it;$search=blue;@c=15)&$expand=Addresses/Country
+    Input: $select=Addresses($select=City;$filter=startswith(City,'H');$top=5;$skip=0;$count=true;$orderby=$it;$search=blue;@c=15)&$expand=Addresses/Country
 
   - Name: 5.1.3 Select - annotations
     Rule: select
@@ -2803,25 +2934,25 @@ TestCases:
 
   - Name: 5.1.7 Search - nested $search may contain balanced parentheses
     Rule: queryOptions
-    Input: $expand=Manager($search=(green))
+    Input: $expand=Items($search=(green))
 
   - Name: 5.1.7 Search - nested $search must not contain unbalanced parentheses
     Rule: queryOptions
-    FailAt: 26
-    Input: $expand=Manager($search=gr(een)
+    FailAt: 24
+    Input: $expand=Items($search=gr(een)
 
   - Name: 5.1.7 Search - nested $search must not contain unbalanced parentheses
       unless single-quoted
     Rule: queryOptions
-    Input: $expand=Manager($search='gr(een')
+    Input: $expand=Items($search='gr(een')
 
   - Name: 5.1.7 Search - nested $search simple term with percent-encoded semicolon
     Rule: queryOptions
-    Input: $expand=Manager($search=a%3Bb)
+    Input: $expand=Items($search=a%3Bb)
 
   - Name: 5.1.7 Search - nested $search simple term with percent-encoded semicolon
     Rule: queryOptions
-    Input: $expand=Manager($search='a%3Bb')
+    Input: $expand=Items($search='a%3Bb')
 
   - Name: 5.1.7 Search - on entity set
     Rule: odataUri
