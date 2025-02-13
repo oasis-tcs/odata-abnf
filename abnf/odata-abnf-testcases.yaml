@@ -64,6 +64,10 @@ Constraints:
     - Rejection
   actionImport:
     - Activation
+  complexAnnotationInQuery:
+    - "@Namespace.ComplexTerm"
+  complexColAnnotationInQuery:
+    - "@Core.Messages"
   complexColProperty:
     - Addresses
     - _at_Core_dot_Messages
@@ -88,6 +92,8 @@ Constraints:
     - "@Namespace.EntityTerm"
   entityAnnotationInQuery:
     - "@Namespace.EntityTerm"
+  entityColAnnotationInQuery:
+    - "@Namespace.EntitySetTerm"
   entityColFunction:
     - AllOrders
     - ProductsByColor
@@ -2407,7 +2413,7 @@ TestCases:
     Input: $expand=Items/$count($filter=Name eq 'Hugo')
 
   - Name:
-      5.1.2 Expand - $count - no $ prefix for query options, still required for
+      5.1.2 Expand - $count - no $ prefix for nested query options, still required for
       path segment
     Rule: expand
     Input: expand=Items/$count(filter=Name eq 'Hugo')
@@ -2506,13 +2512,18 @@ TestCases:
     Rule: expand
     Input: $expand=@Namespace.EntityTerm
 
+  - Name: 5.1.2 Expand - annotation
+    Rule: expand
+    FailAt: 33
+    Input: $expand=@Namespace.EntityTerm($top=2)
+
   - Name: 5.1.2 Expand - annotation with nested query options
     Rule: expand
-    Input: $expand=@Namespace.EntityTerm($top=2)
+    Input: $expand=@Namespace.EntitySetTerm($top=2)
 
   - Name: 5.1.2 Expand - annotation with navigation property
     Rule: expand
-    Input: $expand=@Namespace.SomeTerm/Products($top=2)
+    Input: $expand=@Namespace.ComplexTerm/Products($top=2)
 
   - Name: 5.1.3 Select - simple
     Rule: select
@@ -2529,6 +2540,24 @@ TestCases:
   - Name: 5.1.3 Select - $count
     Rule: select
     Input: $select=Sizes($count=true)
+
+  - Name: 5.1.3 Select - $count -- can't support $count within /$count
+    Rule: select
+    FailAt: 21
+    Input: $select=Sizes/$count($count=true)
+
+  - Name: 5.1.3 Select - $count -- can't support count within /$count
+    Rule: select
+    FailAt: 21
+    Input: $select=Sizes/$count(count=true)
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes/$count
+
+  - Name: 5.1.3 Select - $count
+    Rule: select
+    Input: $select=Sizes/$count($filter=$it gt 5)
 
   - Name: 5.1.3 Select - $count
     Rule: select
@@ -2550,12 +2579,12 @@ TestCases:
     Rule: select
     Input: $select=Addresses/$count($filter=startswith(City,'H'))
 
-  - Name: 5.1.3 Select - $count - no $ prefix for query options, still required for
+  - Name: 5.1.3 Select - $count - no $ prefix for nested query options, still required for
       path segment
     Rule: select
     Input: select=Sizes/$count(filter=$it gt 5)
 
-  - Name: 5.1.3 Select - $count - no $ prefix for query options, still required for
+  - Name: 5.1.3 Select - $count - no $ prefix for nested query options, still required for
       path segment
     Rule: select
     Input: select=Addresses/$count(filter=startswith(City,'H'))
@@ -2682,13 +2711,40 @@ TestCases:
     Rule: queryOptions
     Input: $select=Addresses($select=City;$filter=startswith(City,'H');$top=5;$skip=0;$count=true;$orderby=$it;$search=blue;@c=15)&$expand=Addresses/Country
 
-  - Name: 5.1.3 Select - annotations
+  - Name: 5.1.3 Select - annotations on a single complex term
+    Rule: select
+    Input: $select=@Namespace.ComplexTerm($select=Name)
+
+  - Name: 5.1.3 Select - annotations on a collection
     Rule: select
     Input: $select=@Core.Messages($top=5)
 
-  - Name: 5.1.3 Select - annotations
+  - Name: 5.1.3 Select - collection annotations on single complex term
+    Rule: select
+    FailAt: 31
+    Input: $select=@Namespace.ComplexTerm($top=5)
+
+  - Name: 5.1.3 Select - annotations on a collection
     Rule: select
     Input: $select=Address/@Core.Messages($top=5)
+
+  - Name: 5.1.3 Select - annotations on a single complex term
+    Rule: select
+    Input: $select=Address/@Namespace.ComplexTerm($select=Name)
+
+  - Name: 5.1.3 Select - collection annotation on a single complex term
+    Rule: select
+    FailAt: 39
+    Input: $select=Address/@Namespace.ComplexTerm($top=5)
+
+  - Name: 5.1.3 Select - annotations
+    Rule: select
+    Input: $select=@Measures.Currency,@Namespace.ComplexTerm($select=Name)
+
+  - Name: 5.1.3 Select - collection annotations on a single complex term
+    Rule: select
+    FailAt: 50
+    Input: $select=@Measures.Currency,@Namespace.ComplexTerm($top=2)
 
   - Name: 5.1.3 Select - annotations
     Rule: select

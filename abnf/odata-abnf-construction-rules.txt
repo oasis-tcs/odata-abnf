@@ -298,16 +298,16 @@ expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / entityNavigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( entityNavigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref 
-                        / OPEN entityOption *( SEMI entityOption ) CLOSE
+                      / OPEN entityOption *( SEMI entityOption ) CLOSE
                       ]
-                    / ( entityColNavigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( entityColNavigationProperty / entityColAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref   [ OPEN colOption   *( SEMI colOption   ) CLOSE ]
-                        / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                        /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
+                      / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                      /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
                       ]
-                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" expandPath
+                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery / complexColAnnotationInQuery) "/" expandPath
                     / streamProperty
                     )
 countOption       = filter
@@ -395,20 +395,20 @@ selectItem     = STAR
                      / optionallyQualifiedFunctionName
                      )
 selectProperty = primitiveProperty / primitiveAnnotationInQuery
-               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
-                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
-                   / [ OPEN colOption *( SEMI colOption ) CLOSE ] 
-                 ]
-               / navigationProperty
                / selectPath [ OPEN structOption *( SEMI structOption ) CLOSE
-                              / "/" selectProperty
+                            / "/" selectProperty
                             ]
                / selectColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                              / OPEN selectOption *( SEMI selectOption ) CLOSE
-                              / "/" selectProperty
-                            ]
+                               / OPEN selectOption *( SEMI selectOption ) CLOSE
+                               / "/" selectProperty
+                               ]
+               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
+                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
+                 / OPEN colOption *( SEMI colOption ) CLOSE 
+                 ]
+               / navigationProperty
 selectPath     = ( complexProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectColPath  = complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
+selectColPath  = ( complexColProperty / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
 selectOption   = colOption / structOption
 
 allOperationsInSchema = namespace "." STAR
@@ -437,7 +437,9 @@ customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ )
 customValue       = *( qchar-no-AMP )
 
 complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
+complexColAnnotationInQuery = annotationInQuery ; complex collection-valued annotation
 entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
+entityColAnnotationInQuery = annotationInQuery ; entity collection-valued annotation
 
 primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
 primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
