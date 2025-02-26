@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
-; OData ABNF Construction Rules Version 4.01 and 4.0
+; OData ABNF Construction Rules Version 4.02, 4.01, and 4.0
 ;------------------------------------------------------------------------------
-; 17 September 2020
+; 05 February 2024
 ;
 ; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-construction-rules.txt
 ;------------------------------------------------------------------------------
@@ -21,18 +21,18 @@
 ;
 ; Additional artifacts:
 ;   This grammar is one component of a Work Product which consists of:
-;   - OData Version 4.01 Part 1: Protocol
-;   - OData Version 4.01 Part 2: URL Conventions
-;   - OData ABNF Construction Rules Version 4.01 (this document)
-;   - OData ABNF Test Cases Version 4.01
+;   - OData Version 4.02 Part 1: Protocol
+;   - OData Version 4.02 Part 2: URL Conventions
+;   - OData ABNF Construction Rules Version 4.02 (this document)
+;   - OData ABNF Test Cases Version 4.02
 ;
 ; Related work:
 ;   This specification replaces or supersedes:
 ;   - OData ABNF Construction Rules Version 4.0
 ;   This work product is related to
-;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
-;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
-;   - OData JSON Format Version 4.01
+;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.02
+;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.02
+;   - OData JSON Format Version 4.02
 ;
 ; Abstract:
 ;   The Open Data Protocol (OData) enables the creation of REST-based data
@@ -298,27 +298,33 @@ expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / ( navigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
-                      [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
-                      / count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
+                    / ( entityNavigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                      [ ref 
+                      / OPEN entityOption *( SEMI entityOption ) CLOSE
+                      ]
+                    / ( entityColNavigationProperty / entityColAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                      [ ref   [ OPEN colOption   *( SEMI colOption   ) CLOSE ]
+                      / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
                       ]
-                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery ) "/" expandPath
+                    / ( complexProperty / complexColProperty / optionallyQualifiedComplexTypeName / complexAnnotationInQuery / complexColAnnotationInQuery) "/" expandPath
                     / streamProperty
                     )
-expandCountOption = filter
+countOption       = filter
                   / search
-expandRefOption   = expandCountOption
+colOption         = countOption
                   / orderby
                   / skip
                   / top
                   / inlinecount
-expandOption      = expandRefOption
-                  / select
-                  / expand
+structOption      = select
                   / compute
-                  / levels
                   / aliasAndValue
+entityOption      = structOption
+                  / expand
+                  / levels
+expandOption      = colOption
+                  / entityOption
 
 levels = ( "$levels" / "levels" ) EQ ( oneToNine *DIGIT / "max" )
 
@@ -344,7 +350,7 @@ inlinecount = ( "$count" / "count" ) EQ boolean
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete )
+search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete ) BWS
 
 searchExpr = ( searchParenExpr
              / searchNegateExpr
@@ -372,7 +378,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord = searchChar *( searchChar / SQUOTE )
-searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
+searchChar = unreserved / pct-encoded-no-SP-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
@@ -389,15 +395,21 @@ selectItem     = STAR
                      / optionallyQualifiedFunctionName
                      )
 selectProperty = primitiveProperty / primitiveAnnotationInQuery
-               / ( primitiveColProperty / primitiveColAnnotationInQuery ) [ OPEN selectOptionPC *( SEMI selectOptionPC ) CLOSE ]
-               / navigationProperty
-               / selectPath [ OPEN selectOption *( SEMI selectOption ) CLOSE
+               / selectPath [ OPEN structOption *( SEMI structOption ) CLOSE
                             / "/" selectProperty
                             ]
-selectPath     = ( complexProperty / complexColProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectOptionPC = filter / search / inlinecount / orderby / skip / top
-selectOption   = selectOptionPC
-               / compute / select / aliasAndValue
+               / selectColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                               / OPEN selectOption *( SEMI selectOption ) CLOSE
+                               / "/" selectProperty
+                               ]
+               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
+                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
+                 / OPEN colOption *( SEMI colOption ) CLOSE 
+                 ]
+               / navigationProperty
+selectPath     = ( complexProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectColPath  = ( complexColProperty / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectOption   = colOption / structOption
 
 allOperationsInSchema = namespace "." STAR
 
@@ -425,7 +437,9 @@ customName        = qchar-no-AMP-EQ-AT-DOLLAR *( qchar-no-AMP-EQ )
 customValue       = *( qchar-no-AMP )
 
 complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
+complexColAnnotationInQuery = annotationInQuery ; complex collection-valued annotation
 entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
+entityColAnnotationInQuery = annotationInQuery ; entity collection-valued annotation
 
 primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
 primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
@@ -442,16 +456,34 @@ contextFragment = %s"Collection($ref)"
                 / singletonEntity [ navigation *( containmentNavigation ) [ "/" qualifiedEntityTypeName ] ] [ selectList ]
                 / qualifiedTypeName [ selectList ]
                 / entitySet ( %s"/$deletedEntity" / %s"/$link" / %s"/$deletedLink" )
-                / entitySet keyPredicate "/" contextPropertyPath [ selectList ]
+                / entitySet contextKeyPredicate "/" contextPropertyPath [ selectList ]
                 / entitySet [ selectList ] [ %s"/$entity" / %s"/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
 
-containmentNavigation = keyPredicate [ "/" qualifiedEntityTypeName ] navigation
+containmentNavigation = contextKeyPredicate [ "/" qualifiedEntityTypeName ] navigation
 navigation            = *( "/" complexProperty [ "/" qualifiedComplexTypeName ] ) "/" navigationProperty
 
-selectList         = OPEN [ selectListItem *( COMMA selectListItem ) ] CLOSE
-selectListItem     = STAR ; all structural properties
+contextKeyPredicate = "(" ( contextKeyValue / contextKeyValuePair *( "," contextKeyValuePair ) ) ")"
+contextKeyValuePair = ( primitiveKeyProperty / keyPropertyAlias  ) EQ contextKeyValue
+contextKeyValue  = boolean
+                 / guid
+                 / dateTimeOffsetValue
+                 / date
+                 / timeOfDayValue
+                 / decimalValue
+                 / sbyteValue
+                 / byte
+                 / int16Value
+                 / int32Value
+                 / int64Value
+                 / stringValue
+                 / durationValue
+                 / enumValue
+stringValue = %x27 *( %x00-26 / %x27 %x27 / %x28-FF) %x27 ; SQUOTE = %x27
+
+selectList         = "(" [ selectListItem *( "," selectListItem ) ] ")"
+selectListItem     = "*" ; all structural properties
                    / allOperationsInSchema
                    / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
                      ( qualifiedActionName
@@ -469,7 +501,7 @@ contextPropertyPath = primitiveProperty
                     / complexProperty [ [ "/" qualifiedComplexTypeName ] "/" contextPropertyPath ]
 
 qualifiedActionName   = namespace "." action
-qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
+qualifiedFunctionName = namespace "." function [ "(" parameterName *( "," parameterName ) ")" ]
 
 complexAnnotationInFragment = annotationInFragment ; complex-valued annotation
 entityAnnotationInFragment  = annotationInFragment ; entity-valued annotation
@@ -525,6 +557,9 @@ rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
+                / "$" request-id "/" memberExpr ; reference to single-valued response of earlier request
+                / "$" request-id collectionNavigationExpr ; reference to collection-valued response of earlier request
+                / "$" request-id
 
 memberExpr = directMemberExpr
            / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr
@@ -574,7 +609,7 @@ filterExpr = %s"/$filter" OPEN boolCommonExpr CLOSE
 complexColPathExpr = collectionPathExpr
                    / "/" optionallyQualifiedComplexTypeName [ collectionPathExpr ]
 
-collectionPathExpr = count [ OPEN expandCountOption *( SEMI expandCountOption ) CLOSE ]
+collectionPathExpr = count [ OPEN countOption *( SEMI countOption ) CLOSE ]
                    / filterExpr [ collectionPathExpr ]
                    / "/" anyExpr
                    / "/" allExpr
@@ -647,7 +682,7 @@ containsMethodCallExpr       = "contains"       OPEN BWS commonExpr BWS COMMA BW
 endsWithMethodCallExpr       = "endswith"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 indexOfMethodCallExpr        = "indexof"        OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 lengthMethodCallExpr         = "length"         OPEN BWS commonExpr BWS CLOSE
-matchesPatternMethodCallExpr = "matchesPattern" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+matchesPatternMethodCallExpr = "matchesPattern" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
 startsWithMethodCallExpr     = "startswith"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 substringMethodCallExpr      = "substring"      OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
 toLowerMethodCallExpr        = "tolower"        OPEN BWS commonExpr BWS CLOSE
@@ -1168,7 +1203,7 @@ COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
-SIGN   = "+" / "%2B" / "-"
+SIGN   = "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"
@@ -1259,6 +1294,9 @@ pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" 
 
 pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
                       / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
+
+pct-encoded-no-SP-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
+                         / "%" "2" (   "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
 
 
 ;------------------------------------------------------------------------------
