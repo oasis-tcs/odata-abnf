@@ -2260,6 +2260,10 @@ TestCases:
     Rule: odataRelativeUri
     Input: Customers?$select=Addresses($filter=endswith($this/Street,'gasse'))
 
+  - Name: $filter after single-valued complex property
+    Rule: odataRelativeUri
+    Input: Customers?$select=Address($filter=endswith($this/Street,'gasse'))
+
   - Name: 5.1.1.14.6 $this
     Rule: odataRelativeUri
     Input: Customers?$select=Addresses(@a=$this;$filter=endswith(@a/Street,'gasse'))
