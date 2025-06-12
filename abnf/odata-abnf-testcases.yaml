@@ -120,7 +120,7 @@ Constraints:
     - CountrySet
     - Currency
     - Customer
-    - Customers
+    - Customers # used in cross-join
     - Manager
     - Product
     - ProductGroup
