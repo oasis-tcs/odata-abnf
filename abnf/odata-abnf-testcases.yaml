@@ -102,6 +102,7 @@ Constraints:
     - ProductsByCustomer
     - ProductsOrderedBy
   entityColNavigationProperty:
+    - Countries
     - DirectReports
     - Items
     - Orders
@@ -116,7 +117,6 @@ Constraints:
     - Category
     - Continent
     - Country
-    - Countries
     - CountrySet
     - Currency
     - Customer
@@ -2256,6 +2256,11 @@ TestCases:
     Rule: odataRelativeUri
     Input: Customers?$select=EmailAddresses($filter=endswith($this,'.com'))
 
+  - Name: $filter after single-valued property
+    Rule: odataRelativeUri
+    FailAt: 29
+    Input: Customers?$select=CompanyName($filter=endswith($this,'.com'))
+
   - Name: 5.1.1.14.6 $this
     Rule: odataRelativeUri
     Input: Customers?$select=Addresses($filter=endswith($this/Street,'gasse'))
@@ -2942,6 +2947,10 @@ TestCases:
     Input:
       Employees?$expand=Manager(@m=$this;$expand=DirectReports($filter=@m/FirstName
       eq FirstName))
+
+  - Name: $filter after single-valued navigation property
+    Rule: odataRelativeUri
+    Input: Employees?$expand=Manager($filter=Name eq 'Hugo')
 
   - Name: function with complex parameter - no properties
     Rule: odataRelativeUri
