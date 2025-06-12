@@ -102,7 +102,6 @@ Constraints:
     - ProductsByCustomer
     - ProductsOrderedBy
   entityColNavigationProperty:
-    - Countries
     - DirectReports
     - Items
     - Orders
@@ -116,6 +115,7 @@ Constraints:
   entityNavigationProperty:
     - Category
     - Continent
+    - Countries # used in cross-join
     - Country
     - CountrySet
     - Currency
