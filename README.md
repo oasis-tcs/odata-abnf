@@ -35,7 +35,11 @@ The [`abnf` folder](abnf) contains three pairs of grammars and test cases:
 
 The grammars of the two extensions are incremental and add new alternatives to "Core" rules as well as new rules used in the new alternatives.
 
-The [`lib` folder](lib) contains tools for automatically testing the grammars.
+The [`packages/lib` folder](packages/lib) contains tools for automatically testing the grammars.
+
+The [`packages/diagram` folder](packages/diagram) contains a tool for creating a html file with [syntax diagrams](https://en.wikipedia.org/wiki/Syntax_diagram) also known as railroad diagrams.
+
+`npm run diagram -- abnf/file.txt` generates a html file alongside the abnf file.
 
 </div>
 

@@ -9,7 +9,7 @@ const { apgLib } = require("apg-js");
 const { parser: Parser, ast: AST, ids, utils, trace: Trace } = apgLib;
 const Grammar = require("./grammar");
 
-const config = YAML.parse(fs.readFileSync("./lib/config.yaml", "utf8"));
+const config = YAML.parse(fs.readFileSync("./config.yaml", "utf8"));
 
 const parser = new Parser();
 const grammar = new Grammar();

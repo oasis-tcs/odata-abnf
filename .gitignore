@@ -1,4 +1,6 @@
 coverage/
 grammar/
 node_modules/
-lib/grammar.js
+
+packages/check/grammar.js
+packages/diagrams/dist/

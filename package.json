@@ -2,12 +2,17 @@
   "name": "odata-abnf",
   "version": "0.0.0",
   "description": "OASIS OData TC: ABNF for OData URLs, headers, and literal data values",
+  "private": true,
+  "workspaces": [
+    "packages/check",
+    "packages/diagrams"
+  ],
   "scripts": {
-    "generate-grammar": "node node_modules/apg-js/bin/apg.sh --strict -i ./abnf/odata-abnf-construction-rules.txt,./abnf/odata-aggregation-abnf.txt,./abnf/odata-temporal-abnf.txt -o lib/grammar.js",
-    "run-testcases": "node lib/checkAbnf.js",
-    "test": "npm run generate-grammar && node lib/checkAbnf.js",
-    "watch": "pwsh lib/check-abnf.ps1 -watch",
-    "tool-test": "c8 mocha"
+    "generate-grammar": "npm run generate-grammar --workspace=check",
+    "run-testcases": "npm run run-testcases --workspace=check",
+    "test": "npm run test --workspace=check",
+    "watch": "npm run watch --workspace=check",
+    "diagram": "node packages/diagrams/dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,15 +27,5 @@
   "bugs": {
     "url": "https://github.com/oasis-tcs/odata-abnf/issues"
   },
-  "homepage": "https://github.com/oasis-tcs/odata-abnf#readme",
-  "dependencies": {
-    "apg-js": "^4.2.0",
-    "colors": "^1.4.0",
-    "yaml": "^2.3.2"
-  },
-  "devDependencies": {
-    "c8": "^8.0.1",
-    "eslint": "^8.48.0",
-    "mocha": "^10.8.2"
-  }
+  "homepage": "https://github.com/oasis-tcs/odata-abnf#readme"
 }

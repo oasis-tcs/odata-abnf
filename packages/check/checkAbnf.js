@@ -3,7 +3,7 @@ const YAML = require("yaml");
 
 const { runTestSuite, printRuleCoverage } = require("./runTests");
 
-const abnfFolder = "./abnf/";
+const abnfFolder = "../../abnf/";
 
 fs.readdirSync(abnfFolder)
   .filter((fn) => fn.endsWith(".yaml"))

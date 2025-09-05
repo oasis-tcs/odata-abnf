@@ -1,0 +1,22 @@
+{
+  "name": "check",
+  "version": "0.0.0",
+  "main": "../../lib/checkAbnf.js",
+  "private": true,
+  "scripts": {
+  "generate-grammar": "node ../../node_modules/apg-js/bin/apg.sh --strict -i ../../abnf/odata-abnf-construction-rules.txt,../../abnf/odata-aggregation-abnf.txt,../../abnf/odata-temporal-abnf.txt -o ./grammar.js",
+  "run-testcases": "node ./checkAbnf.js",
+  "test": "npm run generate-grammar && node ./checkAbnf.js",
+  "watch": "pwsh ./check-abnf.ps1 -watch"
+  },
+  "dependencies": {
+    "apg-js": "^4.2.0",
+    "colors": "^1.4.0",
+    "yaml": "^2.3.2"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "eslint": "^8.48.0",
+    "mocha": "^10.8.2"
+  }
+}
