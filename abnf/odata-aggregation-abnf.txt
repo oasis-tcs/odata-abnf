@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
 ; OData Aggregation ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
-; 19 September 2023
+; 24 September 2025
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -86,7 +86,7 @@ applyTrafo = aggregateTrafo
            / concatTrafo
            / groupbyTrafo
            / joinTrafo
-      ; / nestTrafo
+         ; / nestTrafo
            / outerjoinTrafo
            / preservingTrafo
 preservingTrafo = bottomcountTrafo
@@ -209,7 +209,7 @@ descendantsTrafo = %s"descendants" OPEN BWS
 traverseTrafo   = %s"traverse" OPEN BWS
                   recHierReference BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
-             ; [ COMMA BWS preservingTrafos BWS ]
+                ; [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
                   CLOSE
 
