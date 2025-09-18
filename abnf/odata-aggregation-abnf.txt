@@ -86,7 +86,7 @@ applyTrafo = aggregateTrafo
            / concatTrafo
            / groupbyTrafo
            / joinTrafo
-           / nestTrafo
+      ; / nestTrafo
            / outerjoinTrafo
            / preservingTrafo
 preservingTrafo = bottomcountTrafo
@@ -108,18 +108,22 @@ preservingTrafo = bottomcountTrafo
 preservingTrafos = preservingTrafo *( "/" preservingTrafo )
 
 aggregateTrafo   = %s"aggregate" OPEN BWS aggregateExpr *( BWS COMMA BWS aggregateExpr ) BWS CLOSE
-aggregateExpr    = ( aggrPathPrefix / aggrCastPath ) nonprimAggWith [ aggregateFrom ] asAlias
-                 / aggregatableExpW [ aggregateFrom ] asAlias
-                 / aggregateCount [ aggregateFrom ] asAlias
-                 / aggregateCustom [ [ customFrom ] asAlias ]
+aggregateExpr    = ( aggrPathPrefix / aggrCastPath ) nonprimAggWith ; [ aggregateFrom ]
+                   asAlias
+                 / aggregatableExpW ; [ aggregateFrom ]
+                   asAlias
+                 / aggregateCount ; [ aggregateFrom ]
+                   asAlias
+                 / aggregateCustom [ ; [ customFrom ]
+                   asAlias ]
 aggregatableExpr = commonExpr ; resulting in an aggregatable value
 aggregatableExpW = aggregatableExpr aggregateWith
                  / [ aggrCastPath "/" ] aggrPrimPath aggregateWith
 aggrPathPrefix   = [ aggrCastPath "/" ] aggrPropPath
 aggregateWith    = RWS %s"with" RWS aggregateMethod
 nonprimAggWith   = RWS %s"with" RWS nonprimAggMethod
-aggregateFrom    = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
-customFrom       = RWS %s"from" RWS groupingProperties [ aggregateWith ] [ customFrom ]
+; aggregateFrom    = RWS %s"from" RWS groupingProperties aggregateWith [ aggregateFrom ]
+; customFrom       = RWS %s"from" RWS groupingProperties [ aggregateWith ] [ customFrom ]
 aggregateMethod  = %s"sum"
                  / %s"min"
                  / %s"max"
@@ -172,13 +176,13 @@ bottomsumTrafo     = %s"bottomsum"     OPEN BWS collectionExpr BWS COMMA BWS com
 
 concatTrafo     = %s"concat" OPEN BWS applyExpr 1*( BWS COMMA BWS applyExpr ) BWS CLOSE
 
-nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
-                / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
-nestPath        = [ aggrCastPath "/" ]
-                  ( [ nestPropPath "/" ] navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
-                  / nestPropPath
-                  )
-nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
+; nestTrafo       = %s"nest" OPEN BWS nestApplyExpr BWS CLOSE
+;                 / %s"addnested" OPEN BWS nestPath BWS COMMA BWS nestApplyExpr BWS CLOSE
+; nestPath        = [ aggrCastPath "/" ]
+;                   ( [ nestPropPath "/" ] navigationProperty [ "/" optionallyQualifiedEntityTypeName ]
+;                   / nestPropPath
+;                   )
+; nestApplyExpr   = applyExpr asAlias *( BWS COMMA BWS applyExpr asAlias )
 
 joinTrafo       = %s"join" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
 outerjoinTrafo  = %s"outerjoin" OPEN BWS joinProperty asAlias [ BWS COMMA BWS applyExpr ] BWS CLOSE
@@ -205,7 +209,7 @@ descendantsTrafo = %s"descendants" OPEN BWS
 traverseTrafo   = %s"traverse" OPEN BWS
                   recHierReference BWS
                   COMMA BWS ( %s"preorder" / %s"postorder" ) BWS
-                  [ COMMA BWS preservingTrafos BWS ]
+             ; [ COMMA BWS preservingTrafos BWS ]
                   [ COMMA BWS orderbyItem *( BWS COMMA BWS orderbyItem ) BWS ]
                   CLOSE
 
@@ -221,16 +225,16 @@ searchTrafo     = %s"search" OPEN BWS ( searchExpr / searchExpr-incomplete ) BWS
 
 groupbyTrafo    = %s"groupby" OPEN BWS groupbyList [ BWS COMMA BWS applyExpr ] BWS CLOSE
 groupbyList     = OPEN BWS groupbyElement *( BWS COMMA BWS groupbyElement ) BWS CLOSE
-groupbyElement  = groupingProperty / rollupLevels / rollupRecursive
+groupbyElement  = groupingProperty ; / rollupLevels / rollupRecursive
 
-rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
-rollupRecursive   = %s"rolluprecursive" OPEN BWS
-                    recHierReference BWS
-                    [ COMMA BWS preservingTrafos BWS ]
-                    CLOSE
+; rollupLevels      = %s"rollup" OPEN BWS ( rollupUnnamedHier / rollupNamedHier ) BWS CLOSE
+; rollupRecursive   = %s"rolluprecursive" OPEN BWS
+;                     recHierReference BWS
+;                     [ COMMA BWS preservingTrafos BWS ]
+;                     CLOSE
 
-rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
-rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
+; rollupUnnamedHier = groupingProperty 1*( BWS COMMA BWS groupingProperty )
+; rollupNamedHier   = odataIdentifier ; qualifier of Aggregation.LeveledHierarchy annotation
 
 identityTrafo   = %s"identity"
 
@@ -252,10 +256,10 @@ customFunction  = namespace "." ( entityColFunction / complexColFunction / primi
 
 isdefinedExpr = %s"isdefined" OPEN BWS ( firstMemberExpr ) BWS CLOSE
 
-aggregateFunctionExpr = aggregatableExpW [ aggregateFrom ]
-                      / aggrPathPrefix nonprimAggWith [ aggregateFrom ]
-                      / aggregateCount [ aggregateFrom ]
-                      / aggregateCustom [ customFrom ]
+aggregateFunctionExpr = aggregatableExpW ; [ aggregateFrom ]
+                      / aggrPathPrefix nonprimAggWith ; [ aggregateFrom ]
+                      / aggregateCount ; [ aggregateFrom ]
+                      / aggregateCustom ; [ customFrom ]
 
 ;------------------------------------------------------------------------------
 ; End of odata-aggregation-abnf
