@@ -154,7 +154,7 @@ aggrPrimPath = aggrPropStep "/" aggrPrimPath
              / primitiveProperty / primitiveColProperty / streamProperty
 aggrCastPath = optionallyQualifiedComplexTypeName / optionallyQualifiedEntityTypeName
 
-nestPropPath = ( complexProperty / complexColProperty ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
+; nestPropPath = ( complexProperty / complexColProperty ) [ [ "/" optionallyQualifiedComplexTypeName ] "/" nestPropPath ]
 
 snglPropPath = ( complexProperty / entityNavigationProperty ) [ [ "/" aggrCastPath ] "/" snglPropPath ]
 snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPath ] "/" snglPrimPath
