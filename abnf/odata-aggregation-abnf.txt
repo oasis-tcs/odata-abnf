@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
 ; OData Aggregation ABNF Construction Rules Version 4.0
 ;------------------------------------------------------------------------------
-; 24 September 2025
+; 01 October 2025
 ;------------------------------------------------------------------------------
 ;
 ; Technical Committee:
@@ -17,8 +17,8 @@
 ;   - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
 ;   - Gerald Krause (gerald.krause@sap.com), SAP SE
 ;   - Michael Pizzo (mikep@microsoft.com), Microsoft
+;   - Heiko Theißen (heiko.theissen@sap.com), SAP SE
 ;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
-;   - Heiko Theissen (heiko.theissen@sap.com), SAP SE
 ;
 ; Additional artifacts:
 ;   This grammar is one component of a Work Product which consists of:
@@ -56,6 +56,9 @@
 ;   1. New alternatives for OData ABNF Construction Rules
 ;   2. System Query Option $apply
 ;   3. Extensions to $filter
+;
+;   Construction rules that are not supported by this version of the specification
+;   are commented-out. See OData Extension for Data Aggregation Version 4.0, section 1.2.3.
 ;
 ;------------------------------------------------------------------------------
 
