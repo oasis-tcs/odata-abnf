@@ -17,7 +17,7 @@
 ;   - Hubert Heijkers (hubert.heijkers@nl.ibm.com), IBM
 ;   - Gerald Krause (gerald.krause@sap.com), SAP SE
 ;   - Michael Pizzo (mikep@microsoft.com), Microsoft
-;   - Heiko Theißen (heiko.theissen@sap.com), SAP SE
+;   - Heiko Theissen (heiko.theissen@sap.com), SAP SE
 ;   - Martin Zurmuehl (martin.zurmuehl@sap.com), SAP SE
 ;
 ; Additional artifacts:
