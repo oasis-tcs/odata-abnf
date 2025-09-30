@@ -164,7 +164,7 @@ snglPrimPath = ( complexProperty / entityNavigationProperty )   [ "/" aggrCastPa
              / primitiveProperty / streamProperty
 
 groupingProperty   = [ aggrCastPath "/" ] ( snglPrimPath / snglPropPath )
-groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
+; groupingProperties = groupingProperty *( BWS COMMA BWS groupingProperty )
 
 ; Expressions evaluable on a collection
 collectionExpr     = commonExpr ; but where every firstMemberExpr must be a currCollectionExpr
