@@ -3,11 +3,12 @@
 # converting ABNF to syntax diagrams
 
 ```bash
-npm install -g abnf-to-railroad@0.0.2
+npm install -g abnf-to-railroad@0.0.3
 
 abnf-to-railroad --help
-  
-# the tool expects unix path separators
+
+cd syntax-diagram 
+
 abnf-to-railroad ../abnf/odata-abnf-construction-rules.txt odata-syntax.html
 ```
 
