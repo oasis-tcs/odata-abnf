@@ -3,7 +3,7 @@
 # converting ABNF to syntax diagrams
 
 ```bash
-npm install -g abnf-to-railroad@0.0.3
+npm install -g abnf-to-railroad@0.0.4
 
 abnf-to-railroad --help
 
