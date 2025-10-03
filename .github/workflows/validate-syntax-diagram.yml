@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NPM_TOOL: abnf-to-railroad
-      INPUT_FILE: abnf\odata-abnf-construction-rules.txt
-      OUTPUT_FILE: syntax-diagram\odata-syntax.html
+      INPUT_FILE: abnf/odata-abnf-construction-rules.txt
+      OUTPUT_FILE: syntax-diagram/odata-syntax.html
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
