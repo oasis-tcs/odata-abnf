@@ -26,7 +26,20 @@ jobs:
         run: npm install -g ${{ env.NPM_TOOL }}
 
       - name: Backup committed HTML
-        run: cp ${{ env.OUTPUT_FILE }} ${{ env.OUTPUT_FILE }}.committed
+        run: |
+          if [ ! -f "${{ env.OUTPUT_FILE }}" ]; then
+            echo "❌ ERROR: No HTML file found in repository!"
+            echo ""
+            echo "The ABNF source file exists but the corresponding HTML is missing."
+            echo "Please run the following commands and commit the changes:"
+            echo ""
+            echo "  ${{ env.NPM_TOOL }} ${{ env.INPUT_FILE }} > ${{ env.OUTPUT_FILE }}"
+            echo "  git add ${{ env.OUTPUT_FILE }}"
+            echo "  git commit -m 'Generate HTML syntax diagram from ABNF'"
+            echo ""
+            exit 1
+          fi
+          cp ${{ env.OUTPUT_FILE }} ${{ env.OUTPUT_FILE }}.committed
 
       - name: Generate fresh HTML
         run: ${{ env.NPM_TOOL }} ${{ env.INPUT_FILE }} ${{ env.OUTPUT_FILE }}
