@@ -7,7 +7,8 @@
     "run-testcases": "node lib/checkAbnf.js",
     "test": "npm run generate-grammar && node lib/checkAbnf.js",
     "watch": "pwsh lib/check-abnf.ps1 -watch",
-    "tool-test": "c8 mocha"
+    "tool-test": "c8 mocha",
+    "railroad": "abnf-to-railroad abnf/odata-abnf-construction-rules.txt syntax-diagram/odata-abnf-diagrams.html"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   },
   "homepage": "https://github.com/oasis-tcs/odata-abnf#readme",
   "dependencies": {
+    "abnf-to-railroad": "^0.0.5",
     "apg-js": "^4.2.0",
     "colors": "^1.4.0",
     "yaml": "^2.3.2"
