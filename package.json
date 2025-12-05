@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/oasis-tcs/odata-abnf#readme",
   "dependencies": {
-    "abnf-to-railroad": "^0.0.5",
+    "abnf-to-railroad": "^0.0.6",
     "apg-js": "^4.4.0",
     "colors": "^1.4.0",
     "yaml": "^2.8.2"
