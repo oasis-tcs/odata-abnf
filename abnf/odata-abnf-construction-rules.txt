@@ -45,21 +45,18 @@
 ; Overview:
 ;   This grammar uses the ABNF defined in RFC5234 and RFC7405.
 ;
-;   The following rules assume that URIs have been percent-encoding normalized
-;   as described in section 6.2.2.2 of RFC3986
-;   (http://tools.ietf.org/html/rfc3986#section-6.2.2.2)
-;   before applying the grammar to them, i.e. all characters in the unreserved
-;   set (see rule "unreserved" below) are plain literals and NOT
-;   percent-encoded.
+;   Percent-encoding normalization (RFC3986 section 6.2.2.2) is applied to
+;   URIs before this grammar is evaluated. As a result, every character in
+;   the unreserved set (rule "unreserved", Appendix A.4) appears as a plain
+;   literal, never as a percent-encoded sequence.
 ;
-;   For characters outside the unreserved set the rules explicitly state
-;   whether the percent-encoded representation is treated identical to the
-;   plain literal representation.
-;
-;   One prominent example is the single quote that delimits OData primitive
-;   type literals: %27 and ' are treated identically, so a single quote within
-;   a string literal is "encoded" as two consecutive single quotes in either
-;   literal or percent-encoded representation.
+;   For characters outside the unreserved set, the grammar must decide
+;   explicitly whether to accept both forms or only one. Appendix A.5
+;   defines the OData-specific character classes used in positions where a
+;   character and its percent-encoded equivalent are treated as identical.
+;   These classes list both forms as explicit alternatives. All base
+;   RFC3986 rules (Appendix A.1-A.4) are copied verbatim and carry no
+;   such OData equivalences.
 ;
 ; Contents:
 ;   1. Resource Path
@@ -73,7 +70,12 @@
 ;   9. Punctuation
 ;
 ;   A. URI syntax [RFC3986]
-;   B. IRI syntax [RFC3986]
+;     A.1 Full URI production
+;     A.2 Host and authority sub-parser
+;     A.3 Path sub-parser
+;     A.4 Basic character classes
+;     A.5 OData extensions to RFC3986 character classes
+;   B. IRI syntax [RFC3987]
 ;   C. ABNF core definitions [RFC5234]
 ;
 ;------------------------------------------------------------------------------
@@ -949,7 +951,7 @@ primitiveValue = booleanValue
 
 null = %s"null"
 
-; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5
+; base64url encoding according to [RFC4648] section 5
 binaryLiteral = "binary" SQUOTE binaryValue SQUOTE
 binaryValue   = *(4base64char) [ base64b16  / base64b8 ]
 base64b16     = 2base64char ( %s"A" / %s"E" / %s"I" / %s"M" / %s"Q" / %s"U" / %s"Y" / %s"c" / %s"g" / %s"k" / %s"o" / %s"s" / %s"w" / %s"0" / %s"4" / %s"8" )   [ "=" ]
@@ -994,7 +996,7 @@ dateTimeOffsetValue   = date "T" timeOfDayValue   ( "Z" / ("+"/"-") hour ":"   m
 durationLiteral = [ "duration" ] SQUOTE durationValue SQUOTE
 durationValue = [ "-" ] "P" [ 1*DIGIT "D" ] [ "T" [ 1*DIGIT "H" ] [ 1*DIGIT "M" ] [ 1*DIGIT [ "." 1*DIGIT ] "S" ] ]
      ; the above is an approximation of the rules for an xml dayTimeDuration.
-     ; see the lexical representation for dayTimeDuration in http://www.w3.org/TR/xmlschema11-2#dayTimeDuration for more information
+     ; see the lexical representation for dayTimeDuration in [XMLSCHEMA11-2] section 3.4.27
 
 timeOfDayLiteral = hour COLON minute [ COLON second [ "." fractionalSeconds ] ]
 timeOfDayValue   = hour ":"   minute [ ":"   second [ "." fractionalSeconds ] ]
@@ -1111,7 +1113,7 @@ preference = allowEntityReferencesPreference
            / returnPreference
            / trackChangesPreference
            / waitPreference
-           ; and everything allowed by https://tools.ietf.org/html/rfc7240
+           ; and everything allowed by [RFC7240]
            ; / ( parameter / token ) *( OWS ";" [ OWS ( parameter / token ) ] )
 
 allowEntityReferencesPreference = [ "odata." ] "allow-entityreferences"
@@ -1180,12 +1182,25 @@ CLOSE = ")" / "%29"
 ;------------------------------------------------------------------------------
 ; A. URI syntax [RFC3986]
 ;------------------------------------------------------------------------------
+; The rules in sections A.1-A.4 are reproduced verbatim from RFC3986. They
+; are included here to keep the grammar self-contained so that it can be
+; validated by the test harness without a separate RFC3986 import.
+;------------------------------------------------------------------------------
+
+;------------------------------------------------------------------------------
+; A.1 Full URI production [RFC3986]
+;------------------------------------------------------------------------------
+; The complete URI syntax from RFC3986 sections 3 and 3.1. Within this
+; grammar, the URI rule is referenced only by the callbackPreference header
+; value (section 8). Commented-out alternatives are structurally part of
+; RFC3986 but are not required by OData.
+;------------------------------------------------------------------------------
 
 URI           = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
 hier-part     = "//" authority path-abempty
               / path-absolute
               / path-rootless
-;              / path-empty
+;             / path-empty
 ;URI-reference = URI / relative-ref
 ;absolute-URI  = scheme ":" hier-part [ "?" query ]
 ;relative-ref  = relative-part [ "?" query ] [ "#" fragment ]
@@ -1194,12 +1209,29 @@ hier-part     = "//" authority path-abempty
 ;              / path-noscheme
 ;              / path-empty
 scheme        = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+
+query         = *( pchar / "/" / "?" )
+fragment      = *( pchar / "/" / "?" )
+
+
+;------------------------------------------------------------------------------
+; A.2 Host and authority sub-parser [RFC3986]
+;------------------------------------------------------------------------------
+; Rules for the authority component (userinfo, host, port) from RFC3986
+; sections 3.2 and 3.2.2. Referenced by serviceRoot, which is the entry
+; point of the OData grammar. Percent-encoding within this sub-parser
+; follows RFC3986 exactly; no OData-specific literal/percent-encoded
+; equivalences apply here.
+;------------------------------------------------------------------------------
+
 authority     = [ userinfo "@" ] host [ ":" port ]
 userinfo      = *( unreserved / pct-encoded / sub-delims / ":" )
 host          = IP-literal / IPv4address / reg-name
 port          = *DIGIT
+
 IP-literal    = "[" ( IPv6address / IPvFuture  ) "]"
 IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
+
 IPv6address   =                            6( h16 ":" ) ls32
                  /                       "::" 5( h16 ":" ) ls32
                  / [               h16 ] "::" 4( h16 ":" ) ls32
@@ -1218,6 +1250,20 @@ dec-octet     = "1" 2DIGIT            ; 100-199
               / %x31-39 DIGIT         ; 10-99
               / DIGIT                 ; 0-9
 reg-name      = *( unreserved / pct-encoded / sub-delims )
+
+
+;------------------------------------------------------------------------------
+; A.3 Path sub-parser [RFC3986]
+;------------------------------------------------------------------------------
+; Rules for path components from RFC3986 section 3.3. path-abempty and
+; path-rootless are used by hier-part (A.1); segment-nz is used directly
+; by serviceRoot. The pchar rule is the fundamental character class for
+; path segments and is also referenced directly by OData rules such as
+; keyPathLiteral and the format query option.
+; Commented-out path variants are part of the RFC3986 path grammar but
+; are not needed by OData.
+;------------------------------------------------------------------------------
+
 ;path          = path-abempty    ; begins with "/" or is empty
 ;              / path-absolute   ; begins with "/" but not "//"
 ;              / path-noscheme   ; begins with a non-colon segment
@@ -1232,8 +1278,22 @@ segment       = *pchar
 segment-nz    = 1*pchar
 ;segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" ) ; non-zero-length segment without any colon ":"
 pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
-query         = *( pchar / "/" / "?" )
-fragment      = *( pchar / "/" / "?" )
+
+
+;------------------------------------------------------------------------------
+; A.4 Basic character classes [RFC3986]
+;------------------------------------------------------------------------------
+; Foundational character class definitions from RFC3986 sections 2.2-2.3.
+; After percent-encoding normalization, every unreserved character appears
+; as a plain literal; no unreserved character ever appears percent-encoded
+; in a normalized URI.
+; RFC3986 sub-delims are split here into two groups: other-delims covers
+; characters that carry no structural meaning in OData. The remaining
+; sub-delims characters ("$", "&", "'", "=") serve as OData delimiters and
+; are referenced explicitly in the rules that use them, rather than through
+; the sub-delims rule.
+;------------------------------------------------------------------------------
+
 pct-encoded   = "%" HEXDIG HEXDIG
 unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
 ;reserved      = gen-delims / sub-delims
@@ -1241,6 +1301,36 @@ unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
 ;sub-delims    = "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
 sub-delims     =       "$" / "&" / "'" /                                     "=" / other-delims
 other-delims   = "!" /                   "(" / ")" / "*" / "+" / "," / ";"
+
+
+;------------------------------------------------------------------------------
+; A.5 OData extensions to RFC3986 character classes
+;------------------------------------------------------------------------------
+; These character classes are used in positions where OData treats a
+; character and its percent-encoded equivalent as grammatically identical.
+; Each rule explicitly lists both the literal character and its %xx form
+; as alternatives. This reflects a deliberate OData design choice: certain
+; reserved characters that RFC3986 permits unencoded in query strings are
+; assigned fixed structural roles in OData syntax, and client
+; implementations may encode or leave them unencoded interchangeably.
+;
+; pchar-no-SQUOTE is pchar with single-quote excluded, because "'" is the
+; OData string-literal delimiter. pct-encoded-no-SQUOTE correspondingly
+; excludes %27.
+;
+; The qchar-no-AMP family are query-string character classes that always
+; exclude "&" (the query-option separator). Each variant additionally
+; excludes further characters according to the syntactic position:
+;   qchar-no-AMP-EQ           also excludes "=" (the key=value separator)
+;   qchar-no-AMP-EQ-AT-DOLLAR also excludes "@" and "$"
+;   qchar-no-AMP-SQUOTE       also excludes "'" (the string-literal delimiter)
+;   qchar-no-AMP-DQUOTE       also excludes DQUOTE (the JSON string delimiter)
+;
+; qchar-unescaped and pct-encoded-unescaped are used inside JSON string
+; values embedded in the query string (section 5). JSON escape sequences
+; handle the structural characters there, so percent-encoded forms of
+; characters that JSON would escape are excluded from these rules.
+;------------------------------------------------------------------------------
 
 pchar-no-SQUOTE       = unreserved / pct-encoded-no-SQUOTE / other-delims / "$" / "&" / "=" / ":" / "@"
 pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG
@@ -1293,6 +1383,50 @@ VCHAR = %x21-7E
 ;BIT = "0" / "1"
 
 
+;------------------------------------------------------------------------------
+; References
+;------------------------------------------------------------------------------
+;
+; [RFC3986]      Berners-Lee, T., Fielding, R., Masinter, L.,
+;                "Uniform Resource Identifier (URI): Generic Syntax",
+;                RFC 3986, January 2005.
+;                https://www.rfc-editor.org/rfc/rfc3986
+;
+; [RFC3987]      Duerst, M., Suignard, M.,
+;                "Internationalized Resource Identifiers (IRIs)",
+;                RFC 3987, January 2005.
+;                https://www.rfc-editor.org/rfc/rfc3987
+;
+; [RFC4648]      Josefsson, S.,
+;                "The Base16, Base32, and Base64 Data Encodings",
+;                RFC 4648, October 2006.
+;                https://www.rfc-editor.org/rfc/rfc4648
+;
+; [RFC5234]      Crocker, D., Overell, P.,
+;                "Augmented BNF for Syntax Specifications: ABNF",
+;                RFC 5234, January 2008.
+;                https://www.rfc-editor.org/rfc/rfc5234
+;
+; [RFC7240]      Snell, J.,
+;                "Prefer Header for HTTP",
+;                RFC 7240, June 2014.
+;                https://www.rfc-editor.org/rfc/rfc7240
+;
+; [RFC7405]      Kyzivat, P.,
+;                "Case-Sensitive String Support in ABNF",
+;                RFC 7405, December 2014.
+;                https://www.rfc-editor.org/rfc/rfc7405
+;
+; [RFC8259]      Bray, T.,
+;                "The JavaScript Object Notation (JSON) Data Interchange Format",
+;                RFC 8259, December 2017.
+;                https://www.rfc-editor.org/rfc/rfc8259
+;
+; [XMLSCHEMA11-2] Peterson, D., Biron, P., et al.,
+;                "W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes",
+;                W3C Recommendation, April 2012.
+;                https://www.w3.org/TR/xmlschema11-2/
+;
 ;------------------------------------------------------------------------------
 ; End of odata-abnf-construction-rules
 ;------------------------------------------------------------------------------
