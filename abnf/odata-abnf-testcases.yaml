@@ -4000,6 +4000,10 @@ TestCases:
     Rule: preference
     Input: return=representation
 
+  - Name: Preferences - return representation;delta
+    Rule: preference
+    Input: return=representation;delta
+
   - Name: Preferences - respond async
     Rule: preference
     Input: respond-async

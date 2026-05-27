@@ -1170,7 +1170,7 @@ omitValuesPreference = "omit-values" EQ-h ( "nulls" / "defaults" )
 
 respondAsyncPreference = "respond-async"
 
-returnPreference = "return" EQ-h ( %s"representation" / %s"minimal" )
+returnPreference = "return" EQ-h ( %s"representation" [ ";delta" ] / %s"minimal" )
 
 trackChangesPreference = [ "odata." ] "track-changes"
 
