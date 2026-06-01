@@ -33,6 +33,10 @@
   "devDependencies": {
     "c8": "^10.1.3",
     "eslint": "^9.39.1",
-    "mocha": "^11.7.5"
+    "mocha": "^11.3.0"
+  },
+  "overrides": {
+    "diff": "^8.0.3",
+    "serialize-javascript": "^7.0.5"
   }
 }
