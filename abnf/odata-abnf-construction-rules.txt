@@ -298,11 +298,11 @@ expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / ( entityNavigationProperty / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( entityNavigationProperty [ "/" entityAnnotationInQuery] / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref 
                       / OPEN entityOption *( SEMI entityOption ) CLOSE
                       ]
-                    / ( entityColNavigationProperty / entityColAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( entityColNavigationProperty [ "/" entityColAnnotationInQuery ] / entityColAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref   [ OPEN colOption   *( SEMI colOption   ) CLOSE ]
                       / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
@@ -394,22 +394,21 @@ selectItem     = STAR
                      / optionallyQualifiedActionName
                      / optionallyQualifiedFunctionName
                      )
-selectProperty = primitiveProperty / primitiveAnnotationInQuery
-               / selectPath [ OPEN structOption *( SEMI structOption ) CLOSE
-                            / "/" selectProperty
-                            ]
-               / selectColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                               / OPEN selectOption *( SEMI selectOption ) CLOSE
-                               / "/" selectProperty
+selectProperty = primitiveProperty [ "/" primitiveAnnotationInQuery]
+               / primitiveAnnotationInQuery
+               / selectComplexPath [ OPEN structOption *( SEMI structOption ) CLOSE ]
+                              [ "/" selectProperty ]
+               / selectPrimitiveColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                               / OPEN colOption *( SEMI colOption ) CLOSE
                                ]
-               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
-                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
-                 / OPEN colOption *( SEMI colOption ) CLOSE 
-                 ]
+               / selectComplexColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+                               / [ OPEN selectComplexColOption *( SEMI selectComplexColOption ) CLOSE ]
+                               ]
                / navigationProperty
-selectPath     = ( complexProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectColPath  = ( complexColProperty / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectOption   = colOption / structOption
+selectComplexPath     = ( complexProperty [ "/" complexAnnotationInQuery ] / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectPrimitiveColPath  = ( primitiveColProperty [ "/" primitiveColAnnotationInQuery ] / primitiveColAnnotationInQuery )
+selectComplexColPath  = ( complexColProperty [ "/" complexColAnnotationInQuery ] / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
+selectComplexColOption   = colOption / structOption
 
 allOperationsInSchema = namespace "." STAR
 
@@ -440,7 +439,6 @@ complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
 complexColAnnotationInQuery = annotationInQuery ; complex collection-valued annotation
 entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
 entityColAnnotationInQuery = annotationInQuery ; entity collection-valued annotation
-
 primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
 primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
 

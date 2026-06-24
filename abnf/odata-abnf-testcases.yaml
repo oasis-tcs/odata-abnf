@@ -66,8 +66,10 @@ Constraints:
     - Activation
   complexAnnotationInQuery:
     - "@Namespace.ComplexTerm"
+    - "@Namespace.BusinessAddress"
   complexColAnnotationInQuery:
     - "@Core.Messages"
+    - "@Namespace.BusinessAddresses"
   complexColProperty:
     - Addresses
     - _at_Core_dot_Messages
@@ -196,6 +198,9 @@ Constraints:
     - Word2
   primitiveAnnotationInQuery:
     - "@Measures.Currency"
+    - "@Namespace.FullName"
+  primitiveCollectionAnnotationInQuery:
+    - "@Namespace.Names"
   primitiveColFunction:
     - MostPopularNames
   primitiveColFunctionImport:
@@ -2344,6 +2349,152 @@ TestCases:
   - Name: 5.1.1.16 Annotation Values
     Rule: filter
     Input: $filter=@Messages/any(m:m/severity eq 'error')
+
+  - Name: 5.1.1.16 Collection Valued Annotation Values
+    Rule: select
+    Input: $select=@Core.Messages($top=5)
+
+  - Name: 5.1.1.16 Collection Valued Annotation Values
+    Rule: select
+    Input: $select=@Core.Messages/$count
+
+  - Name: 5.1.1.16 Annotation Values on Primitive
+    Rule: select
+    Input: $select=Name/@Namespace.FullName
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Collection Options Fail
+    Rule: select
+    Input: $select=Name/Namespace.FullName($top=5)
+    FailAt: 13
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - $count Fails
+    Rule: select
+    Input: $select=Name/@Namespace.FullName/$count
+    FailAt: 32
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Collection Annotation Fails
+    Rule: select
+    Input: $select=Name/@Namespace.Names
+    FailAt: 29
+    
+  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Annotation Fails
+    Rule: select
+    Input: $select=Name/@Namespace.BusinessAddress
+    FailAt: 39
+    
+  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Annotation Fails
+    Rule: select
+    Input: $select=Name/@Namespace.EntityTerm
+    FailAt: 34
+
+  - Name: 5.1.1.16 Annotation Values Collection of Primitives
+    Rule: select
+    Input: $select=Names/@Namespace.Names
+
+  - Name: 5.1.1.16 Annotation Values Collection of Primitives = Collection Option
+    Rule: select
+    Input: $select=Names/@Namespace.Names($top=5)
+
+  - Name: 5.1.1.16 Annotation Values Collection of Primitives - $count
+    Rule: select
+    Input: $select=Names/@Namespace.Names/$count
+    
+  - Name: 5.1.1.16 Annotation Values Complex Type
+    Rule: select
+    Input: $select=Address/@Namespace.BusinessAddress
+
+  - Name: 5.1.1.16 Annotation Values Complex Type - Collection Option Fails
+    Rule: select
+    Input: $select=Address/@Namespace.BusinessAddress($top=5)
+    FailAt: 43
+
+  - Name: 5.1.1.16 Annotation Values Complex Type  - $count fails
+    Rule: select
+    Input: $select=Address/@Namespace.BusinessAddress/$count
+    FailAt: 43
+    
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddresses
+
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddresses($top=5)
+
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddresses/$count
+
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type - Singleton Fails
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddress
+    FailAt: 44
+
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type - Primitive Annotation Fails
+    Rule: select
+    Input: $select=Addresses/@Namespace.Names
+    FailAt: 34
+    
+  - Name: 5.1.1.16 Annotation Values on Collection of Complex Types - Entity Annotation Fails
+    Rule: select
+    Input: $select=Addresses/@Namespace.EntityTerms
+    FailAt: 40
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property
+    Rule: expand
+    Input: $expand=Customer/@Namespace.EntityTerm
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property - Collection Options Fail
+    Rule: expand
+    Input: $expand=Customer/@Namespace.EntityTerm($top=5)
+    FailAt: 42
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property - Count Fails
+    Rule: expand
+    Input: $expand=Customer/@Namespace.EntityTerm/$count
+    FailAt: 39
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property - Collection Annotation Fails
+    Rule: expand
+    Input: $expand=Customer/@Namespace.EntitySetTerm
+    FailAt: 41
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property - Primitive Annotation Fails
+    Rule: expand
+    Input: $expand=Customer/@Namespace.FullName
+    FailAt: 36
+
+  - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property = Complex Annotation Fails
+    Rule: expand
+    Input: $expand=Customer/@Namespace.BusinessAddress
+    FailAt: 43
+
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property
+    Rule: expand
+    Input: $expand=Items/@Namespace.EntitySetTerm
+
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property
+    Rule: expand
+    Input: $expand=Items/@Namespace.EntitySetTerm($top=5)
+
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property
+    Rule: expand
+    Input: $expand=Items/@Namespace.EntitySetTerm/$count
+
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property - Singleton Annotation Fails
+    Rule: expand
+    Input: $expand=Items/@Namespace.EntityTerm
+    FailAt: 35
+
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property - Primitive Annotation Fails
+    Rule: expand
+    Input: $expand=Items/@Namespace.Names
+    FailAt: 30
+
+  - Name: 5.1.1.16 Annotation Values onCollection Valued Navigation Property = Complex Annotation Fails
+    Rule: expand
+    Input: $expand=Items/@Namespace.BusinessAddresses
+    FailAt: 42
 
   - Name: 5.1.2 Expand - single navigation property
     Rule: expand
