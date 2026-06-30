@@ -2362,83 +2362,179 @@ TestCases:
     Rule: select
     Input: $select=Name/@Namespace.FullName
 
-  - Name: 5.1.1.16 Annotation Values on Primitive - Collection Options Fail
-    Rule: select
-    Input: $select=Name/Namespace.FullName($top=5)
-    FailAt: 13
+#  - Name: 5.1.1.16 Annotation Values on Primitive - Collection Options Fail
+#    Rule: select
+#    Input: $select=Name/@Namespace.FullName($top=5)
+#    FailAt: 32
 
-  - Name: 5.1.1.16 Annotation Values on Primitive - $count Fails
-    Rule: select
-    Input: $select=Name/@Namespace.FullName/$count
-    FailAt: 32
+#  - Name: 5.1.1.16 Annotation Values on Primitive - $count Fails
+#    Rule: select
+#    Input: $select=Name/@Namespace.FullName/$count
+#    FailAt: 32
 
-  - Name: 5.1.1.16 Annotation Values on Primitive - Collection Annotation Fails
+  - Name: 5.1.1.16 Annotation Values on Primitive - Primitive Collection Annotation with Collection Options succeed
     Rule: select
-    Input: $select=Name/@Namespace.Names
-    FailAt: 29
-    
-  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Annotation Fails
+    Input: $select=Name/@Namespace.Names($skip=10)
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Primitive Collection Annotation with $count succeeds
+    Rule: select
+    Input: $select=Name/@Namespace.Names/$count
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Annotation succeeds
     Rule: select
     Input: $select=Name/@Namespace.BusinessAddress
-    FailAt: 39
-    
-  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Annotation Fails
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Annotation  with cast succeeds
     Rule: select
-    Input: $select=Name/@Namespace.EntityTerm
+    Input: $select=Name/@Namespace.BusinessAddress/Namespace.Address
+
+  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Collection Annotation with Collection Options succeed
+    Rule: select
+    Input: $select=Name/@Namespace.BusinessAddresses($filter=City eq 'London')
+ 
+  - Name: 5.1.1.16 Annotation Values on Primitive - Complex Collection Annotation  with cast succeeds
+    Rule: select
+    Input: $select=Name/@Namespace.BusinessAddresses/Namespace.Address
+   
+#  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Annotation Fails
+#    Rule: select
+#    Input: $select=Name/@Namespace.EntityTerm
+#    FailAt: 34
+   
+  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Cast Fails
+    Rule: select
+    Input: $select=Name/@Namespace.Name/Namespace.Customer
+    FailAt: 28
+
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Primitive Annotation
+    Rule: select
+    Input: $select=Names/@Namespace.FullName
+
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Collection Options Fail on Primitive Annotation
+    Rule: select
+    Input: $select=Names/Namespace.FullName($top=5)
+    FailAt: 14
+
+#  - Name: 5.1.1.16 Annotation Values on Primitive Collection - $count Fails on Primitive Annotation
+#    Rule: select
+#    Input: $select=Names/@Namespace.FullName/$count
+#    FailAt: 33
+
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Primitive Collection Annotation with Collection Options succeed
+    Rule: select
+    Input: $select=Names/@Namespace.Names($skip=10)
+
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Complex Collection Annotation with Collection Options succeed
+    Rule: select
+    Input: $select=Names/@Namespace.BusinessAddresses($filter=City eq 'London')
+    
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Complex Annotation  with cast succeeds
+    Rule: select
+    Input: $select=Names/@Namespace.BusinessAddress/Namespace.Address
+ 
+  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Complex Collection Annotation  with cast succeeds
+    Rule: select
+    Input: $select=Names/@Namespace.BusinessAddresses/Namespace.Address
+   
+#  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Entity Annotation Fails
+#    Rule: select
+#    Input: $select=Names/@Namespace.EntityTerm
+#    FailAt: 34
+    
+#  - Name: 5.1.1.16 Annotation Values on Primitive Collection - Entity Collection Annotation Fails
+#    Rule: select
+#    Input: $select=Names/@Namespace.EntitySetTerm
+#    FailAt: 34
+   
+  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Cast Fails
+    Rule: select
+    Input: $select=Names/@Namespace.Name/Namespace.Customer
+    FailAt: 29
+
+  - Name: 5.1.1.16 Annotation Values on Complex - Primitive Annotation
+    Rule: select
+    Input: $select=Address/@Namespace.FullName
+
+  - Name: 5.1.1.16 Annotation Values on Complex - Collection Options Fail on Primitive Annotation
+    Rule: select
+    Input: $select=Address/Namespace.FullName($top=5)
     FailAt: 34
 
-  - Name: 5.1.1.16 Annotation Values Collection of Primitives
-    Rule: select
-    Input: $select=Names/@Namespace.Names
+#  - Name: 5.1.1.16 Annotation Values on Primitive - $count Fails on Primitive Annotation
+#    Rule: select
+#    Input: $select=Address/@Namespace.FullName/$count
+#    FailAt: 35
 
-  - Name: 5.1.1.16 Annotation Values Collection of Primitives = Collection Option
+  - Name: 5.1.1.16 Annotation Values on Complex - Primitive Collection Annotation with Collection Options succeed
     Rule: select
-    Input: $select=Names/@Namespace.Names($top=5)
+    Input: $select=Address/@Namespace.Names($skip=10)
 
-  - Name: 5.1.1.16 Annotation Values Collection of Primitives - $count
+  - Name: 5.1.1.16 Annotation Values on Complex - Complex Annotation  with cast succeeds
     Rule: select
-    Input: $select=Names/@Namespace.Names/$count
+    Input: $select=Address/@Namespace.BusinessAddress/Namespace.Address
+
+  - Name: 5.1.1.16 Annotation Values on Complex - Complex Collection Annotation  with cast succeeds
+    Rule: select
+    Input: $select=Address/@Namespace.BusinessAddresses/Namespace.Address
+   
+  - Name: 5.1.1.16 Annotation Values on Complex - Complex Collection Annotation with Collection Options succeed
+    Rule: select
+    Input: $select=Address/@Namespace.BusinessAddresses($filter=City eq 'London')
     
-  - Name: 5.1.1.16 Annotation Values Complex Type
+#  - Name: 5.1.1.16 Annotation Values on Complex - Entity Annotation Fails
+#    Rule: select
+#    Input: $select=Address/@Namespace.EntityTerm
+#    FailAt: 36
+   
+  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Cast Fails
     Rule: select
-    Input: $select=Address/@Namespace.BusinessAddress
-
-  - Name: 5.1.1.16 Annotation Values Complex Type - Collection Option Fails
-    Rule: select
-    Input: $select=Address/@Namespace.BusinessAddress($top=5)
-    FailAt: 43
-
-  - Name: 5.1.1.16 Annotation Values Complex Type  - $count fails
-    Rule: select
-    Input: $select=Address/@Namespace.BusinessAddress/$count
-    FailAt: 43
+    Input: $select=Address/@Namespace.Name/Namespace.Customer
+    FailAt: 31
     
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Primitive Annotation
     Rule: select
-    Input: $select=Addresses/@Namespace.BusinessAddresses
+    Input: $select=Addresses/@Namespace.FullName
 
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Collection Options Fail for Primitive Annotation
     Rule: select
-    Input: $select=Addresses/@Namespace.BusinessAddresses($top=5)
+    Input: $select=Addresses/Namespace.FullName($top=5)
+    FailAt: 36
 
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type
-    Rule: select
-    Input: $select=Addresses/@Namespace.BusinessAddresses/$count
+#  - Name: 5.1.1.16 Annotation Values on Complex Collection - $count Fails for Primitive Annotation
+#    Rule: select
+#    Input: $select=Addresses/@Namespace.FullName/$count
+#    FailAt: 37
 
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type - Singleton Fails
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Primitive Collection Annotation with Collection Options succeed
     Rule: select
-    Input: $select=Addresses/@Namespace.BusinessAddress
-    FailAt: 44
+    Input: $select=Addresses/@Namespace.Names($skip=10)
 
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Type - Primitive Annotation Fails
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Complex Collection Annotation with Collection Options succeed
     Rule: select
-    Input: $select=Addresses/@Namespace.Names
-    FailAt: 34
+    Input: $select=Addresses/@Namespace.BusinessAddresses($filter=City eq 'London')
     
-  - Name: 5.1.1.16 Annotation Values on Collection of Complex Types - Entity Annotation Fails
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Complex Annotation  with cast succeeds
     Rule: select
-    Input: $select=Addresses/@Namespace.EntityTerms
-    FailAt: 40
+    Input: $select=Addresses/@Namespace.BusinessAddress/Namespace.Address
+
+  - Name: 5.1.1.16 Annotation Values on Complex Collection - Complex Collection Annotation  with cast succeeds
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddresses/Namespace.Address
+   
+#  - Name: 5.1.1.16 Annotation Values on Complex Collection - Entity Annotation Fails
+#    Rule: select
+#    Input: $select=Addresses/@Namespace.EntityTerm
+#    FailAt: 39
+    
+#  - Name: 5.1.1.16 Annotation Values on Complex Collection - Entity Collection Annotation Fails
+#    Rule: select
+#    Input: $select=Addresses/@Namespace.EntitySetTerm
+#    FailAt: 42
+   
+  - Name: 5.1.1.16 Annotation Values on Primitive - Entity Cast Fails
+    Rule: select
+    Input: $select=Addresses/@Namespace.Name/Namespace.Customer
+    FailAt: 33
 
   - Name: 5.1.1.16 Annotation Values on Single Valued Navigation Property
     Rule: expand
@@ -2481,17 +2577,16 @@ TestCases:
     Rule: expand
     Input: $expand=Items/@Namespace.EntitySetTerm/$count
 
-  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property - Singleton Annotation Fails
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property - Singleton Annotation Succeeds
     Rule: expand
     Input: $expand=Items/@Namespace.EntityTerm
-    FailAt: 35
 
   - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property - Primitive Annotation Fails
     Rule: expand
     Input: $expand=Items/@Namespace.Names
     FailAt: 30
 
-  - Name: 5.1.1.16 Annotation Values onCollection Valued Navigation Property = Complex Annotation Fails
+  - Name: 5.1.1.16 Annotation Values on Collection Valued Navigation Property = Complex Annotation Fails
     Rule: expand
     Input: $expand=Items/@Namespace.BusinessAddresses
     FailAt: 42

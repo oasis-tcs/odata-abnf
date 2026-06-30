@@ -298,11 +298,11 @@ expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
 expandPath        = ( STAR [ ref / OPEN levels CLOSE ]
-                    / ( entityNavigationProperty [ "/" entityAnnotationInQuery] / entityAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( ( [ anyProperty  "/" ] entityAnnotationInQuery )  / entityNavigationProperty ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref 
                       / OPEN entityOption *( SEMI entityOption ) CLOSE
                       ]
-                    / ( entityColNavigationProperty [ "/" entityColAnnotationInQuery ] / entityColAnnotationInQuery ) [ "/" optionallyQualifiedEntityTypeName ]
+                    / ( ( [ anyProperty "/" ] entityColAnnotationInQuery ) / entityColNavigationProperty ) [ "/" optionallyQualifiedEntityTypeName ]
                       [ ref   [ OPEN colOption   *( SEMI colOption   ) CLOSE ]
                       / count [ OPEN countOption *( SEMI countOption ) CLOSE ]
                       /         OPEN expandOption      *( SEMI expandOption      ) CLOSE
@@ -394,23 +394,37 @@ selectItem     = STAR
                      / optionallyQualifiedActionName
                      / optionallyQualifiedFunctionName
                      )
-selectProperty = primitiveProperty [ "/" primitiveAnnotationInQuery]
-               / primitiveAnnotationInQuery
-               / selectComplexPath [ OPEN structOption *( SEMI structOption ) CLOSE ]
-                              [ "/" selectProperty ]
-               / selectPrimitiveColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                               / OPEN colOption *( SEMI colOption ) CLOSE
-                               ]
-               / selectComplexColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                               / [ OPEN selectComplexColOption *( SEMI selectComplexColOption ) CLOSE ]
-                               ]
+selectProperty = [ anyProperty  "/" ] complexColAnnotationInQuery 
+                    [ "/" optionallyQualifiedComplexTypeName ] 
+                    [ countOptionInSelect
+                    / OPEN complexColOption *( SEMI complexColOption ) CLOSE
+                    ]
+               / [ anyProperty "/" ] complexAnnotationInQuery 
+                    [ "/" optionallyQualifiedComplexTypeName ]
+                    [ OPEN structOption *( SEMI structOption ) CLOSE ]
+                    [ "/" selectProperty ]
+               / [ anyProperty "/" ] primitiveColAnnotationInQuery 
+                    [ countOptionInSelect
+                    / OPEN colOption *( SEMI colOption ) CLOSE
+                    ]
+               / [ anyProperty "/" ] primitiveAnnotationInQuery
+               / complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
+                                    [ countOptionInSelect
+                                    / OPEN complexColOption *( SEMI complexColOption ) CLOSE
+                                    ]
+               / complexProperty [ "/" optionallyQualifiedComplexTypeName ]
+                                 [ OPEN structOption *( SEMI structOption ) CLOSE ]
+                                 [ "/" selectProperty ]
+               / primitiveColProperty [ countOptionInSelect
+                                      / OPEN colOption *( SEMI colOption ) CLOSE
+                                      ]
+               / primitiveProperty
                / navigationProperty
-selectComplexPath     = ( complexProperty [ "/" complexAnnotationInQuery ] / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectPrimitiveColPath  = ( primitiveColProperty [ "/" primitiveColAnnotationInQuery ] / primitiveColAnnotationInQuery )
-selectComplexColPath  = ( complexColProperty [ "/" complexColAnnotationInQuery ] / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectComplexColOption   = colOption / structOption
 
+complexColOption   = colOption / structOption
+countOptionInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
 allOperationsInSchema = namespace "." STAR
+anyProperty = primitiveProperty / primitiveColProperty / complexProperty / complexColProperty / entityNavigationProperty / entityColNavigationProperty
 
 ; The parameterNames uniquely identify the bound function overload
 ; Necessary only if it has overloads
