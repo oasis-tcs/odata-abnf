@@ -396,7 +396,7 @@ selectItem     = STAR
                      )
 selectProperty = [ structuralProperty  "/" ] complexColAnnotationInQuery 
                     [ "/" optionallyQualifiedComplexTypeName ] 
-                    [ countOptionInSelect
+                    [ countSegmentInSelect
                       / [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
                         [ "/" selectProperty ]
                     ]
@@ -405,26 +405,26 @@ selectProperty = [ structuralProperty  "/" ] complexColAnnotationInQuery
                     [ OPEN structOption *( SEMI structOption ) CLOSE ]
                     [ "/" selectProperty ]
                / [ structuralProperty "/" ] primitiveColAnnotationInQuery 
-                    [ countOptionInSelect
+                    [ countSegmentInSelect
                     / OPEN colOption *( SEMI colOption ) CLOSE
                     ]
                / [ structuralProperty "/" ] primitiveAnnotationInQuery
                / complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
-                                    [ countOptionInSelect
+                                    [ countSegmentInSelect
                                       /  [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
                                          [ "/" selectProperty ]
                                     ]
                / complexProperty [ "/" optionallyQualifiedComplexTypeName ]
                                  [ OPEN structOption *( SEMI structOption ) CLOSE ]
                                  [ "/" selectProperty ]
-               / primitiveColProperty [ countOptionInSelect
+               / primitiveColProperty [ countSegmentInSelect
                                       / OPEN colOption *( SEMI colOption ) CLOSE
                                       ]
                / primitiveProperty
                / navigationProperty
 
 complexColOption   = colOption / structOption
-countOptionInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
+countSegmentInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
 allOperationsInSchema = namespace "." STAR
 structuralProperty = primitiveProperty / primitiveColProperty / complexProperty / complexColProperty
 
