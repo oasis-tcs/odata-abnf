@@ -2445,6 +2445,15 @@ TestCases:
   - Name: 5.1.1.16 Annotation Values on Complex - Complex Collection Annotation with Collection Options succeed
     Rule: select
     Input: $select=Address/@Namespace.BusinessAddresses($filter=City eq 'London')
+ 
+  - Name: 5.1.1.16 Complex Annotation Value with Select
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddress/City
+
+  - Name: 5.1.1.16 Primitive Annotation Value with Select
+    Rule: select
+    Input: $select=Addresses/@Namespace.Name/City
+    FailAt: 33
 
   - Name: 5.1.1.16 Annotation Values on Primitive - Entity Cast Fails
     Rule: select
@@ -2462,6 +2471,10 @@ TestCases:
   - Name: 5.1.1.16 Annotation Values on Complex Collection - Complex Collection Annotation with Collection Options succeed
     Rule: select
     Input: $select=Addresses/@Namespace.BusinessAddresses($filter=City eq 'London')
+ 
+  - Name: 5.1.1.16 Complex Collection Annotation Value with Select
+    Rule: select
+    Input: $select=Addresses/@Namespace.BusinessAddresses/City
     
   - Name: 5.1.1.16 Annotation Values on Complex Collection - Complex Annotation  with cast succeeds
     Rule: select
@@ -2730,6 +2743,11 @@ TestCases:
     Rule: select
     Input: $select=Sizes/$count
     
+  - Name: 5.1.3 Select - No Property Access After Primitive Collection
+    Rule: select
+    Input: $select=Sizes/City
+    FailAt: 14
+
   - Name: 5.1.3 Select - $count -- can't support $count within /$count
     Rule: select
     FailAt: 21
@@ -2754,6 +2772,11 @@ TestCases:
   - Name: 5.1.3 Select - filtered $count on complex collection
     Rule: select
     Input: $select=Addresses/$count($filter=startswith(City,'H'))
+
+  - Name: 5.1.3 Select - Property can't follow $count
+    Rule: select
+    Input: $select=Addresses/$count/City
+    FailAt: 24
 
   - Name: 5.1.3 Select - $count - no $ prefix for nested query options, still required for
       path segment
@@ -2798,6 +2821,10 @@ TestCases:
   - Name: 5.1.3 Select - with property of complex property
     Rule: select
     Input: $select=Address/Country
+
+  - Name: 5.1.3 Select - Complex Collection with property of complex property
+    Rule: select
+    Input: $select=Addresses/Country
 
   - Name: 5.1.3 Select - filter with single complex property
     Rule: select

@@ -397,7 +397,8 @@ selectItem     = STAR
 selectProperty = [ structuralProperty  "/" ] complexColAnnotationInQuery 
                     [ "/" optionallyQualifiedComplexTypeName ] 
                     [ countOptionInSelect
-                    / OPEN complexColOption *( SEMI complexColOption ) CLOSE
+                      / [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
+                        [ "/" selectProperty ]
                     ]
                / [ structuralProperty "/" ] complexAnnotationInQuery 
                     [ "/" optionallyQualifiedComplexTypeName ]
@@ -410,7 +411,8 @@ selectProperty = [ structuralProperty  "/" ] complexColAnnotationInQuery
                / [ structuralProperty "/" ] primitiveAnnotationInQuery
                / complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
                                     [ countOptionInSelect
-                                    / OPEN complexColOption *( SEMI complexColOption ) CLOSE
+                                      /  [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
+                                         [ "/" selectProperty ]
                                     ]
                / complexProperty [ "/" optionallyQualifiedComplexTypeName ]
                                  [ OPEN structOption *( SEMI structOption ) CLOSE ]
