@@ -2387,7 +2387,7 @@ TestCases:
     Rule: select
     Input: $select=Name/@Namespace.BusinessAddresses($filter=City eq 'London')
  
-  - Name: 5.1.1.16 Complex Collction Annotation on Primitive - Cast succeeds
+  - Name: 5.1.1.16 Complex Collection Annotation on Primitive - Cast succeeds
     Rule: select
     Input: $select=Name/@Namespace.BusinessAddresses/Namespace.Address
 
@@ -2611,9 +2611,7 @@ TestCases:
     Rule: expand
     Input: $expand=Items/$count($filter=Name eq 'Hugo')
 
-  - Name:
-      5.1.2 Expand - $count - no $ prefix for nested query options, still required for
-      path segment
+  - Name: 5.1.2 Expand - $count - no $ prefix for nested query options, still required for path segment
     Rule: expand
     Input: expand=Items/$count(filter=Name eq 'Hugo')
 
