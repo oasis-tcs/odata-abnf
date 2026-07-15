@@ -394,24 +394,39 @@ selectItem     = STAR
                      / optionallyQualifiedActionName
                      / optionallyQualifiedFunctionName
                      )
-selectProperty = primitiveProperty / primitiveAnnotationInQuery
-               / selectPath [ OPEN structOption *( SEMI structOption ) CLOSE
-                            / "/" selectProperty
-                            ]
-               / selectColPath [ count [ OPEN countOption *( SEMI countOption ) CLOSE ]
-                               / OPEN selectOption *( SEMI selectOption ) CLOSE
-                               / "/" selectProperty
-                               ]
-               / ( primitiveColProperty / primitiveColAnnotationInQuery ) 
-                 [ count [ OPEN countOption *( SEMI countOption ) CLOSE ] 
-                 / OPEN colOption *( SEMI colOption ) CLOSE 
-                 ]
+selectProperty = [ structuralProperty  "/" ] complexColAnnotationInQuery 
+                    [ "/" optionallyQualifiedComplexTypeName ] 
+                    [ countSegmentInSelect
+                      / [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
+                        [ "/" selectProperty ]
+                    ]
+               / [ structuralProperty "/" ] complexAnnotationInQuery 
+                    [ "/" optionallyQualifiedComplexTypeName ]
+                    [ OPEN structOption *( SEMI structOption ) CLOSE ]
+                    [ "/" selectProperty ]
+               / [ structuralProperty "/" ] primitiveColAnnotationInQuery 
+                    [ countSegmentInSelect
+                    / OPEN colOption *( SEMI colOption ) CLOSE
+                    ]
+               / [ structuralProperty "/" ] primitiveAnnotationInQuery
+               / complexColProperty [ "/" optionallyQualifiedComplexTypeName ]
+                                    [ countSegmentInSelect
+                                      /  [ OPEN complexColOption *( SEMI complexColOption ) CLOSE ]
+                                         [ "/" selectProperty ]
+                                    ]
+               / complexProperty [ "/" optionallyQualifiedComplexTypeName ]
+                                 [ OPEN structOption *( SEMI structOption ) CLOSE ]
+                                 [ "/" selectProperty ]
+               / primitiveColProperty [ countSegmentInSelect
+                                      / OPEN colOption *( SEMI colOption ) CLOSE
+                                      ]
+               / primitiveProperty
                / navigationProperty
-selectPath     = ( complexProperty / complexAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectColPath  = ( complexColProperty / complexColAnnotationInQuery ) [ "/" optionallyQualifiedComplexTypeName ]
-selectOption   = colOption / structOption
 
+complexColOption   = colOption / structOption
+countSegmentInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
 allOperationsInSchema = namespace "." STAR
+structuralProperty = primitiveProperty / primitiveColProperty / complexProperty / complexColProperty
 
 ; The parameterNames uniquely identify the bound function overload
 ; Necessary only if it has overloads
@@ -440,7 +455,6 @@ complexAnnotationInQuery = annotationInQuery ; complex-valued annotation
 complexColAnnotationInQuery = annotationInQuery ; complex collection-valued annotation
 entityAnnotationInQuery  = annotationInQuery ; entity-valued annotation
 entityColAnnotationInQuery = annotationInQuery ; entity collection-valued annotation
-
 primitiveAnnotationInQuery    = annotationInQuery ; primitive-valued annotation
 primitiveColAnnotationInQuery = annotationInQuery ; primitive collection-valued annotation
 
