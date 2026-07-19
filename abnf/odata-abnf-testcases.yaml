@@ -2544,6 +2544,10 @@ TestCases:
     Input: $expand=Customer/@Namespace.Names
     FailAt: 17
 
+  - Name: 5.1.2 Expand - empty expand list
+    Rule: expand
+    Input: $expand=
+
   - Name: 5.1.2 Expand - single navigation property
     Rule: expand
     Input: $expand=Items
@@ -2733,6 +2737,10 @@ TestCases:
   - Name: 5.1.3 Select - with star
     Rule: select
     Input: $select=*
+
+  - Name: 5.1.3 Select - empty select list
+    Rule: select
+    Input: $select=
 
   - Name: 5.1.3 Select - nested $count on primitive collection
     Rule: select
