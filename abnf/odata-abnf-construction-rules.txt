@@ -293,7 +293,7 @@ compute          = ( "$compute" / "compute" ) EQ computeItem *( COMMA computeIte
 computeItem      = commonExpr RWS "as" RWS computedProperty
 computedProperty = odataIdentifier
 
-expand            = ( "$expand" / "expand" ) EQ expandItem *( COMMA expandItem )
+expand            = ( "$expand" / "expand" ) EQ [ expandItem *( COMMA expandItem ) ]
 expandItem        = "$value"
                   / expandPath
                   / optionallyQualifiedEntityTypeName "/" expandPath
@@ -383,7 +383,7 @@ searchChar = unreserved / pct-encoded-no-SP-DQUOTE / "!" / "*" / "+" / "," / ":"
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
 
-select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
+select         = ( "$select" / "select" ) EQ [ selectItem *( COMMA selectItem ) ]
 selectItem     = STAR
                / allOperationsInSchema
                / selectProperty
