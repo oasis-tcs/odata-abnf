@@ -2738,9 +2738,18 @@ TestCases:
     Rule: select
     Input: $select=*
 
+  - Name: 5.1.3 Select - with key
+    Rule: select
+    Input: $select=$key
+
+  - Name: 5.1.3 Select - with key and other properties
+    Rule: select
+    Input: $select=$key,Rating,ReleaseDate
+
   - Name: 5.1.3 Select - empty select list
     Rule: select
     Input: $select=
+    FailAt: 8
 
   - Name: 5.1.3 Select - nested $count on primitive collection
     Rule: select

@@ -383,8 +383,9 @@ searchChar = unreserved / pct-encoded-no-SP-DQUOTE / "!" / "*" / "+" / "," / ":"
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
 
-select         = ( "$select" / "select" ) EQ [ selectItem *( COMMA selectItem ) ]
+select         = ( "$select" / "select" ) EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
+               / keyProperties
                / allOperationsInSchema
                / selectProperty
                / optionallyQualifiedActionName
@@ -427,6 +428,7 @@ complexColOption   = colOption / structOption
 countSegmentInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
 allOperationsInSchema = namespace "." STAR
 structuralProperty = primitiveProperty / primitiveColProperty / complexProperty / complexColProperty
+keyProperties = "$key"
 
 ; The parameterNames uniquely identify the bound function overload
 ; Necessary only if it has overloads
