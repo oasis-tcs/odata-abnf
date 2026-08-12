@@ -428,7 +428,7 @@ complexColOption   = colOption / structOption
 countSegmentInSelect =  count [ OPEN countOption *( SEMI countOption ) CLOSE ]
 allOperationsInSchema = namespace "." STAR
 structuralProperty = primitiveProperty / primitiveColProperty / complexProperty / complexColProperty
-keyProperties = "$key"
+keyProperties = %s"$key"
 
 ; The parameterNames uniquely identify the bound function overload
 ; Necessary only if it has overloads
