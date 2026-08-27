@@ -58,6 +58,51 @@
 #  This tool is neither required for interpreting the test cases, nor is it
 #  part of the OData work product.
 
+Constraints:
+  customAggregate: []
+  expressionAlias: []
+  action: []
+  actionImport: []
+  complexColProperty: []
+  complexColFunction: []
+  complexColFunctionImport: []
+  complexFunction: []
+  complexFunctionImport: []
+  complexProperty: []
+  complexTypeName: []
+  customName: []
+  entityAnnotationInFragment: []
+  entityAnnotationInQuery: []
+  entityColFunction: []
+  entityColFunctionImport: []
+  entityColNavigationProperty:
+   - history
+  entityFunction: []
+  entityFunctionImport: []
+  entityNavigationProperty: 
+   - Department
+  entitySetName: 
+   - Employees
+  entityTypeName: []
+  enumerationMember: []
+  enumerationTypeName: []
+  keyPathLiteral: 
+   - '123'
+  namespacePart: []
+  parameterName: []
+  primitiveAnnotationInQuery: []
+  primitiveColFunction: []
+  primitiveColFunctionImport: []
+  primitiveColProperty: []
+  primitiveFunction: []
+  primitiveKeyProperty: []
+  primitiveNonKeyProperty: 
+   - Name
+   - Jobtitle
+   - From
+  singletonEntity: []
+  streamProperty: []
+
 TestCases:
   - Name: Temporal - at
     Rule: odataRelativeUri
