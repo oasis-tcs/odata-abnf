@@ -1,7 +1,7 @@
 ;------------------------------------------------------------------------------
-; OData ABNF Construction Rules Version 4.01 and 4.0
+; OData ABNF Construction Rules Version 4.02, 4.01, and 4.0
 ;------------------------------------------------------------------------------
-; 17 September 2020
+; 05 February 2024
 ;
 ; Latest version: https://github.com/oasis-tcs/odata-abnf/blob/main/abnf/odata-abnf-construction-rules.txt
 ;------------------------------------------------------------------------------
@@ -21,18 +21,18 @@
 ;
 ; Additional artifacts:
 ;   This grammar is one component of a Work Product which consists of:
-;   - OData Version 4.01 Part 1: Protocol
-;   - OData Version 4.01 Part 2: URL Conventions
-;   - OData ABNF Construction Rules Version 4.01 (this document)
-;   - OData ABNF Test Cases Version 4.01
+;   - OData Version 4.02 Part 1: Protocol
+;   - OData Version 4.02 Part 2: URL Conventions
+;   - OData ABNF Construction Rules Version 4.02 (this document)
+;   - OData ABNF Test Cases Version 4.02
 ;
 ; Related work:
 ;   This specification replaces or supersedes:
 ;   - OData ABNF Construction Rules Version 4.0
 ;   This work product is related to
-;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.01
-;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.01
-;   - OData JSON Format Version 4.01
+;   - OData Common Schema Definition Language (CSDL) JSON Representation Version 4.02
+;   - OData Common Schema Definition Language (CSDL) XML Representation Version 4.02
+;   - OData JSON Format Version 4.02
 ;
 ; Abstract:
 ;   The Open Data Protocol (OData) enables the creation of REST-based data
@@ -344,7 +344,7 @@ inlinecount = ( "$count" / "count" ) EQ boolean
 
 schemaversion   = ( "$schemaversion" / "schemaversion" ) EQ ( STAR / 1*unreserved )
 
-search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete )
+search     = ( "$search" / "search" ) EQ BWS ( searchExpr / searchExpr-incomplete ) BWS
 
 searchExpr = ( searchParenExpr
              / searchNegateExpr
@@ -372,7 +372,7 @@ searchPhrase = quotation-mark 1*( qchar-no-AMP-DQUOTE / SP ) quotation-mark
 ; Expressing this in ABNF is somewhat clumsy, so the following rule is overly generous.
 ; Note: the words AND, OR, and NOT are sometimes operators, depending on their position within a search expression.
 searchWord = searchChar *( searchChar / SQUOTE )
-searchChar = unreserved / pct-encoded-no-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
+searchChar = unreserved / pct-encoded-no-SP-DQUOTE / "!" / "*" / "+" / "," / ":" / "@" / "/" / "?" / "$" / "="
 
 searchExpr-incomplete = SQUOTE *( SQUOTE-in-string / qchar-no-AMP-SQUOTE / quotation-mark / SP ) SQUOTE
 
@@ -525,6 +525,9 @@ rootExpr = %s"$root/" ( entitySetName   [ collectionNavigationExpr ]
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
+                / "$" request-id "/" memberExpr ; reference to single-valued response of earlier request
+                / "$" request-id collectionNavigationExpr ; reference to collection-valued response of earlier request
+                / "$" request-id
 
 memberExpr = directMemberExpr
            / ( optionallyQualifiedEntityTypeName / optionallyQualifiedComplexTypeName ) "/" directMemberExpr
@@ -647,7 +650,7 @@ containsMethodCallExpr       = "contains"       OPEN BWS commonExpr BWS COMMA BW
 endsWithMethodCallExpr       = "endswith"       OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 indexOfMethodCallExpr        = "indexof"        OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 lengthMethodCallExpr         = "length"         OPEN BWS commonExpr BWS CLOSE
-matchesPatternMethodCallExpr = "matchesPattern" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+matchesPatternMethodCallExpr = "matchesPattern" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
 startsWithMethodCallExpr     = "startswith"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 substringMethodCallExpr      = "substring"      OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
 toLowerMethodCallExpr        = "tolower"        OPEN BWS commonExpr BWS CLOSE
@@ -1168,7 +1171,7 @@ COLON  = ":" / "%3A"
 COMMA  = "," / "%2C"
 EQ     = "="
 HASH   = "%23" ; the # character is not allowed in the query part
-SIGN   = "+" / "%2B" / "-"
+SIGN   = "%2B" / "-"
 SEMI   = ";" / "%3B"
 STAR   = "*" / "%2A"
 SQUOTE = "'" / "%27"
@@ -1259,6 +1262,9 @@ pct-encoded-unescaped = "%" ( "0" / "1" /   "3" / "4" /   "6" / "7" / "8" / "9" 
 
 pct-encoded-no-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
                       / "%" "2" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
+
+pct-encoded-no-SP-DQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F ) HEXDIG
+                         / "%" "2" (   "1" /   "3" / "4" / "5" / "6" / "7" / "8" / "9" / A-to-F )
 
 
 ;------------------------------------------------------------------------------
